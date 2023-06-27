@@ -1,0 +1,145 @@
+.cseg
+.engine PMD85
+.binfrom 0
+.binto 0x8000
+.ent $
+
+db 1+2
+db 2+3*4
+anyval equ 5
+db anyval+3
+;db 2 << 1, 1 >> 2
+db anyval / 3, anyval ^ 2, anyval % 2, anyval & 2, anyval | 2, anyval * 2, anyval + 2, anyval - 2, anyval # 3
+db anyval =1, anyval != 1, anyval ?>1, anyval ?<1, anyval ?>=1, anyval ?<= 1
+db 1&2
+
+db "Hello" || "World"
+
+db "hello\t\n\r\\backslash\\\f\b\/\u0022\'"
+
+db 0xab, 0b1010, 0o1237, $123, 12h, 12, 10110b, %12
+
+db lsb(label), msb(label)
+
+.org $100
+label: nop
+lxi h, label+1
+ mvi a,1
+ mvi c,":"
+ mov b,a
+ add b
+ jmp label
+
+ .if 1
+ nop
+ .else
+ .if 2
+ nop
+ .else
+ nop
+ .endif
+ db 1
+ .endif
+
+ .ifn 0
+ db "YES"
+ .endif
+
+  nop
+
+.M16
+.M8
+.X16
+.X8
+
+ .phase $200
+    nop
+.dephase
+ va equ 123
+ vb: equ 112
+ vc .equ va
+ .fill 1,2
+ fill 2,3
+ fill 2,"A"
+label2: nop
+jmp label   
+MOV A,C
+MvI a, 0x0f
+label3: MOv a, C ;with remark as a,b,c  
+
+label5 = 1
+defb 1
+.byte 1
+.db 1
+.word 1
+.dw 2
+defw 3
+.dd 22
+.df 12,3
+.dfzxs 122
+.dff 12
+defs 1
+.res 1
+defm 1
+.align 4
+.incbin test.bin
+.if 1
+nop
+.else
+nop
+.endif
+
+: nop
+
+@aa: nop
+
+
+setdp 0
+
+var .set 3 ;test
+var := 4 ;test
+
+.include test.a80:blk
+
+somelabel nop
+.pragma 6309
+
+; empty line   
+  ; with remark
+
+  .macro xyz
+  loop%%M: inr a
+     dcr b
+     jnz loop%%M
+  .endm  
+
+  xyz
+  xyz
+  xyz
+
+FX1 FCC 'THIS IS AN FCC STRING'
+FX2 FCC .SO IS THIS.
+
+ds 1,"hello"
+
+.dseg
+
+.dff 1.234
+.istr "Hello"
+.istr 12
+.cstr 123
+.cstr "String"
+.pstr "HELLO"
+.pstr 123
+.dfzxs 1.23
+
+.eseg
+.db 1
+bsz 50
+
+.incbin test.bin
+
+.bsseg
+bstest: ds 5
+
+.end

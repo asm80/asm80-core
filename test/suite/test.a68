@@ -1,0 +1,24 @@
+.org 0
+.pragma relax
+loop:
+
+dec 9,X
+ldaa "ab"
+ldx 1234
+
+bra loop
+
+defb 1
+.byte 1
+.db 1
+.word 1
+.dw 2
+defw 3
+.dd 22
+.df 12,3
+.dfzxs 122
+.dff 12
+defs 1
+.res 1
+defm 1
+.align 4

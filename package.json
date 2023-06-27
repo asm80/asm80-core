@@ -1,0 +1,30 @@
+{
+  "name": "asm80-core",
+  "version": "1.0.0",
+  "description": "Core ASM80 compiler / assembler",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "c8 qunit && c8 report --reporter=html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asm80/asm80-core.git"
+  },
+  "keywords": [
+    "ASM",
+    "Assembler",
+    "Z80",
+    "6502"
+  ],
+  "author": "Martin Maly <maly@maly.cz>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/asm80/asm80-core/issues"
+  },
+  "homepage": "https://github.com/asm80/asm80-core#readme",
+  "devDependencies": {
+    "c8": "^8.0.0",
+    "qunit": "^2.19.4"
+  }
+}
