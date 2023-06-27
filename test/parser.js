@@ -253,6 +253,16 @@ QUnit.test('REPT', assert => {
    `), "OK")
 })
 
+QUnit.test('REPT named', assert => {
+    assert.equal(testParse(`label .macro
+    db %%1
+    dw %%2
+   .endm
+   
+   `), "OK")
+})
+
+
 QUnit.test('INCLUDE', assert => {
     assert.equal(testParse(`.include "test.asm"`), "OK")
    
@@ -263,11 +273,39 @@ QUnit.test('INCLUDE BLOCK', assert => {
    
 })
 
+QUnit.test('INCLUDE bad block', assert => {
+    assert.throws(()=>{
+        let o = testParse(`.include test.asm:noblock`)
+}
+, (err) => err.msg === 'Cannot find block noblock in included file'
+)
+})
+
+
 QUnit.test('INCLUDE no name given', assert => {
     assert.throws(()=>{
         let o = testParse(`.include`)
 }
 , (err) => err.msg === 'No file name given'
-)
+)})
 
-})
+QUnit.test('No repeat count given', assert => {
+    assert.throws(()=>{
+        let o = testParse(`.rept`, true)
+}
+, (err) => err.msg === 'No repeat count given'
+)})
+
+QUnit.test('Bad repeat count given', assert => {
+    assert.throws(()=>{
+        let o = testParse(`.rept -1`, true)
+}
+, (err) => err.msg === 'Bad repeat count given'
+)})
+
+QUnit.test('MACRO *REPT1 has no appropriate ENDM', assert => {
+    assert.throws(()=>{
+        let o = testParse(`.rept 2`, true)
+}
+, (err) => err.msg === 'MACRO *REPT1 has no appropriate ENDM'
+)})

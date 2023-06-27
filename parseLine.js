@@ -6,7 +6,7 @@ const includedLineNumber = (s) => {
     return s.includedFileAtLine + "__" + s.numline;
   }
 
-export const parseLine = (s, macros, /*stopFlag, olds, */opts = {stopFlag:null, olds:null, assembler:null}) => {
+export const parseLine = (s, macros, opts = {stopFlag:null, olds:null, assembler:null}) => {
     let t = s.line;
     let ll;
 
@@ -165,7 +165,7 @@ export const parseLine = (s, macros, /*stopFlag, olds, */opts = {stopFlag:null, 
         return s;
       } catch (e) {
         throw {
-          msg: e.message,
+          msg: e.msg,
           s: s
         };
       }
@@ -233,11 +233,13 @@ export const parseLine = (s, macros, /*stopFlag, olds, */opts = {stopFlag:null, 
     if (s.opcode === ".IFN") {
         s.opcode = "IFN";
         return s;
-      }
-      if (s.opcode === ".IF") {
+    }
+    
+     if (s.opcode === ".IF") {
       s.opcode = "IF";
       return s;
     }
+    
     if (s.opcode === ".ELSE") {
       s.opcode = "ELSE";
       return s;

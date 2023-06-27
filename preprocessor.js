@@ -1,10 +1,10 @@
 import { parseLine } from "./parseLine.js";
 import {atobx} from "./utils/base64escaped.js";
-import { toInternal, nonempty, norm } from "./parser.js";
+import { toInternal, nonempty, norm } from "./utils/utils.js";
 
 import {Parser} from "./expression-parser.js";
 
-const macroParams = (d, params, uniq, pars, qnumline) => {
+const macroParams = (d, params=[], uniq, pars, qnumline) => {
     let out = {
       line: d.line,
       addr: d.addr,
@@ -13,8 +13,7 @@ const macroParams = (d, params, uniq, pars, qnumline) => {
     };
     uniq = uniq + "S" + qnumline;
     //console.log(uniq, d, params, uniq, pars, qnumline);
-    params = params || [];
-    let xpars = pars || [];
+    let xpars = pars;
     if (xpars && xpars.length > params.length) {
       out.numline = qnumline;
       throw {
@@ -66,9 +65,9 @@ const macroParams = (d, params, uniq, pars, qnumline) => {
   };  
 
 
-export const prepro = (V, opts, fullfile) => {
+export const prepro = (V, opts={}, fullfile) => {
+    if (!opts.includedFiles) opts.includedFiles = {};
     let op, ln, paramstring = null, px, params = null;
-    opts = opts || {};
     let macros = {};
     //let macroPars = {};
     let macroDefine = null;
@@ -266,12 +265,12 @@ export const prepro = (V, opts, fullfile) => {
       }
 
       if (opcode === ".REPT") {
-        if (!params[0]) throw {
+        if (!params || !params[0]) throw {
           msg: "No repeat count given",
           s: V[i]
         };
         reptCount = Parser.evaluate(params[0]);
-        if (!reptCount) throw {
+        if (!reptCount || reptCount<1) throw {
           msg: "Bad repeat count given",
           s: V[i]
         };
@@ -294,7 +293,7 @@ export const prepro = (V, opts, fullfile) => {
     if (macroDefine) {
       throw {
         msg: "MACRO " + macroDefine + " has no appropriate ENDM",
-        s: V[i],
+        //s: V[i],
       };
     }
     //console.log(macros)
@@ -307,6 +306,7 @@ export const unroll = (V, macros, uniqseed,opts) => {
     let out = [];
     for (let i = 0; i < V.length; i++) {
       let s = V[i];
+      if (!s) console.log("V", V, i);
       if (!s.macro) {
         out.push(s);
         continue;

@@ -1,4 +1,5 @@
-.pragma relax
+;.pragma relax
+label: equ $
 nop
 p1 10
 p2 10
@@ -9,5 +10,8 @@ pa2 "AB"
 pb2 "AB"
 pb2 10
 
+.include test2.dummy
+
+label2: equ $
 px2 10
 py2 10

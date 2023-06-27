@@ -5,7 +5,7 @@ export const pass1 = (V, vxs, opts) => {
     if (!opts.xref) opts.xref = {};
     let segment = "CSEG";
     let segallow = () => {
-      if (segment === "BSSEG") throw op.opcode + " is not allowed in BSSEG";
+      if (segment === "BSSEG") throw {msg:op.opcode + " is not allowed in BSSEG"};
     };
     let seg = {};
     let PC = 0;
@@ -21,6 +21,8 @@ export const pass1 = (V, vxs, opts) => {
     let phase = 0;
     let DP = 0;
     //let anon = []
+
+    //main loop - for each line
     for (let i = 0, j = V.length; i < j; i++) {
       op = V[i];
       opts.WLINE = V[i];
@@ -34,7 +36,6 @@ export const pass1 = (V, vxs, opts) => {
       }
 
       if (op.opcode === "ENDIF") {
-        //console.log("LE",ifstack)
         if (!doif) throw {
           msg: "ENDIF without IF",
           s: op
@@ -135,6 +136,7 @@ export const pass1 = (V, vxs, opts) => {
             }
       */
       if (op.label) {
+        //console.log("LABEL", op.label, op.opcode)
         let varname = op.label;
         let beGlobal = false;
         if (varname[0] === "@") {
@@ -152,11 +154,10 @@ export const pass1 = (V, vxs, opts) => {
         }
 
         //console.log(varname, blocks)
-        //console.log(op.label,beGlobal,vars[op.label]!==undefined, vars);
+        //console.log(op.label,beGlobal,vars[op.label]!==undefined, vars, vxs);
         if (!vxs) {
-          if (vars[varname + "$"] ||
+          if (typeof vars[varname + "$"] !=="undefined" ||
             (beGlobal && vars[op.label] !== undefined)) {
-            //console.log(op)
             if (op.opcode !== ".SET" && op.opcode !== ":=") {
               throw {
                 msg: "Redefine label " + op.label + " at line " + op.numline,
@@ -228,7 +229,7 @@ export const pass1 = (V, vxs, opts) => {
 
         if (op.opcode === ".PHASE") {
           if (phase) throw {
-            message: "PHASE cannot be nested"
+            msg: "PHASE cannot be nested"
           };
           let newphase = Parser.evaluate(op.params[0], vars);
           op.addr = PC;
@@ -274,7 +275,7 @@ export const pass1 = (V, vxs, opts) => {
         }
       } catch (e) {
         throw {
-          msg: e.message,
+          msg: e.msg,
           s: op
         };
       }

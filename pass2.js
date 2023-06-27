@@ -83,7 +83,7 @@ export const pass2 = (vx, opts) => {
           } catch (e) {
             //console.log("CATCH",e)
             throw {
-              message: "IF condition mismatched"
+              msg: "IF condition mismatched"
             };
             ifskip = 1;
           }
@@ -95,7 +95,7 @@ export const pass2 = (vx, opts) => {
             if (cond) ifskip = 1;
           } catch (e) {
             throw {
-              message: "IF condition mismatched"
+              msg: "IF condition mismatched"
             };
           }
           continue;
@@ -106,8 +106,8 @@ export const pass2 = (vx, opts) => {
         try {
           let usage = Parser.usage(op.params[0].toUpperCase(), vars);
           for (let u = 0; u < usage.length; u++) {
-            if (!xref[usage[u]].usage) xref[usage[u]].usage = [];
-            xref[usage[u]].usage.push({
+            if (!opts.xref[usage[u]].usage) opts.xref[usage[u]].usage = [];
+            opts.xref[usage[u]].usage.push({
               line: op.numline,
               file: op.includedFile || "*main*",
             });
@@ -116,8 +116,8 @@ export const pass2 = (vx, opts) => {
         try {
           let usage = Parser.usage(op.params[1].toUpperCase(), vars);
           for (let u = 0; u < usage.length; u++) {
-            if (!xref[usage[u]].usage) xref[usage[u]].usage = [];
-            xref[usage[u]].usage.push({
+            if (!opts.xref[usage[u]].usage) opts.xref[usage[u]].usage = [];
+            opts.xref[usage[u]].usage.push({
               line: op.numline,
               file: op.includedFile || "*main*",
             });
@@ -554,12 +554,12 @@ export const pass2 = (vx, opts) => {
           if (isNaN(op.lens[1])) {
             //console.log(1201,op)
             throw {
-              message: "param out of bounds, NaN"
+              msg: "param out of bounds, NaN"
             };
           }
           if ((op.lens[1] > 255 || op.lens[1] < -128) && op.lens.length == 2) {
             throw {
-              message: "param out of bounds - " + op.lens[1]
+              msg: "param out of bounds - " + op.lens[1]
             };
           }
           if (op.lens[1] < 0) {
@@ -571,7 +571,7 @@ export const pass2 = (vx, opts) => {
         //xref usage
       } catch (e) {
         throw {
-          msg: e.message,
+          msg: e.msg,
           s: op,
           e: e
         };

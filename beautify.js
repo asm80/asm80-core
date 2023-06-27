@@ -1,5 +1,5 @@
 import { parseLine } from "./parseLine.js";
-import { toInternal, nonempty, norm } from "./parser.js";
+import { toInternal, nonempty, norm } from "./utils/utils.js";
 import { prepro } from "./preprocessor.js";
 
 const emptymask = (xs) => xs.map((lx) => {

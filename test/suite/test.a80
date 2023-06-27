@@ -64,6 +64,7 @@ lxi h, label+1
 label2: nop
 jmp label   
 MOV A,C
+JZ LABEL
 MvI a, 0x0f
 label3: MOv a, C ;with remark as a,b,c  
 

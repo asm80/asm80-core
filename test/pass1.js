@@ -31,7 +31,7 @@ const doPass = (data, showError=false) => {
     vx = pass1(vx[0], vx[1], opts);
     vx = pass1(vx[0], vx[1], opts);
     vx = pass1(vx[0], vx[1], opts);
-    if (showError)console.log(vx)
+    if (showError==2)console.log(vx)
     return vx
     } catch (e) {
         if (showError)console.log(e)
@@ -76,14 +76,29 @@ QUnit.test('DS / RMB needs a numerical parameter', assert => {
         doPass(`ds "hello"`)
     }, (err) => err.msg === "DS / RMB needs a numerical parameter")
 });
+QUnit.test('DB in BSS', assert => {
+    assert.throws(() => {
+        doPass(`.bsseg
+        db "hello"`)
+    }, (err) => err.msg === "DB is not allowed in BSSEG")
+});
 
 /*
+QUnit.test('IF NaN', assert => {
+    assert.throws(() => {
+        doPass(`.if nofu(3)
+        db "hello
+        .endif"`, 2)
+    }, (err) => err.msg === "DB is not allowed in BSSEG")
+});
+*/
+
+
 QUnit.test('Redefine label', assert => {
     assert.throws(() => {
         doPass(`.org 0
         label1: DB 1
         nop
-        label1: FCC .HELLO.`, true)
-    },  console.log)
+        label1: FCC .HELLO.`, false)
+    },  (err) => err.msg === "Redefine label LABEL1 at line 4")
 });
-*/

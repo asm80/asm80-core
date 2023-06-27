@@ -1,6 +1,7 @@
 import {I8080} from "../cpu/i8080.js";
 import {M6800} from "../cpu/m6800.js";
 import { DUMMY, DUMMYE } from "../cpu/dummy.js";
+import {lst, html} from "../listing.js"
 
 import fs from "fs";
 
@@ -27,7 +28,8 @@ const fileGet = (filename) => {
 }
 
 const doPass = (data, showError=false, assembler=I8080) => {
-    let opts = {assembler, fileGet, PRAGMAS:[], endian:false}
+    let opts = {assembler, fileGet, PRAGMAS:[], endian:assembler.endian,}
+    
     try {
         let o = Parser.parse(data, opts);
     //console.log("BEUAbc",o)
@@ -42,6 +44,11 @@ const doPass = (data, showError=false, assembler=I8080) => {
     vx = pass2(vx, opts);
 
     if (showError==2) console.log(vx)
+    let l = lst(vx[0],vx[1],false, true,opts)
+    let l2 = lst(vx[0],vx[1], true, false, opts)
+    let www = html(vx[0],vx[1],false, true,opts)
+    let www2 = html(vx[0],vx[1],true, false,opts)
+    if (showError==3)console.log(l)
     return vx
     } catch (e) {
         if (showError)console.log(e)
@@ -60,14 +67,22 @@ QUnit.test('basic 6800', assert => {
     assert.ok(true)
 });
 
+/*
+QUnit.test('IF NaN', assert => {
+    assert.throws(() => {
+        doPass(`n: equ A+1`, true, DUMMY)
+    }, (err) => err.msg === "DB is not allowed in BSSEG")
+});
+*/
+
 
 QUnit.test('basic dummy', assert => {
-    doPass(asmDUMMY, true, DUMMY)
+    doPass(asmDUMMY, false, DUMMY)
     assert.ok(true)
 });
 
 QUnit.test('basic dummy-endian', assert => {
-    doPass(asmDUMMY, true, DUMMYE)
+    doPass(asmDUMMY, false, DUMMYE)
     assert.ok(true)
 });
 
