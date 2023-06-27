@@ -291,21 +291,21 @@ QUnit.test('INCLUDE no name given', assert => {
 
 QUnit.test('No repeat count given', assert => {
     assert.throws(()=>{
-        let o = testParse(`.rept`, true)
+        let o = testParse(`.rept`, false)
 }
 , (err) => err.msg === 'No repeat count given'
 )})
 
 QUnit.test('Bad repeat count given', assert => {
     assert.throws(()=>{
-        let o = testParse(`.rept -1`, true)
+        let o = testParse(`.rept -1`, false)
 }
 , (err) => err.msg === 'Bad repeat count given'
 )})
 
 QUnit.test('MACRO *REPT1 has no appropriate ENDM', assert => {
     assert.throws(()=>{
-        let o = testParse(`.rept 2`, true)
+        let o = testParse(`.rept 2`, false)
 }
 , (err) => err.msg === 'MACRO *REPT1 has no appropriate ENDM'
 )})
