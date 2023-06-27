@@ -3,25 +3,25 @@ import { Parser } from "./expression-parser.js";
 
 export const pass1 = (V, vxs, opts) => {
     if (!opts.xref) opts.xref = {};
-    var segment = "CSEG";
-    var segallow = () => {
+    let segment = "CSEG";
+    let segallow = () => {
       if (segment === "BSSEG") throw op.opcode + " is not allowed in BSSEG";
     };
-    var seg = {};
-    var PC = 0;
-    var vars = {};
+    let seg = {};
+    let PC = 0;
+    let vars = {};
     if (vxs) vars = vxs;
-    var op = null;
-    var m, l;
-    var ifskip = 0;
-    var cond;
-    var doif = 0;
-    var ifstack = [];
-    var blocks = [];
-    var phase = 0;
-    var DP = 0;
-    //var anon = []
-    for (var i = 0, j = V.length; i < j; i++) {
+    let op = null;
+    let m, l;
+    let ifskip = 0;
+    let cond;
+    let doif = 0;
+    let ifstack = [];
+    let blocks = [];
+    let phase = 0;
+    let DP = 0;
+    //let anon = []
+    for (let i = 0, j = V.length; i < j; i++) {
       op = V[i];
       opts.WLINE = V[i];
       op.pass = 1;
@@ -108,16 +108,16 @@ export const pass1 = (V, vxs, opts) => {
         if (!op.includedFileAtLine) blocks.push(op.numline);
         else blocks.push(op.numline + "@" + op.includedFileAtLine);
         //console.log("bl!", blocks);
-        var prefix = blocks.join("/");
+        let prefix = blocks.join("/");
         //vars['__blocks'] = JSON.stringify(blocks);
         vars["__" + prefix] = [];
 
         continue;
       }
       if (op.opcode === ".ENDBLOCK") {
-        var redef = vars["__" + blocks.join("/")];
+        let redef = vars["__" + blocks.join("/")];
         //console.log(redef, vars);
-        for (var nn = 0; nn < redef.length; nn++) {
+        for (let nn = 0; nn < redef.length; nn++) {
           vars[redef[nn]] = vars[blocks.join("/") + "/" + redef[nn]];
           //console.log("REDEF",redef[nn], vars[redef[nn]])
           //vars[blocks.join("/")+"/"+redef[nn]] = null;
@@ -135,8 +135,8 @@ export const pass1 = (V, vxs, opts) => {
             }
       */
       if (op.label) {
-        var varname = op.label;
-        var beGlobal = false;
+        let varname = op.label;
+        let beGlobal = false;
         if (varname[0] === "@") {
           beGlobal = true;
           varname = varname.substr(1);
@@ -230,7 +230,7 @@ export const pass1 = (V, vxs, opts) => {
           if (phase) throw {
             message: "PHASE cannot be nested"
           };
-          var newphase = Parser.evaluate(op.params[0], vars);
+          let newphase = Parser.evaluate(op.params[0], vars);
           op.addr = PC;
           phase = newphase - PC;
           PC = newphase;
@@ -304,8 +304,8 @@ export const pass1 = (V, vxs, opts) => {
         op.bytes = 0;
         //console.log(op)
         for (l = 0; l < op.params.length; l++) {
-          var mystring = op.params[l].trim();
-          var delim = mystring[0];
+          let mystring = op.params[l].trim();
+          let delim = mystring[0];
           if (mystring[mystring.length - 1] !== delim)
             throw {
               msg: "Delimiters does not match",
@@ -340,7 +340,7 @@ export const pass1 = (V, vxs, opts) => {
 
       if (op.opcode === "DS" || op.opcode === "RMB") {
         //op.bytes = Parser.evaluate(op.params[0]);
-        var bytes = Parser.evaluate(op.params[0], vars);
+        let bytes = Parser.evaluate(op.params[0], vars);
         //console.log(bytes, typeof bytes)
         if (typeof bytes !== "number")
           throw {
@@ -349,11 +349,11 @@ export const pass1 = (V, vxs, opts) => {
           };
         if (op.params.length == 2) {
           //DB alias
-          var m = Parser.evaluate(op.params[1], vars);
+          let m = Parser.evaluate(op.params[1], vars);
           if (typeof m === "string") m = m.charCodeAt(0);
           op.bytes = bytes;
           op.lens = [];
-          for (var iq = 0; iq < bytes; iq++) {
+          for (let iq = 0; iq < bytes; iq++) {
             op.lens[iq] = m;
           }
           //console.log(op.lens);
@@ -364,7 +364,7 @@ export const pass1 = (V, vxs, opts) => {
       }
       if (op.opcode === "ALIGN") {
         //op.bytes = Parser.evaluate(op.params[0]);
-        var align = Parser.evaluate(op.params[0], vars);
+        let align = Parser.evaluate(op.params[0], vars);
 
         PC = PC + (PC % align > 0 ? align - (PC % align) : 0);
 
@@ -379,14 +379,14 @@ export const pass1 = (V, vxs, opts) => {
       if (op.opcode === "FILL") {
         segallow();
         //op.bytes = Parser.evaluate(op.params[0]);
-        var bytes = Parser.evaluate(op.params[1], vars);
+        let bytes = Parser.evaluate(op.params[1], vars);
         //console.log("FILLB",bytes,op.params)
         //DB alias
-        var m = Parser.evaluate(op.params[0], vars);
+        let m = Parser.evaluate(op.params[0], vars);
         if (typeof m === "string") m = m.charCodeAt(0);
         op.bytes = bytes;
         op.lens = [];
-        for (var iq = 0; iq < bytes; iq++) {
+        for (let iq = 0; iq < bytes; iq++) {
           op.lens[iq] = m;
         }
         //console.log(op.lens);
@@ -397,10 +397,10 @@ export const pass1 = (V, vxs, opts) => {
       if (op.opcode === "BSZ" || op.opcode === "ZMB") {
         segallow();
         //op.bytes = Parser.evaluate(op.params[0]);
-        var bytes = Parser.evaluate(op.params[0], vars);
+        let bytes = Parser.evaluate(op.params[0], vars);
         op.bytes = bytes;
         op.lens = [];
-        for (var iq = 0; iq < bytes; iq++) {
+        for (let iq = 0; iq < bytes; iq++) {
           op.lens[iq] = 0;
         }
         PC = PC + bytes;
@@ -477,7 +477,7 @@ export const pass1 = (V, vxs, opts) => {
             s: op
           };
         //console.log("Include "+params[0]);
-        var nf = opts.fileGet(op.params[0], true);
+        let nf = opts.fileGet(op.params[0], true);
         if (!nf)
           throw {
             msg: "Cannot find file " + op.params[0] + " for incbin",
@@ -486,8 +486,8 @@ export const pass1 = (V, vxs, opts) => {
 
         op.bytes = 0;
         op.lens = [];
-        for (var iq = 0; iq < nf.length; iq++) {
-          var cd = nf.charCodeAt(iq);
+        for (let iq = 0; iq < nf.length; iq++) {
+          let cd = nf.charCodeAt(iq);
           if (cd > 255) {
             op.lens[op.bytes++] = cd >> 8;
           }
@@ -518,7 +518,7 @@ export const pass1 = (V, vxs, opts) => {
       }
 
       //je to instrukce? Jde optimalizovat?
-      var opa = opts.assembler.parseOpcode(V[i], vars, Parser);
+      let opa = opts.assembler.parseOpcode(V[i], vars, Parser);
       if (opa) {
         segallow();
         //console.log(op,opa);

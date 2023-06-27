@@ -37,16 +37,16 @@ export const pass2 = (vx, opts) => {
     
 
 
-    var V = vx[0];
-    var vars = vx[1];
+    let V = vx[0];
+    let vars = vx[1];
     //		console.log(vars);
-    var op = null, dta = null, m, bts, l;
-    var blocks = [];
-    var ifskip = 0;
-    var cond;
-    var doif = 0;
+    let op = null, dta = null, m, bts, l;
+    let blocks = [];
+    let ifskip = 0;
+    let cond;
+    let doif = 0;
 
-    for (var i = 0, j = V.length; i < j; i++) {
+    for (let i = 0, j = V.length; i < j; i++) {
       try {
         op = V[i];
         op.pass = 2;
@@ -104,8 +104,8 @@ export const pass2 = (vx, opts) => {
         vars._PC = op.addr;
         //console.log(vars._PC,op);
         try {
-          var usage = Parser.usage(op.params[0].toUpperCase(), vars);
-          for (var u = 0; u < usage.length; u++) {
+          let usage = Parser.usage(op.params[0].toUpperCase(), vars);
+          for (let u = 0; u < usage.length; u++) {
             if (!xref[usage[u]].usage) xref[usage[u]].usage = [];
             xref[usage[u]].usage.push({
               line: op.numline,
@@ -114,8 +114,8 @@ export const pass2 = (vx, opts) => {
           }
         } catch (e) { }
         try {
-          var usage = Parser.usage(op.params[1].toUpperCase(), vars);
-          for (var u = 0; u < usage.length; u++) {
+          let usage = Parser.usage(op.params[1].toUpperCase(), vars);
+          for (let u = 0; u < usage.length; u++) {
             if (!xref[usage[u]].usage) xref[usage[u]].usage = [];
             xref[usage[u]].usage.push({
               line: op.numline,
@@ -128,16 +128,16 @@ export const pass2 = (vx, opts) => {
           //blocks.push(op.numline);
           if (!op.includedFileAtLine) blocks.push(op.numline);
           else blocks.push(op.numline + "@" + op.includedFileAtLine);
-          var redef = vars["__" + blocks.join("/")];
-          for (var nn = 0; nn < redef.length; nn++) {
+          let redef = vars["__" + blocks.join("/")];
+          for (let nn = 0; nn < redef.length; nn++) {
             vars[blocks.join("/") + "/" + redef[nn]] = vars[redef[nn]];
             vars[redef[nn]] = vars[blocks.join("/") + "/" + redef[nn] + "$"];
           }
           continue;
         }
         if (op.opcode === ".ENDBLOCK") {
-          var redef = vars["__" + blocks.join("/")];
-          for (var nn = 0; nn < redef.length; nn++) {
+          let redef = vars["__" + blocks.join("/")];
+          for (let nn = 0; nn < redef.length; nn++) {
             vars[redef[nn]] = vars[blocks.join("/") + "/" + redef[nn]];
             if (vars[redef[nn]] === undefined) delete vars[redef[nn]];
             vars[blocks.join("/") + "/" + redef[nn]] = null;
@@ -203,7 +203,7 @@ export const pass2 = (vx, opts) => {
               continue;
             }
             if (typeof m === "string") {
-              for (var mm = 0; mm < m.length; mm++) {
+              for (let mm = 0; mm < m.length; mm++) {
                 op.lens[bts++] = m.charCodeAt(mm);
               }
               continue;
@@ -215,10 +215,10 @@ export const pass2 = (vx, opts) => {
           bts = 0;
           op.lens = [];
           for (l = 0; l < op.params.length; l++) {
-            var mystring = op.params[l].trim();
-            var delim = mystring[0];
-            var m = mystring.substr(1, mystring.length - 2);
-            for (var mm = 0; mm < m.length; mm++) {
+            let mystring = op.params[l].trim();
+            let delim = mystring[0];
+            let m = mystring.substr(1, mystring.length - 2);
+            for (let mm = 0; mm < m.length; mm++) {
               op.lens[bts++] = m.charCodeAt(mm);
             }
           }
@@ -235,7 +235,7 @@ export const pass2 = (vx, opts) => {
               continue;
             }
             if (typeof m === "string") {
-              for (var mm = 0; mm < m.length; mm++) {
+              for (let mm = 0; mm < m.length; mm++) {
                 op.lens[bts++] = m.charCodeAt(mm);
               }
               continue;
@@ -255,7 +255,7 @@ export const pass2 = (vx, opts) => {
               continue;
             }
             if (typeof m === "string") {
-              for (var mm = 0; mm < m.length; mm++) {
+              for (let mm = 0; mm < m.length; mm++) {
                 op.lens[bts++] = m.charCodeAt(mm);
               }
               continue;
@@ -275,7 +275,7 @@ export const pass2 = (vx, opts) => {
               continue;
             }
             if (typeof m === "string") {
-              for (var mm = 0; mm < m.length; mm++) {
+              for (let mm = 0; mm < m.length; mm++) {
                 op.lens[bts++] = m.charCodeAt(mm) & 0x7f;
               }
               continue;
@@ -312,10 +312,10 @@ export const pass2 = (vx, opts) => {
             m = Parser.evaluate(op.params[l], vars);
             if (typeof m === "number") {
               //console.error(m)
-              var b = new ArrayBuffer(4);
-              var c = new Int32Array(b);
+              let b = new ArrayBuffer(4);
+              let c = new Int32Array(b);
               c[0] = m;
-              var a = new Uint8Array(b);
+              let a = new Uint8Array(b);
               if (opts.endian) {
                 op.lens[bts++] = a[3];
                 op.lens[bts++] = a[2];
@@ -341,10 +341,10 @@ export const pass2 = (vx, opts) => {
             m = Parser.evaluate(op.params[l], vars);
             if (typeof m === "number") {
               //console.error(m)
-              var b = new ArrayBuffer(4);
-              var c = new Float32Array(b);
+              let b = new ArrayBuffer(4);
+              let c = new Float32Array(b);
               c[0] = m;
-              var a = new Uint8Array(b);
+              let a = new Uint8Array(b);
               if (opts.endian) {
                 op.lens[bts++] = a[3];
                 op.lens[bts++] = a[2];
@@ -369,10 +369,10 @@ export const pass2 = (vx, opts) => {
             m = Parser.evaluate(op.params[l], vars);
             if (typeof m === "number") {
               //console.error(m)
-              var b = new ArrayBuffer(8);
-              var c = new Float64Array(b);
+              let b = new ArrayBuffer(8);
+              let c = new Float64Array(b);
               c[0] = m;
-              var a = new Uint8Array(b);
+              let a = new Uint8Array(b);
               if (opts.endian) {
                 op.lens[bts++] = a[7];
                 op.lens[bts++] = a[6];
@@ -406,7 +406,7 @@ export const pass2 = (vx, opts) => {
             m = Parser.evaluate(op.params[l], vars);
             if (typeof m === "number") {
               //console.error(m)
-              var a = fptozx(m, false);
+              let a = fptozx(m, false);
               //console.log(m,a)
               if (opts.endian) {
                 op.lens[bts++] = a[4];

@@ -19,7 +19,7 @@
 /*
 if (!Array.indexOf) {
   Array.prototype.indexOf = function (obj, start) {
-    for (var i = start || 0; i < this.length; i++) {
+    for (let i = start || 0; i < this.length; i++) {
       if (this[i] === obj) {
         return i;
       }
@@ -36,11 +36,11 @@ if (!Array.indexOf) {
     return new F();
   }
 
-  var TNUMBER = 0;
-  var TOP1 = 1;
-  var TOP2 = 2;
-  var TVAR = 3;
-  var TFUNCALL = 4;
+  const TNUMBER = 0;
+  const TOP1 = 1;
+  const TOP2 = 2;
+  const TVAR = 3;
+  const TFUNCALL = 4;
 
 export function Token(type_, index_, prio_, number_) {
     this.type_ = type_;
@@ -71,7 +71,7 @@ export function Token(type_, index_, prio_, number_) {
   }
 
   // Based on http://www.json.org/json2.js
-  var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+  let cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
     escapable = /[\\\'\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
     meta = {
       // table of character substitutions
@@ -90,7 +90,7 @@ export function Token(type_, index_, prio_, number_) {
       return escapable.test(v)
         ? "'" +
             v.replace(escapable, function (a) {
-              var c = meta[a];
+              let c = meta[a];
               return typeof c === "string"
                 ? c
                 : "\\u" + ("0000" + a.charCodeAt(0).toString(16)).slice(-4);
@@ -104,20 +104,20 @@ export function Token(type_, index_, prio_, number_) {
   Expression.prototype = {
     simplify: function (values) {
       values = values || {};
-      var nstack = [];
-      var newexpression = [];
-      var n1;
-      var n2;
-      var f;
-      var L = this.tokens.length;
-      var item;
-      var i = 0;
+      let nstack = [];
+      let newexpression = [];
+      let n1;
+      let n2;
+      let f;
+      let L = this.tokens.length;
+      let item;
+      let i = 0;
       for (i = 0; i < L; i++) {
         item = this.tokens[i];
-        var type_ = item.type_;
+        let type_ = item.type_;
         if (type_ === TNUMBER) {
           nstack.push(item);
-        } else if (type_ === TVAR && item.index_ in values) {
+        } else if (type_ === Tlet && item.index_ in values) {
           item = new Token(TNUMBER, 0, 0, values[item.index_]);
           nstack.push(item);
         } else if (type_ === TOP2 && nstack.length > 1) {
@@ -154,17 +154,17 @@ export function Token(type_, index_, prio_, number_) {
       if (!(expr instanceof Expression)) {
         expr = new Parser().parse(String(expr));
       }
-      var newexpression = [];
-      var L = this.tokens.length;
-      var item;
-      var i = 0;
+      let newexpression = [];
+      let L = this.tokens.length;
+      let item;
+      let i = 0;
       for (i = 0; i < L; i++) {
         item = this.tokens[i];
-        var type_ = item.type_;
-        if (type_ === TVAR && item.index_ === variable) {
-          for (var j = 0; j < expr.tokens.length; j++) {
-            var expritem = expr.tokens[j];
-            var replitem = new Token(
+        let type_ = item.type_;
+        if (type_ === Tlet && item.index_ === variable) {
+          for (let j = 0; j < expr.tokens.length; j++) {
+            let expritem = expr.tokens[j];
+            let replitem = new Token(
               expritem.type_,
               expritem.index_,
               expritem.prio_,
@@ -177,7 +177,7 @@ export function Token(type_, index_, prio_, number_) {
         }
       }
 
-      var ret = new Expression(
+      let ret = new Expression(
         newexpression,
         object(this.ops1),
         object(this.ops2),
@@ -188,17 +188,17 @@ export function Token(type_, index_, prio_, number_) {
 
     evaluate: function (values) {
       values = values || {};
-      var nstack = [];
-      var n1;
-      var n2;
-      var f;
-      var L = this.tokens.length;
-      var item;
-      var i = 0;
+      let nstack = [];
+      let n1;
+      let n2;
+      let f;
+      let L = this.tokens.length;
+      let item;
+      let i = 0;
       //console.log("EVAL2", this.tokens);
       for (i = 0; i < L; i++) {
         item = this.tokens[i];
-        var type_ = item.type_;
+        let type_ = item.type_;
         if (type_ === TNUMBER) {
           nstack.push(item.number_);
         } else if (type_ === TOP2) {
@@ -246,8 +246,8 @@ export function Token(type_, index_, prio_, number_) {
       if (nstack.length > 1) {
         throw new Error("invalid Expression (parity)");
       }
-      var ev = nstack[0];
-      var pragmas = values.__PRAGMAS;
+      let ev = nstack[0];
+      let pragmas = values.__PRAGMAS;
       //console.log(pragmas)
       if (pragmas && typeof ev == "number") {
         if (pragmas.indexOf("ROUNDFLOAT") >= 0) ev = Math.round(ev);
@@ -261,17 +261,17 @@ export function Token(type_, index_, prio_, number_) {
 
     usage: function (values) {
       values = values || {};
-      var xref = [];
-      var nstack = [];
-      var n1;
-      var n2;
-      var f;
-      var L = this.tokens.length;
-      var item;
-      var i = 0;
+      let xref = [];
+      let nstack = [];
+      let n1;
+      let n2;
+      let f;
+      let L = this.tokens.length;
+      let item;
+      let i = 0;
       for (i = 0; i < L; i++) {
         item = this.tokens[i];
-        var type_ = item.type_;
+        let type_ = item.type_;
         if (type_ === TNUMBER) {
           nstack.push(item.number_);
         } else if (type_ === TOP2) {
@@ -327,16 +327,16 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     toString: function (toJS) {
-      var nstack = [];
-      var n1;
-      var n2;
-      var f;
-      var L = this.tokens.length;
-      var item;
-      var i = 0;
+      let nstack = [];
+      let n1;
+      let n2;
+      let f;
+      let L = this.tokens.length;
+      let item;
+      let i = 0;
       for (i = 0; i < L; i++) {
         item = this.tokens[i];
-        var type_ = item.type_;
+        let type_ = item.type_;
         if (type_ === TNUMBER) {
           nstack.push(escapeValue(item.number_));
         } else if (type_ === TOP2) {
@@ -373,11 +373,11 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     variables: function () {
-      var L = this.tokens.length;
-      var vars = [];
-      for (var i = 0; i < L; i++) {
-        var item = this.tokens[i];
-        if (item.type_ === TVAR && vars.indexOf(item.index_) == -1) {
+      let L = this.tokens.length;
+      let vars = [];
+      for (let i = 0; i < L; i++) {
+        let item = this.tokens[i];
+        if (item.type_ === Tlet && vars.indexOf(item.index_) == -1) {
           vars.push(item.index_);
         }
       }
@@ -386,7 +386,7 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     toJSFunction: function (param, variables) {
-      var f = new Function(
+      let f = new Function(
         param,
         "with(Parser.values) { return " +
           this.simplify(variables).toString(true) +
@@ -397,8 +397,8 @@ export function Token(type_, index_, prio_, number_) {
   };
 
   function stringCode(s) {
-    var o = 0;
-    for (var i = 0; i < s.length; i++) {
+    let o = 0;
+    for (let i = 0; i < s.length; i++) {
       o *= 256;
       o += s.charCodeAt(i);
     }
@@ -459,8 +459,8 @@ export function Token(type_, index_, prio_, number_) {
 
   function mul(a, b) {
     if (typeof a == "string") {
-      var out = "";
-      for (var l = 0; l < b; l++) out += a;
+      let out = "";
+      for (let l = 0; l < b; l++) out += a;
       return out;
     }
     return a * b;
@@ -489,7 +489,7 @@ export function Token(type_, index_, prio_, number_) {
   function fac(a) {
     //a!
     a = Math.floor(a);
-    var b = a;
+    let b = a;
     while (a > 1) {
       b = b * --a;
     }
@@ -502,7 +502,7 @@ export function Token(type_, index_, prio_, number_) {
   }
 
   function near(d) {
-    //var d = x[0]-x[1];
+    //let d = x[0]-x[1];
     if (d > 127) return 0;
     if (d < -128) return 0;
     return 1;
@@ -643,25 +643,25 @@ export function Token(type_, index_, prio_, number_) {
     PI: Math.PI,
   };
 
-  var PRIMARY = 1 << 0;
-  var OPERATOR = 1 << 1;
-  var FUNCTION = 1 << 2;
-  var LPAREN = 1 << 3;
-  var RPAREN = 1 << 4;
-  var COMMA = 1 << 5;
-  var SIGN = 1 << 6;
-  var CALL = 1 << 7;
-  var NULLARY_CALL = 1 << 8;
+  let PRIMARY = 1 << 0;
+  let OPERATOR = 1 << 1;
+  let FUNCTION = 1 << 2;
+  let LPAREN = 1 << 3;
+  let RPAREN = 1 << 4;
+  let COMMA = 1 << 5;
+  let SIGN = 1 << 6;
+  let CALL = 1 << 7;
+  let NULLARY_CALL = 1 << 8;
 
   Parser.prototype = {
     parse: function (expr) {
       this.errormsg = "";
       this.success = true;
-      var operstack = [];
-      var tokenstack = [];
+      let operstack = [];
+      let tokenstack = [];
       this.tmpprio = 0;
-      var expected = PRIMARY | LPAREN | FUNCTION | SIGN;
-      var noperators = 0;
+      let expected = PRIMARY | LPAREN | FUNCTION | SIGN;
+      let noperators = 0;
       this.expression = expr;
       this.pos = 0;
 
@@ -673,7 +673,7 @@ export function Token(type_, index_, prio_, number_) {
           if ((expected & PRIMARY) === 0) {
             this.error_parsing(this.pos, "unexpected number");
           }
-          var token = new Token(TNUMBER, 0, 0, this.tokennumber);
+          let token = new Token(TNUMBER, 0, 0, this.tokennumber);
           tokenstack.push(token);
 
           expected = OPERATOR | RPAREN | COMMA;
@@ -699,7 +699,7 @@ export function Token(type_, index_, prio_, number_) {
           if ((expected & PRIMARY) === 0) {
             this.error_parsing(this.pos, "unexpected string");
           }
-          var token = new Token(TNUMBER, 0, 0, this.tokennumber);
+          let token = new Token(TNUMBER, 0, 0, this.tokennumber);
           tokenstack.push(token);
 
           expected = OPERATOR | RPAREN | COMMA;
@@ -718,7 +718,7 @@ export function Token(type_, index_, prio_, number_) {
           expected = PRIMARY | LPAREN | FUNCTION | SIGN | NULLARY_CALL;
         } else if (this.isRightParenth()) {
           if (expected & NULLARY_CALL) {
-            var token = new Token(TNUMBER, 0, 0, []);
+            let token = new Token(TNUMBER, 0, 0, []);
             tokenstack.push(token);
           } else if ((expected & RPAREN) === 0) {
             this.error_parsing(this.pos, 'unexpected ")"');
@@ -736,7 +736,7 @@ export function Token(type_, index_, prio_, number_) {
           if ((expected & PRIMARY) === 0) {
             this.error_parsing(this.pos, "unexpected constant");
           }
-          var consttoken = new Token(TNUMBER, 0, 0, this.tokennumber);
+          let consttoken = new Token(TNUMBER, 0, 0, this.tokennumber);
           tokenstack.push(consttoken);
           expected = OPERATOR | RPAREN | COMMA;
         } else if (this.isOp2()) {
@@ -757,7 +757,7 @@ export function Token(type_, index_, prio_, number_) {
           if ((expected & PRIMARY) === 0) {
             this.error_parsing(this.pos, "unexpected variable");
           }
-          var vartoken = new Token(TVAR, this.tokenindex, 0, 0);
+          let vartoken = new Token(TVAR, this.tokenindex, 0, 0);
           tokenstack.push(vartoken);
 
           expected = OPERATOR | RPAREN | COMMA | LPAREN | CALL;
@@ -777,7 +777,7 @@ export function Token(type_, index_, prio_, number_) {
         this.error_parsing(this.pos, 'unmatched "()"');
       }
       while (operstack.length > 0) {
-        var tmp = operstack.pop();
+        let tmp = operstack.pop();
         tokenstack.push(tmp);
       }
       if (noperators + 1 !== tokenstack.length) {
@@ -796,7 +796,7 @@ export function Token(type_, index_, prio_, number_) {
 
     evaluate: function (expr, variables) {
       //console.log(this.parse(expr));
-      var value = this.parse(expr).evaluate(variables);
+      let value = this.parse(expr).evaluate(variables);
       return value;
     },
 
@@ -809,7 +809,7 @@ export function Token(type_, index_, prio_, number_) {
     //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 
     addfunc: function (tokenstack, operstack, type_) {
-      var operator = new Token(
+      let operator = new Token(
         type_,
         this.tokenindex,
         this.tokenprio + this.tmpprio,
@@ -826,16 +826,16 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isNumber: function () {
-      var r = false;
-      var str = "";
-      var firstok = 0;
-      var firstcode = 0;
-      var base = 10;
-      var shouldbehex = false;
-      var bakpos = this.pos;
+      let r = false;
+      let str = "";
+      let firstok = 0;
+      let firstcode = 0;
+      let base = 10;
+      let shouldbehex = false;
+      let bakpos = this.pos;
+      let strx;
       while (this.pos < this.expression.length) {
-        var strx;
-        var code = this.expression.charCodeAt(this.pos);
+        let code = this.expression.charCodeAt(this.pos);
         //console.log(this.pos, code, firstok);
         if (firstok === 0) firstcode = code;
         if (
@@ -946,11 +946,11 @@ export function Token(type_, index_, prio_, number_) {
 
     // Ported from the yajjl JSON parser at http://code.google.com/p/yajjl/
     unescape: function (v, pos) {
-      var buffer = [];
-      var escaping = false;
+      let buffer = [];
+      let escaping = false;
 
-      for (var i = 0; i < v.length; i++) {
-        var c = v.charAt(i);
+      for (let i = 0; i < v.length; i++) {
+        let c = v.charAt(i);
 
         if (escaping) {
           switch (c) {
@@ -980,7 +980,7 @@ export function Token(type_, index_, prio_, number_) {
               break;
             case "u":
               // interpret the following 4 characters as the hex of the unicode code point
-              var codePoint = parseInt(v.substring(i + 1, i + 5), 16);
+              let codePoint = parseInt(v.substring(i + 1, i + 5), 16);
               buffer.push(String.fromCharCode(codePoint));
               i += 4;
               break;
@@ -1004,18 +1004,18 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isString: function () {
-      var r = false;
-      var str = "";
-      var startpos = this.pos;
+      let r = false;
+      let str = "";
+      let startpos = this.pos;
       if (
         (this.pos < this.expression.length &&
           this.expression.charAt(this.pos) == "'") ||
         this.expression.charAt(this.pos) == '"'
       ) {
-        var delim = this.expression.charAt(this.pos);
+        let delim = this.expression.charAt(this.pos);
         this.pos++;
         while (this.pos < this.expression.length) {
-          var code = this.expression.charAt(this.pos);
+          let code = this.expression.charAt(this.pos);
           if (code != delim || str.slice(-1) == "\\") {
             str += this.expression.charAt(this.pos);
             this.pos++;
@@ -1032,10 +1032,10 @@ export function Token(type_, index_, prio_, number_) {
 
     isConst: function () {
       return false; //false positive on E, PI
-      var str;
-      for (var i in this.consts) {
+      let str;
+      for (let i in this.consts) {
         if (true) {
-          var L = i.length;
+          let L = i.length;
           str = this.expression.substr(this.pos, L);
           if (i === str) {
             this.tokennumber = this.consts[i];
@@ -1048,7 +1048,7 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isOperator: function () {
-      var code = this.expression.charCodeAt(this.pos);
+      let code = this.expression.charCodeAt(this.pos);
       if (code === 43) {
         // +
         this.tokenprio = 0;
@@ -1154,7 +1154,7 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isSign: function () {
-      var code = this.expression.charCodeAt(this.pos - 1);
+      let code = this.expression.charCodeAt(this.pos - 1);
       if (code === 45 || code === 43) {
         // -
         return true;
@@ -1163,7 +1163,7 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isPositiveSign: function () {
-      var code = this.expression.charCodeAt(this.pos - 1);
+      let code = this.expression.charCodeAt(this.pos - 1);
       if (code === 43) {
         // -
         return true;
@@ -1172,7 +1172,7 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isNegativeSign: function () {
-      var code = this.expression.charCodeAt(this.pos - 1);
+      let code = this.expression.charCodeAt(this.pos - 1);
       if (code === 45) {
         // -
         return true;
@@ -1181,7 +1181,7 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isLeftParenth: function () {
-      var code = this.expression.charCodeAt(this.pos);
+      let code = this.expression.charCodeAt(this.pos);
       if (code === 40) {
         // (
         this.pos++;
@@ -1192,7 +1192,7 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isRightParenth: function () {
-      var code = this.expression.charCodeAt(this.pos);
+      let code = this.expression.charCodeAt(this.pos);
       if (code === 41) {
         // )
         this.pos++;
@@ -1203,7 +1203,7 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isComma: function () {
-      var code = this.expression.charCodeAt(this.pos);
+      let code = this.expression.charCodeAt(this.pos);
       if (code === 44) {
         // ,
         this.pos++;
@@ -1215,7 +1215,7 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isWhite: function () {
-      var code = this.expression.charCodeAt(this.pos);
+      let code = this.expression.charCodeAt(this.pos);
       if (code === 32 || code === 9 || code === 10 || code === 13) {
         this.pos++;
         return true;
@@ -1224,9 +1224,9 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isOp1: function () {
-      var str = "";
-      for (var i = this.pos; i < this.expression.length; i++) {
-        var c = this.expression.charAt(i);
+      let str = "";
+      for (let i = this.pos; i < this.expression.length; i++) {
+        let c = this.expression.charAt(i);
         if (c.toUpperCase() === c.toLowerCase()) {
           if (i === this.pos || (c != "_" && (c < "0" || c > "9"))) {
             break;
@@ -1244,9 +1244,9 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isOp2: function () {
-      var str = "";
-      for (var i = this.pos; i < this.expression.length; i++) {
-        var c = this.expression.charAt(i);
+      let str = "";
+      for (let i = this.pos; i < this.expression.length; i++) {
+        let c = this.expression.charAt(i);
         if (c.toUpperCase() === c.toLowerCase()) {
           if (i === this.pos || (c != "_" && (c < "0" || c > "9"))) {
             break;
@@ -1264,9 +1264,9 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isVar: function () {
-      var str = "";
-      for (var i = this.pos; i < this.expression.length; i++) {
-        var c = this.expression.charAt(i);
+      let str = "";
+      for (let i = this.pos; i < this.expression.length; i++) {
+        let c = this.expression.charAt(i);
         if (c === "$") {
           str = "_PC";
           break;
@@ -1292,7 +1292,7 @@ export function Token(type_, index_, prio_, number_) {
     },
 
     isComment: function () {
-      var code = this.expression.charCodeAt(this.pos - 1);
+      let code = this.expression.charCodeAt(this.pos - 1);
       if (code === 47 && this.expression.charCodeAt(this.pos) === 42) {
         this.pos = this.expression.indexOf("*/", this.pos) + 2;
         if (this.pos === 1) {

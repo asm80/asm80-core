@@ -143,8 +143,8 @@ export const M6800 = {
 
 
   "parseOpcode": function(s,vars, Parser) {
-    var p1;
-    var auxopcode = s.opcode;
+    let p1;
+    let auxopcode = s.opcode;
     //fix param
     if (!s.opcode) return null;
     //console.log(s,s.params, s.opcode)
@@ -152,7 +152,7 @@ export const M6800 = {
     if (s.params && auxopcode.length==3) {
       if (s.params[0]=="A" ||s.params[0]=="B" ) {
         if ((s.params[0].indexOf(" ")==1) || (s.params[0].length==1)) {
-          var p0 = s.params[0]+'';
+          let p0 = s.params[0]+'';
           s.reg6800 = p0.substr(0,1).toUpperCase();
           s.params[0]= p0.substr(2).trim();
 
@@ -165,7 +165,7 @@ export const M6800 = {
 
 
 
-    var ax = M6800.set[auxopcode];
+    let ax = M6800.set[auxopcode];
 
     s.opcode = auxopcode;
     s.lens=[];
@@ -188,17 +188,17 @@ export const M6800 = {
       if (s.params[0] && s.params[0].length>0 && !s.params[1]) {
         //1 parametr
         //DIR(1), EXT(3) nebo IMM(5), IMMdlouhe(2), mozna i REL(6)
-        var o1 = ax[1];
-        var o2 = ax[2];
-        var o3 = ax[3];
-        var o5 = ax[5];
-        var o6 = ax[6];
+        let o1 = ax[1];
+        let o2 = ax[2];
+        let o3 = ax[3];
+        let o5 = ax[5];
+        let o6 = ax[6];
 
         if (o6>-1) {
           //REL
           s.lens[0] = o6;
           s.lens[1] = function(vars){
-                        var n= Parser.evaluate(p1,vars) - vars._PC-2;
+                        let n= Parser.evaluate(p1,vars) - vars._PC-2;
                         if (n<0) {n=256+n;}
                         return n;};
           s.bytes = 2;
@@ -224,7 +224,7 @@ export const M6800 = {
 
         if (o1>-1 && vars) {
           //otestujeme, jestli se kvalifikuje na DIR
-          var zptest = null;
+          let zptest = null;
           try {
             zptest = Parser.evaluate(p1,vars);
           } catch(e) {;}

@@ -3,8 +3,8 @@ import { toInternal, nonempty, norm } from "./parser.js";
 import { prepro } from "./preprocessor.js";
 
 const emptymask = (xs) => xs.map((lx) => {
-    var l = lx.line;
-    var lx2 = {
+    let l = lx.line;
+    let lx2 = {
       addr: 0,
       line: ";;;EMPTYLINE",
       numline: lx.numline
@@ -16,11 +16,11 @@ const emptymask = (xs) => xs.map((lx) => {
   });
 
 export const beautify = (s, opts) => {
-    var i = toInternal(s.split(/\n/));
+    let i = toInternal(s.split(/\n/));
     i = emptymask(i);
     i = nonempty(i);
     i = norm(i);
-    var prei = prepro(i, {
+    let prei = prepro(i, {
       noinclude: true,
       ...opts
     });
@@ -29,9 +29,9 @@ export const beautify = (s, opts) => {
       line.line = line.line.replace(/\%\%M/gi, "__m");
       return parseLine(line, prei[1], opts);
     });
-    var out = "";
-    var op, ln;
-    for (var q = 0; q < i.length; q++) {
+    let out = "";
+    let op, ln;
+    for (let q = 0; q < i.length; q++) {
       op = i[q];
       ln = "";
       if (op.remark == "EMPTYLINE") {

@@ -35,7 +35,7 @@ export const nonempty = (xs) => xs.filter((lx) => {
   //convert lines to internal structure
 
 export const toInternal = (xs) => {
-    var numLine = 1;
+    let numLine = 1;
     return xs.map((line) => ({
       line: line, //original line
       numline: numLine++, //line number
@@ -54,13 +54,13 @@ export const parse = (s, opts) => {
   if (asm.endian) endian = asm.endian;
   */
   //includedFiles = {};
-  var i = toInternal(s.split(/\n/));
+  let i = toInternal(s.split(/\n/));
   i = nonempty(i);
   i = norm(i);
 
   //macro processing and expansion
   
-  var prei = prepro(i, opts);
+  let prei = prepro(i, opts);
   //console.log(prei)
   i = prei[0].map((line) => parseLine(line, prei[1], opts));
   i = unroll(i, prei[1], null, opts);

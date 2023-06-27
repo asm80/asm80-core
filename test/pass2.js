@@ -13,7 +13,7 @@ import QUnit from "qunit";
 
 import * as Parser from "../parser.js";
 
-QUnit.module('pass1');
+QUnit.module('pass2');
 
 let asmI8080 = fs.readFileSync("./test/suite/test.a80","utf-8");
 let asmM6800 = fs.readFileSync("./test/suite/test.a68","utf-8");
@@ -73,6 +73,6 @@ QUnit.test('basic dummy-endian', assert => {
 
 QUnit.test('EQU without label', assert => {
     assert.throws(() => {
-        doPass(`equ 123`, true, DUMMY)
+        doPass(`equ 123`, false, DUMMY)
     },(err) => err.msg === "EQU without label")
 });

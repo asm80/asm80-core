@@ -132,7 +132,7 @@ export const I8080 = {
     'RBD': function(reg) {return "BD".indexOf(reg.toUpperCase());},
     'RQQ': function(reg) {return "BDHPSW".indexOf(reg.toUpperCase());},
     'RB': function(op, params, Parser) {
-      var reg = this.R(params[0]);
+      let reg = this.R(params[0]);
       if (reg<0) throw "Unknown register "+params[0];
       reg <<=3 ;
       return [reg | op, (vars) => Parser.evaluate(params[1], vars)];
@@ -141,45 +141,45 @@ export const I8080 = {
       return [op, function(vars){return Parser.evaluate(params[0],vars);}];
     },
     'RR': function(op, params, Parser) {
-      var reg = this.R(params[0]);
+      let reg = this.R(params[0]);
       if (reg<0) throw "Unknown register "+params[0];
       reg <<=3 ;
       return [reg | op];
     },
     'RR0': function(op, params, Parser) {
-      var reg = this.R(params[0]);
+      let reg = this.R(params[0]);
       if (reg<0) throw "Unknown register "+params[0];
       return [reg | op];
     },
     'RRR': function(op, params, Parser) {
-      var reg1 = this.R(params[0]);
+      let reg1 = this.R(params[0]);
       if (reg1<0) throw "Unknown register "+params[0];
       if (!params[1]) throw "Missing second register";
-      var reg2 = this.R(params[1]);
+      let reg2 = this.R(params[1]);
       if (reg2<0) throw "Unknown register "+params[1];
       reg1 <<=3 ;
       return [reg1 | reg2 | op];
     },
     'RPW': function(op, params, Parser) {
-      var reg = this.RDD(params[0]);
+      let reg = this.RDD(params[0]);
       if (reg<0 || reg>3) throw "Unknown register "+params[0];
       reg <<=4 ;
       return [reg | op, function(vars){return Parser.evaluate(params[1],vars);}, null];
     },
     'RPWD': function(op, params, Parser) {
-      var reg = this.RDD(params[0]);
+      let reg = this.RDD(params[0]);
       if (reg<0 || reg>3) throw "Unknown register "+params[0];
       reg <<=4 ;
       return [reg | op];
     },
     'BD': function(op, params, Parser) {
-      var reg = this.RBD(params[0]);
+      let reg = this.RBD(params[0]);
       if (reg<0 || reg>1) throw "Unknown register "+params[0];
       reg <<=4 ;
       return [reg | op];
     },
     'RQW': function(op, params, Parser) {
-      var reg = this.RQQ(params[0]);
+      let reg = this.RQQ(params[0]);
       if (reg<0 || reg>3) throw "Unknown register "+params[0];
       reg <<=4 ;
       return [reg | op];
@@ -188,7 +188,7 @@ export const I8080 = {
       return [op, function(vars){return Parser.evaluate(params[0],vars);}, null];
     },
     'RST': function(op, params, Parser) {
-      var v = parseInt(params[0], 10);
+      let v = parseInt(params[0], 10);
       return [op | (v<<3)];
     },
     '0': function(op, params, Parser) {
@@ -197,10 +197,10 @@ export const I8080 = {
   },
 
   parseOpcode: function (s, vars, Parser) {
-    var ax = I8080.set[s.opcode];
+    let ax = I8080.set[s.opcode];
     if (ax) {
-      var typ = ax.t;
-      var lens = I8080.lens[typ](ax.o,s.params, Parser);
+      let typ = ax.t;
+      let lens = I8080.lens[typ](ax.o,s.params, Parser);
       s.bytes = lens.length;
       s.lens = lens;
       s.resolve = lens.reduce(function(inter,v){return typeof(v)=="function"?inter+1:inter;},0);

@@ -5,7 +5,7 @@ import { toInternal, nonempty, norm } from "./parser.js";
 import {Parser} from "./expression-parser.js";
 
 const macroParams = (d, params, uniq, pars, qnumline) => {
-    var out = {
+    let out = {
       line: d.line,
       addr: d.addr,
       macro: d.macro,
@@ -14,7 +14,7 @@ const macroParams = (d, params, uniq, pars, qnumline) => {
     uniq = uniq + "S" + qnumline;
     //console.log(uniq, d, params, uniq, pars, qnumline);
     params = params || [];
-    var xpars = pars || [];
+    let xpars = pars || [];
     if (xpars && xpars.length > params.length) {
       out.numline = qnumline;
       throw {
@@ -23,8 +23,8 @@ const macroParams = (d, params, uniq, pars, qnumline) => {
       };
     }
 
-    for (var i = params.length - 1; i >= 0; i--) {
-      var par = params[i];
+    for (let i = params.length - 1; i >= 0; i--) {
+      let par = params[i];
       if (par.indexOf("00bb") === 0) {
         par = atobx(par.substr(4));
       }
@@ -41,11 +41,11 @@ const macroParams = (d, params, uniq, pars, qnumline) => {
 
   const findBlock = (ni, block, opts) => {
     if (!block) return ni;
-    var out = [];
-    var f = null;
-    for (var i = 0; i < ni.length; i++) {
-      var l = ni[i];
-      var p = parseLine(l, {},  opts);
+    let out = [];
+    let f = null;
+    for (let i = 0; i < ni.length; i++) {
+      let l = ni[i];
+      let p = parseLine(l, {},  opts);
       if (f) out.push(l);
       //if (!l.opcode) continue;
       if (p.opcode == ".ENDBLOCK") {
@@ -67,17 +67,17 @@ const macroParams = (d, params, uniq, pars, qnumline) => {
 
 
 export const prepro = (V, opts, fullfile) => {
-    var op, ln, paramstring = null, px, params = null;
+    let op, ln, paramstring = null, px, params = null;
     opts = opts || {};
-    var macros = {};
-    //var macroPars = {};
-    var macroDefine = null;
-    var reptCount = null;
-    var out = [];
-    var outi = 0;
-    for (var i = 0, j = V.length; i < j; i++) {
+    let macros = {};
+    //let macroPars = {};
+    let macroDefine = null;
+    let reptCount = null;
+    let out = [];
+    let outi = 0;
+    for (let i = 0, j = V.length; i < j; i++) {
       op = V[i].line;
-      var remark = op.match(/\s*(.)/);
+      let remark = op.match(/\s*(.)/);
       if (remark && remark[1] === ";") {
         out.push(V[i]);
         continue;
@@ -97,8 +97,8 @@ export const prepro = (V, opts, fullfile) => {
         continue;
       }
       //console.log(op,ln)
-      var opcode = ln[1].toUpperCase();
-      var pp = ln[2].match(/^\s*([^;]*)(.*)/);
+      let opcode = ln[1].toUpperCase();
+      let pp = ln[2].match(/^\s*([^;]*)(.*)/);
       if (pp && pp[1].length) {
         paramstring = pp[1];
         px = pp[1].split(/\s*,\s*/);
@@ -110,13 +110,13 @@ export const prepro = (V, opts, fullfile) => {
       if (opcode === ".INCLUDE" && opts.noinclude) continue;
       if (opcode === ".INCLUDE") {
         //block selective include
-        var block = "";
+        let block = "";
         if (!params || !params[0]) throw {
             msg: "No file name given",
             s: V[i]
           };
         if (params[0].indexOf(":") >= 0) {
-          var px = params[0].split(":");
+          let px = params[0].split(":");
           params[0] = px[0];
           block = px[1];
           if (px.length == 3) {
@@ -134,7 +134,9 @@ export const prepro = (V, opts, fullfile) => {
         }
 
 
-        var ni;
+        let ni;
+        let fullni
+        let nf
 
         if (params[0].toUpperCase() == "THIS" && block) {
           //console.log(fullfile);
@@ -143,23 +145,23 @@ export const prepro = (V, opts, fullfile) => {
         } else {
           //if (includedFiles[params[0].replace(/\"/g,"")]) throw {"msg":"File "+params[0].replace(/\"/g,"")+" is already included elsewhere - maybe recursion","s":V[i]};
           //console.log("Include "+params[0]);
-          var nf = opts.fileGet(params[0].replace(/\"/g, ""));
+          nf = opts.fileGet(params[0].replace(/\"/g, ""));
           if (!nf) throw {
             msg: "File " + params[0] + " not found",
             s: V[i]
           };
           //console.log(nf);
-          var ni = toInternal(nf.split(/\n/));
+          ni = toInternal(nf.split(/\n/));
           ni = nonempty(ni);
           ni = norm(ni);
           //console.log(ni)
-          var fullni = ni;
+          fullni = ni;
           ni = findBlock(ni, block, opts);
         }
 
         //console.log(ni)
-        var preni = prepro(ni, {}, fullni);
-        for (var k = 0; k < preni[0].length; k++) {
+        let preni = prepro(ni, {}, fullni);
+        for (let k = 0; k < preni[0].length; k++) {
           preni[0][k].includedFile = params[0].replace(/\"/g, "");
           preni[0][k].includedFileAtLine = V[i].numline;
           out.push(preni[0][k]);
@@ -189,9 +191,9 @@ export const prepro = (V, opts, fullfile) => {
             bytes: 0,
             remark: "REPT unroll",
           });
-          for (var ii = 0; ii < reptCount; ii++) {
-            for (var jj = 0; jj < macros[macroDefine].length; jj++) {
-              var macline = macros[macroDefine][jj].line;
+          for (let ii = 0; ii < reptCount; ii++) {
+            for (let jj = 0; jj < macros[macroDefine].length; jj++) {
+              let macline = macros[macroDefine][jj].line;
               out.push({
                 numline: V[ii].numline,
                 line: macline,
@@ -201,7 +203,7 @@ export const prepro = (V, opts, fullfile) => {
             }
           }
         } else {
-          var pars = macros[macroDefine][0] || [];
+          let pars = macros[macroDefine][0] || [];
           out.push({
             numline: V[i].numline,
             line: ";Macro define " + macroDefine,
@@ -209,9 +211,9 @@ export const prepro = (V, opts, fullfile) => {
             bytes: 0,
             listing: ".macro " + macroDefine + (pars ? "," : "") + pars.join(","),
           });
-          var md = macros[macroDefine];
+          let md = macros[macroDefine];
           //console.log(md)
-          for (var k = 0; k < md.length; k++) {
+          for (let k = 0; k < md.length; k++) {
             if (!md[k]) continue;
             out.push({
               line: ";",
@@ -235,8 +237,8 @@ export const prepro = (V, opts, fullfile) => {
       if (opcode === ".MACRO") {
         //console.log("endms",params,ln,op);
         if (op[0] === ";") continue;
-        var macroName = null;
-        var test = op.match(/^(\S+)\s+\.MACRO/i);
+        let macroName = null;
+        let test = op.match(/^(\S+)\s+\.MACRO/i);
         //console.log(params,test)
         if (test) {
           macroName = test[1];
@@ -302,24 +304,24 @@ export const prepro = (V, opts, fullfile) => {
 
 export const unroll = (V, macros, uniqseed,opts) => {
     if (!uniqseed) uniqseed = "";
-    var out = [];
-    for (var i = 0; i < V.length; i++) {
-      var s = V[i];
+    let out = [];
+    for (let i = 0; i < V.length; i++) {
+      let s = V[i];
       if (!s.macro) {
         out.push(s);
         continue;
       }
-      var m = macros[s.macro];
-      var pars = m[0];
+      let m = macros[s.macro];
+      let pars = m[0];
 
       //console.log(s,pars)
       out.push({
         remark: "*Macro unroll: " + s.line
       });
       //console.log(macros);
-      for (var j = 0; j < m.length; j++) {
+      for (let j = 0; j < m.length; j++) {
         if (j === 0) continue;
-        var preline = macroParams(
+        let preline = macroParams(
           m[j],
           s.params,
           i + uniqseed,
@@ -328,15 +330,15 @@ export const unroll = (V, macros, uniqseed,opts) => {
         );
         preline.bytes = 0;
         //console.log("PL",preline)
-        var ng = parseLine(preline, macros,{assembler:opts.assembler});
+        let ng = parseLine(preline, macros,{assembler:opts.assembler});
 
         if (ng.macro) {
           //nested unroll
           //console.log("NG",ng);
           //console.log("nest", ng, i, j);
-          var nest = unroll([ng], macros, uniqseed + "_" + i, opts);
+          let nest = unroll([ng], macros, uniqseed + "_" + i, opts);
           //console.log(nest)
-          for (var k = 0; k < nest.length; k++) {
+          for (let k = 0; k < nest.length; k++) {
             out.push(nest[k]);
           }
           continue;

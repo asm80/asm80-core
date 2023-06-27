@@ -7,8 +7,8 @@ const includedLineNumber = (s) => {
   }
 
 export const parseLine = (s, macros, /*stopFlag, olds, */opts = {stopFlag:null, olds:null, assembler:null}) => {
-    var t = s.line;
-    var ll;
+    let t = s.line;
+    let ll;
 
     //anonymous labels
     //format: : label
@@ -43,7 +43,7 @@ export const parseLine = (s, macros, /*stopFlag, olds, */opts = {stopFlag:null, 
     s.params = [];
 
     //special EQU format as "label = value"
-    var oo = t.match(/^\s*(\=)\s*(.*)/);
+    let oo = t.match(/^\s*(\=)\s*(.*)/);
     if (oo) {
       s.opcode = oo[1].toUpperCase();
       t = oo[2];
@@ -89,12 +89,12 @@ export const parseLine = (s, macros, /*stopFlag, olds, */opts = {stopFlag:null, 
         t = t.replace(/'(.*?);(.*?)'/g, '"$1§$2"');
       }
 
-      var pp = t.match(/^\s*([^;]*)(.*)/);
+      let pp = t.match(/^\s*([^;]*)(.*)/);
       if (pp && pp[1].length) {
         s.paramstring = pp[1];
 
         //sane strings
-        var ppc = pp[1];
+        let ppc = pp[1];
         while (ppc.match(/"(.*?),(.*?)"/g)) {
           ppc = ppc.replace(/"(.*?),(.*?)"/g, '"$1€$2"');
         }
@@ -102,20 +102,20 @@ export const parseLine = (s, macros, /*stopFlag, olds, */opts = {stopFlag:null, 
           ppc = ppc.replace(/'(.*?),(.*?)'/g, '"$1€$2"');
         }
 
-        var n = ppc.match(/([0-9]+)\s*DUP\s*\((.*)\)/i);
+        let n = ppc.match(/([0-9]+)\s*DUP\s*\((.*)\)/i);
         if (n) {
-          var dup = parseInt(n[1]);
-          var nln = "";
-          for (var i = 0; i < dup; i++) {
+          let dup = parseInt(n[1]);
+          let nln = "";
+          for (let i = 0; i < dup; i++) {
             nln += n[2] + ",";
           }
           ppc = nln.substring(0, nln.length - 1);
           //console.log(ppc);
         }
 
-        var px = ppc.split(/\s*,\s*/);
+        let px = ppc.split(/\s*,\s*/);
         s.params = px.map((ppc) => {
-          var p = (ppc.replace(/€/g, ",").replace(/§/g, ";")).trim();
+          let p = (ppc.replace(/€/g, ",").replace(/§/g, ";")).trim();
           p = p.replace(/00ss(.*?)\!/g, (n) => atobx(n.substr(4, n.length - 5)));
           return p;
         });
@@ -127,7 +127,7 @@ export const parseLine = (s, macros, /*stopFlag, olds, */opts = {stopFlag:null, 
 
     //console.log("SSS",s)
     if (t) {
-      var rr = t.match(/^\s*;*(.*)/);
+      let rr = t.match(/^\s*;*(.*)/);
       if (rr) {
         s.remark = rr[1].replace(/00ss(.*?)\!/g, (n) => atobx(n.substr(4, n.length - 5)));
         if (!s.remark) {
@@ -326,9 +326,9 @@ export const parseLine = (s, macros, /*stopFlag, olds, */opts = {stopFlag:null, 
     if (!s.opcode && s.label) {
       return s;
     }
-
+    let ax = null
     try {
-      var ax = opts.assembler.parseOpcode(s, {}, Parser);
+      ax = opts.assembler.parseOpcode(s, {}, Parser);
     } catch (e) {
       throw {
         msg: e,
@@ -347,8 +347,8 @@ export const parseLine = (s, macros, /*stopFlag, olds, */opts = {stopFlag:null, 
     //console.log(s,s2)
     if (!s.label && !opts.stopFlag) {
       //console.log(s)
-      //var s2 = {line:s.line,numline:s.numline, addr:null,bytes:0};
-      var s2 = JSON.parse(JSON.stringify(s));
+      //let s2 = {line:s.line,numline:s.numline, addr:null,bytes:0};
+      let s2 = JSON.parse(JSON.stringify(s));
       s2.addr = null;
       s2.bytes = 0;
 
@@ -372,7 +372,7 @@ export const parseLine = (s, macros, /*stopFlag, olds, */opts = {stopFlag:null, 
       s2.line = s.opcode + ": " + s.params.join();
       if (s.remark) s2.line += " ;" + s.remark;
       //console.log("ATTEMPT2",s2.line)
-      var sx = parseLine(s2, macros, {stopFlag:true, olds:s, ...opts});
+      let sx = parseLine(s2, macros, {stopFlag:true, olds:s, ...opts});
       if (!sx.opcode)
         throw {
           msg: "Unrecognized instruction " + s.opcode,
