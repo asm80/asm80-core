@@ -7,4 +7,4 @@ Core assembler as ES6 module
 
 Currently I am converting codebase from 2010's form to modern. Please be patient. [Support my effort to rewrite and open the source code](https://fundrazr.com/asm80.com?ref=ab_7CVPl2)
 
-[Coverage](/coverage/index.html)
+[Code Unit Tests Coverage](https://asm80.github.io/asm80-core/coverage/index.html)
