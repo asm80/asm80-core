@@ -27,7 +27,7 @@ const fileGet = (filename) => {
     .endblock`
 }
 
-const doPass = (data, showError=false, assembler=I8080) => {
+const doPass = (data, showError=false, assembler=I8080, name="") => {
     let opts = {assembler, fileGet, PRAGMAS:[], endian:assembler.endian,}
     
     try {
@@ -42,9 +42,13 @@ const doPass = (data, showError=false, assembler=I8080) => {
     vx[1]["__PRAGMAS"] = opts.PRAGMAS;
     //console.log(ASM.PRAGMAS,vx[1])
     vx = pass2(vx, opts);
+    console.log("VARS",vx[1])
+    console.log("XREF",opts.xref)
 
     if (showError==2) console.log(vx)
     let l = lst(vx[0],vx[1],false, true,opts)
+    if (name) fs.writeFileSync("./test/suite/"+name+".lst",l)
+    if (name) fs.writeFileSync("./test/suite/"+name+".obj",JSON.stringify(vx[0],null,2))
     let l2 = lst(vx[0],vx[1], true, false, opts)
     let www = html(vx[0],vx[1],false, true,opts)
     let www2 = html(vx[0],vx[1],true, false,opts)
@@ -58,12 +62,12 @@ const doPass = (data, showError=false, assembler=I8080) => {
 }
 
 QUnit.test('basic 8080', assert => {
-    doPass(asmI8080, true, I8080)
+    doPass(asmI8080, true, I8080, "test-a80")
     assert.ok(true)
 });
 
 QUnit.test('basic 6800', assert => {
-    doPass(asmM6800, true, M6800)
+    doPass(asmM6800, true, M6800, "test-a68")
     assert.ok(true)
 });
 
@@ -77,12 +81,12 @@ QUnit.test('IF NaN', assert => {
 
 
 QUnit.test('basic dummy', assert => {
-    doPass(asmDUMMY, false, DUMMY)
+    doPass(asmDUMMY, false, DUMMY, "test-dummy")
     assert.ok(true)
 });
 
 QUnit.test('basic dummy-endian', assert => {
-    doPass(asmDUMMY, false, DUMMYE)
+    doPass(asmDUMMY, false, DUMMYE, "test-dummye")
     assert.ok(true)
 });
 
@@ -90,4 +94,22 @@ QUnit.test('EQU without label', assert => {
     assert.throws(() => {
         doPass(`equ 123`, false, DUMMY)
     },(err) => err.msg === "EQU without label")
+});
+
+
+QUnit.test('.ERROR', assert => {
+    assert.throws(() => {
+        doPass(`.error someError`, false, DUMMY)
+    },(err) => err.msg === "someError")
+});
+
+QUnit.test('.IF nonsense', assert => {
+    assert.throws(() => {
+        doPass(`.if nnn`, false, DUMMY)
+    },(err) => err.msg === "IF condition mismatched")
+});
+QUnit.test('.IFN nonsense', assert => {
+    assert.throws(() => {
+        doPass(`.ifn nnn`, false, DUMMY)
+    },(err) => err.msg === "IF condition mismatched")
 });

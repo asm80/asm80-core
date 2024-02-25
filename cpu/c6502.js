@@ -133,7 +133,8 @@ export const C6502 = {
     TXA:[0x8a,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1],
     TXS:[0x9a,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1],
     TYA:[0x98,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1],
-    //    imp  ima imm  abs  abx  aby   zpg  zpx  zpy  ind  izx  izy  rel  izp
+    //    imp  ima  imm  abs  abx  aby   zpg  zpx  zpy  ind  izx  izy  rel  izp
+    //      0    1    2    3    4    5     6    7    8    9   10   11   12   13
   },
 
   "steptab": [1,1,2,3,3,3,2,2,2,3,2,2,2,2,3],
@@ -250,14 +251,20 @@ export const C6502 = {
           if (p2 === 'X' && p1[0] !== '(') {addr = 7;}
           lens[1] = function(vars){return Parser.evaluate(p1,vars);};
         }
+        /*
         else if (ax[4]<0 && p2 === 'X' && (ax[7]>=0)) {
+          //maybe obsolete, never reached
           addr = 7;
           lens[1] = function(vars){return Parser.evaluate(p1,vars);};
-        }
+        }*/
+
+        /*
         else if (zptest!==null && zptest<0x100 && (ax[8]>=0 && p2 === 'Y')  && p1[0] !== '(') {
+          //maybe obsolete, never reached
           if (p2 === 'Y' && p1[0] !== '(') {addr = 8;}
           lens[1] = function(vars){return Parser.evaluate(p1,vars);};
         }
+        */
         else {
           if (p2 === 'X') {
             addr = 4;

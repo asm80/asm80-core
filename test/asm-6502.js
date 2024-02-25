@@ -30,6 +30,11 @@ QUnit.test( "Mode zpg *short", function() {
 	QUnit.assert.equal(p.bytes,2,"Length OK");
 });
 
+QUnit.test( "Mode bad", function() {
+	s = {"opcode":"LDA",params:[],addr:0x100,"lens":[],"bytes":0};
+	QUnit.assert.throws(function(){
+	p = C6502.parseOpcode(s);}, null, "Bad mode");
+});
 
 
 QUnit.test("STA Y,22", function() {
@@ -95,17 +100,19 @@ QUnit.test( "SLO test, mode zpx", function() {
 
 QUnit.test( "SLO test, mode ixz", function() {
 	s = {"opcode":"SLO",params:["($12","X)"],addr:0x100,"lens":[],"bytes":0};
-	p = C6502.parseOpcode(s);
+	p = C6502.parseOpcode(s,vars,Parser);
 	QUnit.assert.equal(p.lens[0],0x3,"Opcode OK");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	let test= p.lens[1](vars);
 	QUnit.assert.equal(p.bytes,2,"Length OK");
 });
 
 QUnit.test( "SLO test, mode izy", function() {
 	s = {"opcode":"SLO",params:["($12)","Y"],addr:0x100,"lens":[],"bytes":0};
-	p = C6502.parseOpcode(s);
+	p = C6502.parseOpcode(s, vars,Parser);
 	QUnit.assert.equal(p.lens[0],0x13,"Opcode OK");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	let test = p.lens[1](vars);
 	QUnit.assert.equal(p.bytes,2,"Length OK");
 });
 
@@ -295,9 +302,10 @@ QUnit.test( "SAX test, mode zpg", function() {
 
 QUnit.test( "SAX test, mode zpy", function() {
 	s = {"opcode":"SAX",params:["$12","Y"],addr:0x100,"lens":[],"bytes":0};
-	p = C6502.parseOpcode(s);
+	p = C6502.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x97,"Opcode OK");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	let test = p.lens[1](vars);
 	QUnit.assert.equal(p.bytes,2,"Length OK");
 });
 
@@ -567,9 +575,10 @@ QUnit.test( "LAS test, mode aby", function() {
 
 QUnit.test( "BRA test, mode rel", function() {
 	s = {"opcode":"BRA",params:["$123"],addr:0x100,"lens":[],"bytes":0};
-	p = C6502.parseOpcode(s);
+	p = C6502.parseOpcode(s,vars,Parser);
 	QUnit.assert.equal(p.lens[0],0x80,"Opcode OK");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	let test = p.lens[1](vars);
 	QUnit.assert.equal(p.bytes,2,"Length OK");
 });
 
@@ -1559,9 +1568,10 @@ QUnit.test( "JMP test, mode ind", function() {
 
 QUnit.test( "JMP test, mode iax", function() {
 	s = {"opcode":"JMP",params:["($1234","X)"],addr:0x100,"lens":[],"bytes":0};
-	p = C6502.parseOpcode(s);
+	p = C6502.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x7c,"Opcode OK");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	let test = p.lens[1](vars);
 	QUnit.assert.equal(p.bytes,3,"Length OK");
 });
 
@@ -1725,6 +1735,14 @@ QUnit.test( "LDY test, mode zpx", function() {
 	QUnit.assert.equal(p.bytes,2,"Length OK");
 });
 
+QUnit.test( "LSR test, mode imp", function() {
+	s = {"opcode":"LSR",params:[],addr:0x100,"lens":[],"bytes":0};
+	p = C6502.parseOpcode(s);
+	QUnit.assert.equal(p.lens[0],0x4a,"Opcode OK");
+	QUnit.assert.equal(p.bytes,1,"Length OK");
+});
+
+
 QUnit.test( "LSR test, mode ima", function() {
 	s = {"opcode":"LSR",params:["A"],addr:0x100,"lens":[],"bytes":0};
 	p = C6502.parseOpcode(s);
@@ -1871,12 +1889,22 @@ QUnit.test( "PLP test, mode imp", function() {
 	QUnit.assert.equal(p.bytes,1,"Length OK");
 });
 
+
 QUnit.test( "ROL test, mode ima", function() {
 	s = {"opcode":"ROL",params:["A"],addr:0x100,"lens":[],"bytes":0};
 	p = C6502.parseOpcode(s);
 	QUnit.assert.equal(p.lens[0],0x2a,"Opcode OK");
 	QUnit.assert.equal(p.bytes,1,"Length OK");
 });
+
+QUnit.test( "ROL test, mode abs", function() {
+	s = {"opcode":"ROL",params:["$1234"],addr:0x100,"lens":[],"bytes":0};
+	p = C6502.parseOpcode(s);
+	QUnit.assert.equal(p.lens[0],0x2e,"Opcode OK");
+	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	QUnit.assert.equal(p.bytes,3,"Length OK");
+});
+
 
 QUnit.test( "ROL test, mode abs", function() {
 	s = {"opcode":"ROL",params:["$1234"],addr:0x100,"lens":[],"bytes":0};
@@ -1965,9 +1993,10 @@ QUnit.test( "RTS test, mode imp", function() {
 
 QUnit.test( "SBC test, mode imm", function() {
 	s = {"opcode":"SBC",params:["#$12"],addr:0x100,"lens":[],"bytes":0};
-	p = C6502.parseOpcode(s);
+	p = C6502.parseOpcode(s,vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xe9,"Opcode OK");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	let test = p.lens[1]({_PC:0x100});
 	QUnit.assert.equal(p.bytes,2,"Length OK");
 });
 
@@ -1997,19 +2026,45 @@ QUnit.test( "SBC test, mode aby", function() {
 
 QUnit.test( "SBC test, mode zpg", function() {
 	s = {"opcode":"SBC",params:["$12"],addr:0x100,"lens":[],"bytes":0};
-	p = C6502.parseOpcode(s);
+	p = C6502.parseOpcode(s,vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xe5,"Opcode OK");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	let test = p.lens[1](vars);
+	QUnit.assert.equal(test,0x12,"Data OK");
 	QUnit.assert.equal(p.bytes,2,"Length OK");
 });
 
-QUnit.test( "SBC test, mode zpx", function() {
-	s = {"opcode":"SBC",params:["$12","X"],addr:0x100,"lens":[],"bytes":0};
-	p = C6502.parseOpcode(s);
-	QUnit.assert.equal(p.lens[0],0xf5,"Opcode OK");
+QUnit.test( "SBC test, mode *zpg", function() {
+	s = {"opcode":"SBC",params:["*$12"],addr:0x100,"lens":[],"bytes":0};
+	p = C6502.parseOpcode(s,vars, Parser);
+	QUnit.assert.equal(p.lens[0],0xe5,"Opcode OK");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	let test = p.lens[1]({_PC:0x100});
+	QUnit.assert.equal(test,0x12,"Data OK");
 	QUnit.assert.equal(p.bytes,2,"Length OK");
 });
+
+
+QUnit.test( "SBC test, mode zpx", function() {
+	s = {"opcode":"SBC",params:["SHORT","X"],addr:0x100,"lens":[],"bytes":0};
+	p = C6502.parseOpcode(s,vars, Parser);
+	QUnit.assert.equal(p.lens[0],0xf5,"Opcode OK");
+	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	let test = p.lens[1](vars);
+	QUnit.assert.equal(test,0x21,"Data OK");
+	QUnit.assert.equal(p.bytes,2,"Length OK");
+});
+
+QUnit.test( "SBC test, mode *zpx", function() {
+	s = {"opcode":"SBC",params:["*$12","X"],addr:0x100,"lens":[],"bytes":0};
+	p = C6502.parseOpcode(s,vars, Parser);
+	QUnit.assert.equal(p.lens[0],0xf5,"Opcode OK");
+	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	let test = p.lens[1]({_PC:0x100});
+	QUnit.assert.equal(test,0x12,"Data OK");
+	QUnit.assert.equal(p.bytes,2,"Length OK");
+});
+
 
 QUnit.test( "SBC test, mode ixz", function() {
 	s = {"opcode":"SBC",params:["($12","X)"],addr:0x100,"lens":[],"bytes":0};
@@ -2162,9 +2217,11 @@ QUnit.test( "STY test, mode zpg", function() {
 
 QUnit.test( "STY test, mode zpx", function() {
 	s = {"opcode":"STY",params:["$12","X"],addr:0x100,"lens":[],"bytes":0};
-	p = C6502.parseOpcode(s);
+	p = C6502.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x94,"Opcode OK");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	let test = p.lens[1](vars);
+	QUnit.assert.equal(test,0x12,"Data OK");
 	QUnit.assert.equal(p.bytes,2,"Length OK");
 });
 

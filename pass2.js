@@ -23,6 +23,8 @@ export const pass2 = (vx, opts) => {
           }
         }
       };
+      /*
+      //never used
       const charVar16 = (dta) => {
         if (typeof dta == "string") {
           return dta.charCodeAt(0) & 0xff;
@@ -30,10 +32,14 @@ export const pass2 = (vx, opts) => {
           return dta & 0xff;
         }
       };
+      */
     
+      /*
+      //not yet implemented
       const nextAnon = (V, i) => {
         console.log("AnonNext", i);
       }
+      */
     
 
 
@@ -75,7 +81,7 @@ export const pass2 = (vx, opts) => {
         }
 
         if (op.opcode === "IF") {
-          Parser.evaluate(op.params[0], vars);
+          //Parser.evaluate(op.params[0], vars);
           try {
             cond = Parser.evaluate(op.params[0], vars);
             //console.log("IF", op.params, cond)
@@ -103,16 +109,26 @@ export const pass2 = (vx, opts) => {
 
         vars._PC = op.addr;
         //console.log(vars._PC,op);
-        try {
-          let usage = Parser.usage(op.params[0].toUpperCase(), vars);
-          for (let u = 0; u < usage.length; u++) {
-            if (!opts.xref[usage[u]].usage) opts.xref[usage[u]].usage = [];
-            opts.xref[usage[u]].usage.push({
-              line: op.numline,
-              file: op.includedFile || "*main*",
-            });
-          }
-        } catch (e) { }
+
+        //try to count symbols usage
+        // usage in param 1
+
+        for (let parIdx=0;parIdx<(op.params?op.params.length:0);parIdx++) {
+          try {
+            let usage = Parser.usage(op.params[parIdx].toUpperCase(), vars);
+            if(usage.length>0) op.usage=usage;
+            for (let u = 0; u < usage.length; u++) {
+              let varname = usage[u];
+              if (!opts.xref[varname].usage) opts.xref[varname].usage = [];
+              opts.xref[varname].usage.push({
+                line: op.numline,
+                file: op.includedFile || "*main*",
+              });
+            }
+          } catch (e) { ; }
+        }
+        /*
+        // usage in param 2
         try {
           let usage = Parser.usage(op.params[1].toUpperCase(), vars);
           for (let u = 0; u < usage.length; u++) {
@@ -123,6 +139,8 @@ export const pass2 = (vx, opts) => {
             });
           }
         } catch (e) { }
+        */
+        // usage ------------------
 
         if (op.opcode === ".BLOCK") {
           //blocks.push(op.numline);
@@ -162,11 +180,14 @@ export const pass2 = (vx, opts) => {
           continue;
         }
 
+        /*
+        //not yet implemented
         if (op.opcode === ".SETPHASE") {
           if (!opts.PHASES) opts.PHASES = {};
           opts.PHASES[op.addr] = op.params[0];
           continue;
         }
+        */
 
         if (op.opcode === ".ENGINE") {
           opts.ENGINE = op.params[0];
@@ -406,7 +427,8 @@ export const pass2 = (vx, opts) => {
             m = Parser.evaluate(op.params[l], vars);
             if (typeof m === "number") {
               //console.error(m)
-              let a = fptozx(m, false);
+              //let a = fptozx(m, false); //uncomment if you want to use the old fptozx with no ZX int number support
+              let a = fptozx(m);
               //console.log(m,a)
               if (opts.endian) {
                 op.lens[bts++] = a[4];

@@ -1,0 +1,428 @@
+[
+  {
+    "line": ".org 0\r",
+    "numline": 1,
+    "addr": 0,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "0"
+    ],
+    "opcode": ".ORG",
+    "paramstring": "0",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": ".pragma relax\r",
+    "numline": 2,
+    "addr": 0,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "relax"
+    ],
+    "opcode": ".PRAGMA",
+    "paramstring": "relax",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "lens": []
+  },
+  {
+    "line": "loop:\r",
+    "numline": 3,
+    "addr": 0,
+    "bytes": 0,
+    "label": "LOOP",
+    "_dp": 0,
+    "params": [],
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "\r",
+    "numline": 4,
+    "addr": 0,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "dec 9,X\r",
+    "numline": 5,
+    "addr": 0,
+    "bytes": 2,
+    "_dp": 0,
+    "params": [
+      "9",
+      "X"
+    ],
+    "opcode": "DEC",
+    "paramstring": "9,X",
+    "notparsed": "",
+    "lens": [
+      106,
+      9
+    ],
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "ldaa \"ab\"\r",
+    "numline": 6,
+    "addr": 2,
+    "bytes": 3,
+    "_dp": 0,
+    "params": [
+      "\"ab\""
+    ],
+    "opcode": "LDAA",
+    "paramstring": "00ssImFiIg==!",
+    "notparsed": "",
+    "lens": [
+      182,
+      97,
+      98
+    ],
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "ldx 1234\r",
+    "numline": 7,
+    "addr": 5,
+    "bytes": 3,
+    "_dp": 0,
+    "params": [
+      "1234"
+    ],
+    "opcode": "LDX",
+    "paramstring": "1234",
+    "notparsed": "",
+    "lens": [
+      254,
+      4,
+      210
+    ],
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "\r",
+    "numline": 8,
+    "addr": 8,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "bra loop\r",
+    "numline": 9,
+    "addr": 8,
+    "bytes": 2,
+    "_dp": 0,
+    "params": [
+      "loop"
+    ],
+    "opcode": "BRA",
+    "paramstring": "loop",
+    "notparsed": "",
+    "lens": [
+      32,
+      246
+    ],
+    "pass": 2,
+    "segment": "CSEG",
+    "usage": [
+      "LOOP"
+    ]
+  },
+  {
+    "line": "\r",
+    "numline": 10,
+    "addr": 10,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "defb 1\r",
+    "numline": 11,
+    "addr": 10,
+    "bytes": 1,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DB",
+    "paramstring": "1",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "lens": [
+      1
+    ]
+  },
+  {
+    "line": ".byte 1\r",
+    "numline": 12,
+    "addr": 11,
+    "bytes": 1,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DB",
+    "paramstring": "1",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "lens": [
+      1
+    ]
+  },
+  {
+    "line": ".db 1\r",
+    "numline": 13,
+    "addr": 12,
+    "bytes": 1,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DB",
+    "paramstring": "1",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "lens": [
+      1
+    ]
+  },
+  {
+    "line": ".word 1\r",
+    "numline": 14,
+    "addr": 13,
+    "bytes": 2,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DW",
+    "paramstring": "1",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "lens": [
+      0,
+      1
+    ]
+  },
+  {
+    "line": ".dw 2\r",
+    "numline": 15,
+    "addr": 15,
+    "bytes": 2,
+    "_dp": 0,
+    "params": [
+      "2"
+    ],
+    "opcode": "DW",
+    "paramstring": "2",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "lens": [
+      0,
+      2
+    ]
+  },
+  {
+    "line": "defw 3\r",
+    "numline": 16,
+    "addr": 17,
+    "bytes": 2,
+    "_dp": 0,
+    "params": [
+      "3"
+    ],
+    "opcode": "DW",
+    "paramstring": "3",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "lens": [
+      0,
+      3
+    ]
+  },
+  {
+    "line": ".dd 22\r",
+    "numline": 17,
+    "addr": 19,
+    "bytes": 4,
+    "_dp": 0,
+    "params": [
+      "22"
+    ],
+    "opcode": "DD",
+    "paramstring": "22",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "lens": [
+      0,
+      0,
+      0,
+      22
+    ]
+  },
+  {
+    "line": ".df 12,3\r",
+    "numline": 18,
+    "addr": 23,
+    "bytes": 8,
+    "_dp": 0,
+    "params": [
+      "12",
+      "3"
+    ],
+    "opcode": "DF",
+    "paramstring": "12,3",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "lens": [
+      65,
+      64,
+      0,
+      0,
+      64,
+      64,
+      0,
+      0
+    ]
+  },
+  {
+    "line": ".dfzxs 122\r",
+    "numline": 19,
+    "addr": 31,
+    "bytes": 5,
+    "_dp": 0,
+    "params": [
+      "122"
+    ],
+    "opcode": "DFZXS",
+    "paramstring": "122",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "lens": [
+      0,
+      0,
+      122,
+      0,
+      0
+    ]
+  },
+  {
+    "line": ".dff 12\r",
+    "numline": 20,
+    "addr": 36,
+    "bytes": 8,
+    "_dp": 0,
+    "params": [
+      "12"
+    ],
+    "opcode": "DFF",
+    "paramstring": "12",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "lens": [
+      64,
+      40,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "line": "defs 1\r",
+    "numline": 21,
+    "addr": 44,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DS",
+    "paramstring": "1",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": ".res 1\r",
+    "numline": 22,
+    "addr": 45,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DS",
+    "paramstring": "1",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "defm 1\r",
+    "numline": 23,
+    "addr": 46,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DS",
+    "paramstring": "1",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": ".align 4",
+    "numline": 24,
+    "addr": 47,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "4"
+    ],
+    "opcode": "ALIGN",
+    "paramstring": "4",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  }
+]

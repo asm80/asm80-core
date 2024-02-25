@@ -1,0 +1,25 @@
+0000                   ;.pragma relax
+0000           LABEL:   EQU $ 
+0000                  
+0001 01 0A            P1 10 
+0003 01 00 0A         P2 10 
+0006 01 41            P1 "A" 
+0008 01 41 00         P2 "A" 
+000B 01 02 00 0A      PA2 10 
+000F 01 02 41 42      PA2 "AB" 
+0013 01 02 03 41 42   PB2 "AB" 
+0018 01 02 03 00 0A   PB2 10 
+001D                   ; 
+001D                  
+001E                  .BLOCK blk 
+001E 00 01     OMA:   DW 1 
+0020                  .ENDBLOCK  
+0020                   ; 
+0020           LABEL2:   EQU $ 
+0020 01 00 00 0A      PX2 10 
+0024 01 00 00 00 0A   PY2 10 
+
+
+LABEL:              0000 DEFINED AT LINE 2
+OMA:                001E DEFINED AT LINE 3 IN test2.dummy
+LABEL2:             0020 DEFINED AT LINE 15

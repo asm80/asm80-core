@@ -381,6 +381,7 @@ export const pass1 = (V, vxs, opts) => {
         segallow();
         //op.bytes = Parser.evaluate(op.params[0]);
         let bytes = Parser.evaluate(op.params[1], vars);
+        if (typeof bytes === "string") bytes = bytes.charCodeAt(0);
         //console.log("FILLB",bytes,op.params)
         //DB alias
         let m = Parser.evaluate(op.params[0], vars);

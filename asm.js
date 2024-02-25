@@ -11,6 +11,7 @@ export const compile = (source, opts = {assembler:null}) => {
         includedFiles:{},
         endian:opts.assembler.endian,
         xfre: {},
+        xref: {},
         includedFiles: {},
     
     }
@@ -36,7 +37,7 @@ export const compile = (source, opts = {assembler:null}) => {
     // It should be all resolved aftrer the 2nd pass
     metacode = pass2(metacode, opts);
 
-    return [null,metacode,xref]
+    return [null,metacode,opts.xref]
     } catch (e) {
         // Some error occured
         let s = e.s || "Internal error";
