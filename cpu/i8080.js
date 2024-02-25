@@ -203,6 +203,7 @@ export const I8080 = {
       let lens = I8080.lens[typ](ax.o,s.params, Parser);
       s.bytes = lens.length;
       s.lens = lens;
+      s.wia = 1; //Where is address (for relocation)
       s.resolve = lens.reduce(function(inter,v){return typeof(v)=="function"?inter+1:inter;},0);
       return s;
     }

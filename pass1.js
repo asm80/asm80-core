@@ -192,11 +192,33 @@ export const pass1 = (V, vxs, opts) => {
       //console.log(PC,op)
       try {
         if (op.opcode === ".ORG") {
+          if (opts.PRAGMAS && opts.PRAGMAS. indexOf("MODULE") > -1){
+            throw {msg:"ORG is not allowed in modules"}
+          }
           PC = Parser.evaluate(op.params[0], vars);
           op.addr = PC;
           seg[segment] = PC;
           continue;
         }
+
+        if (op.opcode === ".EXPORT") {
+          //does not care now
+          if (opts.PRAGMAS && opts.PRAGMAS. indexOf("MODULE") < 0){
+            throw {msg:".EXPORT is not allowed out of modules"}
+          }
+          continue;
+        }
+
+        if (op.opcode === ".EXTERN") {
+          if (opts.PRAGMAS && opts.PRAGMAS. indexOf("MODULE") < 0){
+            throw {msg:".EXTERN is not allowed out of modules"}
+          }
+          let name = op.params[0];
+          if (!name) name = op.label
+          vars[name.toUpperCase()] = 0;
+          continue;
+        }
+
 
         if (op.opcode === ".CSEG") {
           seg[segment] = PC;

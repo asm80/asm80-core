@@ -1,0 +1,14 @@
+.pragma module
+
+
+.extern print
+
+main: lxi h,hello
+      call print
+      hlt
+
+.export main      
+
+.dseg
+hello: .cstr "Hello, World!\n"
+

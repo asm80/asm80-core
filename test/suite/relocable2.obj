@@ -1,0 +1,109 @@
+{
+  "code": [
+    {
+      "lens": [
+        126
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        183
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        202,
+        12,
+        0
+      ],
+      "segment": "CSEG",
+      "rel": true,
+      "relseg": "CSEG",
+      "add": 12
+    },
+    {
+      "lens": [
+        205,
+        13,
+        0
+      ],
+      "segment": "CSEG",
+      "rel": true,
+      "relseg": "CSEG",
+      "add": 13
+    },
+    {
+      "lens": [
+        35
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        195,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "rel": true,
+      "relseg": "CSEG",
+      "add": 0
+    },
+    {
+      "lens": [
+        201
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        205,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "ext": "BIOS_PRINT",
+      "add": 0
+    },
+    {
+      "lens": [
+        201
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        65,
+        110,
+        121,
+        32,
+        100,
+        97,
+        116,
+        97,
+        32,
+        104,
+        101,
+        114,
+        101,
+        0
+      ],
+      "segment": "DSEG"
+    }
+  ],
+  "externs": [
+    "BIOS_PRINT"
+  ],
+  "exports": {
+    "PRINT": {
+      "addr": 0,
+      "seg": "CSEG"
+    },
+    "PRINT_CHAR": {
+      "addr": 13,
+      "seg": "CSEG"
+    }
+  }
+}

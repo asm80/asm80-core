@@ -1,0 +1,13 @@
+{
+    "segments": {
+        "CSEG":"0x100",
+        "DSEG":"0x200"
+    },
+    "vars": {
+        "BIOS_PRINT":"0x5"
+    },
+    "modules": ["relocable"],
+    "library": ["relocable1","relocable2"],
+
+    "entrypoint":"main"
+}

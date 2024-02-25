@@ -1,0 +1,8 @@
+.pragma module
+
+keyin: in 0x7a
+ cpi 0xff
+ jz keyin
+ ret
+
+.export keyin 

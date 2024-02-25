@@ -1,0 +1,23 @@
+.pragma module
+
+
+print: mov a,M
+         ora a
+         jz done
+         call print_char
+         inx H
+         jmp print
+done:   ret
+
+.extern bios_print
+.extern not_used
+
+print_char: 
+            call bios_print
+            ret
+
+.export print
+.export print_char
+
+.dseg
+dummy: .cstr "Any data here"

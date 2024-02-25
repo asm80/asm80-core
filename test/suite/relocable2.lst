@@ -1,0 +1,34 @@
+0000                  .PRAGMA module 
+0000                   ; 
+0000                   ; 
+0000 7E        PRINT:   MOV a,M 
+0001 B7               ORA a 
+0002 CA 0C 00         JZ done 
+0005 CD 0D 00         CALL print_char 
+0008 23               INX H 
+0009 C3 00 00         JMP print 
+000C C9        DONE:   RET  
+000D                   ; 
+000D                  .EXTERN bios_print 
+000D                  .EXTERN not_used 
+000D                   ; 
+000D           PRINT_CHAR:    
+000D CD 00 00         CALL bios_print 
+0010 C9               RET  
+0011                   ; 
+0011                  .EXPORT print 
+0011                  .EXPORT print_char 
+0011                   ; 
+0000                  .DSEG  
+0000 41 6E 79 20 64 61 74 61 20 68 65 72 65 00 DUMMY:   .CSTR "Any data here" 
+
+
+PRINT:              0000 DEFINED AT LINE 4
+                    > USED AT LINE 9
+                    > USED AT LINE 19
+DONE:               000C DEFINED AT LINE 10
+                    > USED AT LINE 6
+PRINT_CHAR:         000D DEFINED AT LINE 15
+                    > USED AT LINE 7
+                    > USED AT LINE 20
+DUMMY:              0000 DEFINED AT LINE 23

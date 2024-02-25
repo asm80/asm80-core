@@ -1,0 +1,13 @@
+0000                  .PRAGMA module 
+0000                   ; 
+0000 DB 7A     KEYIN:   IN 0x7a 
+0002 FE FF            CPI 0xff 
+0004 CA 00 00         JZ keyin 
+0007 C9               RET  
+0008                   ; 
+0008                  .EXPORT keyin 
+
+
+KEYIN:              0000 DEFINED AT LINE 3
+                    > USED AT LINE 5
+                    > USED AT LINE 8

@@ -1,0 +1,60 @@
+{
+  "code": [
+    {
+      "lens": [
+        33,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "rel": true,
+      "relseg": "DSEG",
+      "add": 0
+    },
+    {
+      "lens": [
+        205,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "ext": "PRINT",
+      "add": 0
+    },
+    {
+      "lens": [
+        118
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        72,
+        101,
+        108,
+        108,
+        111,
+        44,
+        32,
+        87,
+        111,
+        114,
+        108,
+        100,
+        33,
+        10,
+        0
+      ],
+      "segment": "DSEG"
+    }
+  ],
+  "externs": [
+    "PRINT"
+  ],
+  "exports": {
+    "MAIN": {
+      "addr": 0,
+      "seg": "CSEG"
+    }
+  }
+}

@@ -169,6 +169,7 @@ export const M6800 = {
 
     s.opcode = auxopcode;
     s.lens=[];
+    s.wia = 1; //Where is address (for relocation)
 
     if (ax) {
       if (ax[0]>=0) { //0 params.

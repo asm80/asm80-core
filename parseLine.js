@@ -305,6 +305,9 @@ export const parseLine = (s, macros, opts = {stopFlag:null, olds:null, assembler
       s.opcode === ".DSEG" ||
       s.opcode === ".ESEG" ||
       s.opcode === ".BSSEG" ||
+      //modules
+      s.opcode === ".EXPORT" ||
+      s.opcode === ".EXTERN" ||
       s.opcode === "DB" ||
       s.opcode === "DW" ||
       s.opcode === "DD" ||

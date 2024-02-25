@@ -465,6 +465,7 @@
     "lens": [
       0
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -487,6 +488,7 @@
       1,
       1
     ],
+    "wia": 1,
     "resolve": 1,
     "pass": 2,
     "segment": "CSEG",
@@ -511,6 +513,7 @@
       62,
       1
     ],
+    "wia": 1,
     "resolve": 1,
     "pass": 2,
     "segment": "CSEG"
@@ -532,6 +535,7 @@
       14,
       58
     ],
+    "wia": 1,
     "resolve": 1,
     "pass": 2,
     "segment": "CSEG"
@@ -552,6 +556,7 @@
     "lens": [
       71
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -571,6 +576,7 @@
     "lens": [
       128
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -592,6 +598,7 @@
       0,
       1
     ],
+    "wia": 1,
     "resolve": 1,
     "pass": 2,
     "segment": "CSEG",
@@ -638,6 +645,7 @@
     "lens": [
       0
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -681,6 +689,7 @@
     "lens": [
       0
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG",
@@ -710,6 +719,7 @@
     "lens": [
       0
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG",
@@ -841,6 +851,7 @@
     "lens": [
       0
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -944,6 +955,7 @@
     "lens": [
       0
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG",
@@ -1150,6 +1162,7 @@
     "lens": [
       0
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -1171,6 +1184,7 @@
       0,
       1
     ],
+    "wia": 1,
     "resolve": 1,
     "pass": 2,
     "segment": "CSEG",
@@ -1194,6 +1208,7 @@
     "lens": [
       121
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -1215,6 +1230,7 @@
       0,
       1
     ],
+    "wia": 1,
     "resolve": 1,
     "pass": 2,
     "segment": "CSEG",
@@ -1239,6 +1255,7 @@
       62,
       15
     ],
+    "wia": 1,
     "resolve": 1,
     "pass": 2,
     "segment": "CSEG"
@@ -1261,6 +1278,7 @@
     "lens": [
       121
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -1648,6 +1666,7 @@
     "lens": [
       0
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -1676,6 +1695,7 @@
     "lens": [
       0
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG",
@@ -1718,6 +1738,7 @@
     "lens": [
       0
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -1747,6 +1768,7 @@
     "lens": [
       0
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG",
@@ -1928,6 +1950,7 @@
     "lens": [
       0
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -2116,6 +2139,7 @@
     "lens": [
       60
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -2136,6 +2160,7 @@
     "lens": [
       5
     ],
+    "wia": 1,
     "resolve": 0,
     "remark": "",
     "pass": 2,
@@ -2159,6 +2184,7 @@
       192,
       1
     ],
+    "wia": 1,
     "resolve": 1,
     "remark": "",
     "pass": 2,
@@ -2192,6 +2218,7 @@
     "lens": [
       60
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -2212,6 +2239,7 @@
     "lens": [
       5
     ],
+    "wia": 1,
     "resolve": 0,
     "remark": "",
     "pass": 2,
@@ -2235,6 +2263,7 @@
       197,
       1
     ],
+    "wia": 1,
     "resolve": 1,
     "remark": "",
     "pass": 2,
@@ -2268,6 +2297,7 @@
     "lens": [
       60
     ],
+    "wia": 1,
     "resolve": 0,
     "pass": 2,
     "segment": "CSEG"
@@ -2288,6 +2318,7 @@
     "lens": [
       5
     ],
+    "wia": 1,
     "resolve": 0,
     "remark": "",
     "pass": 2,
@@ -2311,6 +2342,7 @@
       202,
       1
     ],
+    "wia": 1,
     "resolve": 1,
     "remark": "",
     "pass": 2,

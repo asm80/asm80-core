@@ -1,0 +1,42 @@
+{
+  "code": [
+    {
+      "lens": [
+        219,
+        122
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        254,
+        255
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        202,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "rel": true,
+      "relseg": "CSEG",
+      "add": 0
+    },
+    {
+      "lens": [
+        201
+      ],
+      "segment": "CSEG"
+    }
+  ],
+  "externs": [],
+  "exports": {
+    "KEYIN": {
+      "addr": 0,
+      "seg": "CSEG"
+    }
+  }
+}

@@ -19,6 +19,7 @@ QUnit.module('pass2');
 let asmI8080 = fs.readFileSync("./test/suite/test.a80","utf-8");
 let asmM6800 = fs.readFileSync("./test/suite/test.a68","utf-8");
 let asmDUMMY = fs.readFileSync("./test/suite/test.dummy","utf-8");
+let asmRELOCABLE = fs.readFileSync("./test/suite/relocable.a80","utf-8");
 const fileGet = (filename) => {
     //console.log("INCLUDE", filename)
     return `nop
@@ -55,7 +56,7 @@ const doPass = (data, showError=false, assembler=I8080, name="") => {
     if (showError==3)console.log(l)
     return vx
     } catch (e) {
-        if (showError)console.log(e)
+        if (showError)console.log(JSON.stringify(e))
         if (e.e) throw e.e
         throw e
     }
@@ -89,6 +90,20 @@ QUnit.test('basic dummy-endian', assert => {
     doPass(asmDUMMY, false, DUMMYE, "test-dummye")
     assert.ok(true)
 });
+
+/*
+QUnit.test('relocable 8080', assert => {
+    doPass(asmRELOCABLE, true, I8080, "relocable")
+    assert.ok(true)
+});
+*/
+
+QUnit.test('ORG in module', assert => {
+    assert.throws(() => {
+        doPass(`.pragma module\n.org 100`, false, I8080)
+    },(err) => err.msg == "ORG is not allowed in modules")
+});
+
 
 QUnit.test('EQU without label', assert => {
     assert.throws(() => {

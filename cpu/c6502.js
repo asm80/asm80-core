@@ -315,6 +315,8 @@ export const C6502 = {
       s.lens = lens;
       s.bytes = this.steptab[addr];
 
+      s.wia = 1; //Where is address (for relocation)
+
 
       return s;
     }

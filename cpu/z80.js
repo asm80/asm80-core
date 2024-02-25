@@ -218,7 +218,7 @@ set2: {
       }
     }
 
-
+    s.wia = 1; //Where is address (for relocation)
 
     if (ax) {
       if (!s.params || s.params.length===0) {
@@ -623,15 +623,19 @@ set2: {
             if (reg1>=0 && link2) {
               s.bytes = ([4,4,3,4])[reg1];
               lens = [0xed, 0x4b + (reg1<<4), function(vars){return Parser.evaluate(link2,vars);}, null];
+              s.wia = 2; //Where is address (for relocation)
               if (s.bytes==3) {
+                s.wia = 1; //Where is address (for relocation)
                 lens = [0x2a, function(vars){return Parser.evaluate(link2,vars);}, null];
               }
               //return s;
             }
             if (link1 && reg2>=0) {
               s.bytes = ([4,4,3,4])[reg2];
+              s.wia = 2; //Where is address (for relocation)
               lens = [0xed, 0x43 + (reg2<<4), function(vars){return Parser.evaluate(link1,vars);}, null];
               if (s.bytes==3) {
+                s.wia = 1; //Where is address (for relocation)
                 lens = [0x22, function(vars){return Parser.evaluate(link1,vars);}, null];
               }
               //return s;
