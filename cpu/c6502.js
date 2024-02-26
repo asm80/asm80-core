@@ -1,4 +1,7 @@
 export const C6502 = {
+  endian:false,
+  cpu:"c6502",
+  ext:"a65",
   "set": {
     //illegal opcodes - http://www.oxyron.de/html/opcodes02.html
     //    imp  ima imm  abs  abx  aby   zpg  zpx  zpy  ind  izx  izy  rel  izp

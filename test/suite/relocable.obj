@@ -9,7 +9,8 @@
       "segment": "CSEG",
       "rel": true,
       "relseg": "DSEG",
-      "add": 0
+      "add": 0,
+      "wia": 1
     },
     {
       "lens": [
@@ -19,7 +20,8 @@
       ],
       "segment": "CSEG",
       "ext": "PRINT",
-      "add": 0
+      "add": 0,
+      "wia": 1
     },
     {
       "lens": [
@@ -56,5 +58,8 @@
       "addr": 0,
       "seg": "CSEG"
     }
-  }
+  },
+  "cpu": "i8080",
+  "endian": false,
+  "name": "noname"
 }

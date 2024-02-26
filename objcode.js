@@ -11,14 +11,17 @@ const put16 = (s, v, endian=false) => {
     let a = v&0xff
     let b = (v>>8)&0xff
     if (endian) {
-        s.lens[1] = b
-        s.lens[2] = a
+        s.lens[s.wia] = b
+        s.lens[s.wia+1] = a
     } else {
-        s.lens[1] = a
-        s.lens[2] = b
+        s.lens[s.wia] = a
+        s.lens[s.wia+1] = b
     }
 }
-export const objCode = (V, vars, opts) => {
+
+// generate object code from the parsed assembly
+
+export const objCode = (V, vars, opts, moduleName="noname") => {
     let out = []
     let externs = []
     let used = []
@@ -73,21 +76,55 @@ export const objCode = (V, vars, opts) => {
                 }
             }
             op.add = get16(ln, opts.endian)
+            op.wia = ln.wia
 
         }
 
         out.push(op)
     }
 
-    return {code:out,externs:used, exports:exports}
+    /**
+     * code: array of instructions
+     * instruction:
+     * {
+     *      lens: array of bytes (mandatory)
+     *      segment: segment where the instruction is (mandatory)
+     *      rel: if the instruction has a relative address (optional)
+     *      relseg: segment of the relative address (optional)
+     *      ext: if the instruction has an external address (optional)
+     *      add: the address to add to the external address (optional)
+     *      wia: where is the address in the instruction (optional)
+     *      resolved: the resolved address (optional, defined by linker)
+     *      base: the base address for the relative address (optional, defined by linker)
+     * }
+     */
+
+    return {
+        code:out, //the code itself
+        externs:used, //foreign labels
+        exports:exports, //labels to use outside
+        cpu:opts.assembler.cpu, //cpu id
+        endian:opts.assembler.endian, //endianness
+        name: moduleName, //module name
+    }
 }
 
+// linkModules
+
+
+// findInLibrary
+/**
+ * 
+ * @param {*} name 
+ * @param {*} library 
+ * @returns the module in the library, null if not found
+ */
 const findInLibrary = (name, library) => {
     for (let i=0; i<library.length; i++) {
         let mod = library[i]
         let exports = Object.keys(mod.exports)
         if (exports.indexOf(name) >= 0) {
-            return i
+            return mod
         }
     }
     return null
@@ -167,68 +204,21 @@ export const linkModules = (data, modules, library) => {
     }
     let state = {caddr,daddr,eaddr,bsaddr, resolves, notresolved, library}
 
+    
+
+    //add all modules we have specified in link recipe
     for (let mod of modules) {
         state = addModule(mod, state, out)
-/*        
-        //module processor
-        let cbase = caddr
-        let dbase = daddr
-        let ebase = eaddr
-        let bsbase = bsaddr
-
-        //resolve vars
-        for (let k in mod.exports) {
-            let v = mod.exports[k]
-            if (typeof resolves[k] != "undefined") {
-                throw new Error("Variable "+k+" is already defined")
-            }
-            if (v.seg=="CSEG") v.addr += caddr
-            else if (v.seg=="DSEG") v.addr += daddr
-            else if (v.seg=="ESEG") v.addr += eaddr
-            else if (v.seg=="BSSEG") v.addr += bsaddr
-            resolves[k] = v
-        }
-        for (let s of mod.code) {
-            let addr = caddr
-            if (s.segment=="DSEG") addr = daddr
-            else if (s.segment=="ESEG") addr = eaddr
-            else if (s.segment=="BSSEG") addr = bsaddr
-            s.addr = addr
-
-            //new address in the given segment
-            addr += s.lens.length
-            if (s.segment=="CSEG") caddr = addr
-            else if (s.segment=="DSEG") daddr = addr
-            else if (s.segment=="ESEG") eaddr = addr
-            else if (s.segment=="BSSEG") bsaddr = addr
-
-            //local relocs
-            if (s.rel) {
-                if (s.relseg=="CSEG") s.base = cbase
-                else if (s.relseg=="DSEG") s.base = dbase
-                else if (s.relseg=="ESEG") s.base = ebase
-                else if (s.relseg=="BSSEG") s.base = bsbase
-            }
-
-            if (s.ext) {
-                if (!resolves[s.ext]) {
-                    //we need to resolve this external
-                    console.log("Not resolved yet: "+s.ext)
-                }
-            }
-
-            out.push(s)       
-
-        }
-*/
     }
+
+    //still not resolved?!
     console.log("Not resolved: ", state.notresolved)
     while (state.notresolved.length) {
         let name = state.notresolved.pop()
         let mod = findInLibrary(name, library)
         console.log("Resolving "+name, mod)
         if (mod) {
-            state = addModule(library[mod], state, out)
+            state = addModule(mod, state, out)
         } else {
             throw new Error("Unresolved external "+name)
         }

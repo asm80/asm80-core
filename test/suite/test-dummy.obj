@@ -1,6 +1,6 @@
 [
   {
-    "line": ";.pragma relax\r",
+    "line": ";.pragma relax",
     "numline": 1,
     "addr": 0,
     "bytes": 0,
@@ -13,7 +13,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "label: equ $\r",
+    "line": "label: equ $",
     "numline": 2,
     "addr": 0,
     "bytes": 0,
@@ -40,7 +40,7 @@
     "_dp": 0
   },
   {
-    "line": "p1 10\r",
+    "line": "p1 10",
     "numline": 4,
     "addr": 1,
     "bytes": 2,
@@ -59,7 +59,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "p2 10\r",
+    "line": "p2 10",
     "numline": 5,
     "addr": 3,
     "bytes": 3,
@@ -79,7 +79,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "p1 \"A\"\r",
+    "line": "p1 \"A\"",
     "numline": 6,
     "addr": 6,
     "bytes": 2,
@@ -98,7 +98,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "p2 \"A\"\r",
+    "line": "p2 \"A\"",
     "numline": 7,
     "addr": 8,
     "bytes": 3,
@@ -118,7 +118,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "pa2 10\r",
+    "line": "pa2 10",
     "numline": 8,
     "addr": 11,
     "bytes": 4,
@@ -139,7 +139,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "pa2 \"AB\"\r",
+    "line": "pa2 \"AB\"",
     "numline": 9,
     "addr": 15,
     "bytes": 4,
@@ -160,7 +160,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "pb2 \"AB\"\r",
+    "line": "pb2 \"AB\"",
     "numline": 10,
     "addr": 19,
     "bytes": 5,
@@ -182,7 +182,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "pb2 10\r",
+    "line": "pb2 10",
     "numline": 11,
     "addr": 24,
     "bytes": 5,
@@ -200,19 +200,6 @@
       10,
       0
     ],
-    "pass": 2,
-    "segment": "CSEG"
-  },
-  {
-    "line": "\r",
-    "numline": 12,
-    "addr": 29,
-    "bytes": 0,
-    "_dp": 0,
-    "params": [],
-    "remark": " ",
-    "notparsed": "",
-    "lens": [],
     "pass": 2,
     "segment": "CSEG"
   },
@@ -278,20 +265,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "\r",
-    "numline": 14,
-    "addr": 32,
-    "bytes": 0,
-    "_dp": 0,
-    "params": [],
-    "remark": " ",
-    "notparsed": "",
-    "lens": [],
-    "pass": 2,
-    "segment": "CSEG"
-  },
-  {
-    "line": "label2: equ $\r",
+    "line": "label2: equ $",
     "numline": 15,
     "addr": 32,
     "bytes": 0,
@@ -310,7 +284,7 @@
     ]
   },
   {
-    "line": "px2 10\r",
+    "line": "px2 10",
     "numline": 16,
     "addr": 32,
     "bytes": 4,

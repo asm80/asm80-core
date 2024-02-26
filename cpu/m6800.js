@@ -28,6 +28,9 @@ SOFTWARE.
  */
 
 export const M6800 = {
+  endian:true,
+  cpu:"m6800",
+  ext:"a68",
   "set": {
     //          0        1     2      3      4      5       6
     //         INH    DIR   IMM3   EXT     IDX    IMM     REL
@@ -266,5 +269,5 @@ export const M6800 = {
     // not found
     return null;
   },
-  "endian":true
+  
 };

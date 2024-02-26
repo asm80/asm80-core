@@ -32,6 +32,9 @@ D9h SHLX (Stores the HL pair contents to the address specified in DE pair)
 
 
 export const I8080 = {
+  endian:false,
+  cpu:"i8080",
+  ext:"a80",
   'set': {
     'RST': {o:0xc7, t:"RST"},
     'LDA': {o:0x3a, t:"IW"},

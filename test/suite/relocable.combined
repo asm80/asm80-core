@@ -10,6 +10,7 @@
       "rel": true,
       "relseg": "DSEG",
       "add": 0,
+      "wia": 1,
       "addr": 256,
       "base": 512
     },
@@ -22,6 +23,7 @@
       "segment": "CSEG",
       "ext": "PRINT",
       "add": 0,
+      "wia": 1,
       "addr": 259,
       "resolved": 263
     },
@@ -77,6 +79,7 @@
       "rel": true,
       "relseg": "CSEG",
       "add": 12,
+      "wia": 1,
       "addr": 265,
       "base": 263
     },
@@ -90,6 +93,7 @@
       "rel": true,
       "relseg": "CSEG",
       "add": 13,
+      "wia": 1,
       "addr": 268,
       "base": 263
     },
@@ -110,6 +114,7 @@
       "rel": true,
       "relseg": "CSEG",
       "add": 0,
+      "wia": 1,
       "addr": 272,
       "base": 263
     },
@@ -129,6 +134,7 @@
       "segment": "CSEG",
       "ext": "BIOS_PRINT",
       "add": 0,
+      "wia": 1,
       "addr": 276,
       "resolved": 5
     },

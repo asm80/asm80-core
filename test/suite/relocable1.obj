@@ -23,7 +23,8 @@
       "segment": "CSEG",
       "rel": true,
       "relseg": "CSEG",
-      "add": 0
+      "add": 0,
+      "wia": 1
     },
     {
       "lens": [
@@ -38,5 +39,8 @@
       "addr": 0,
       "seg": "CSEG"
     }
-  }
+  },
+  "cpu": "i8080",
+  "endian": false,
+  "name": "noname"
 }

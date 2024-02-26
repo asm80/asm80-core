@@ -1,4 +1,7 @@
 export const Z80 = {
+  endian:false,
+  cpu:"z80",
+  ext:"z80",
   set: {
     // 0 nebo 1 parametr
     //         0     1     2       3      4      5     6       7      8      9     10    11     12    13

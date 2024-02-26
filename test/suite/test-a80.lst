@@ -3,7 +3,6 @@
 0000                  .BINFROM 0 
 0000                  .BINTO 0x8000 
 0000                  .ENT $ 
-0000                   ; 
 0000 03               DB 1+2 
 0001 0E               DB 2+3*4 
 0002           ANYVAL:   EQU 5 
@@ -12,15 +11,10 @@
 0003 01 19 01 00 07 0A 07 03 02 DB anyval / 3,anyval ^ 2,anyval % 2,anyval & 2,anyval | 2,anyval * 2,anyval + 2,anyval - 2,anyval # 3 
 000C 00 01 01 00 01 00 DB anyval =1,anyval != 1,anyval ?>1,anyval ?<1,anyval ?>=1,anyval ?<= 1 
 0012 00               DB 1&2 
-0013                   ; 
 0013 48 65 6C 6C 6F 57 6F 72 6C 64 DB "Hello" || "World" 
-001D                   ; 
 001D 68 65 6C 6C 6F 09 0A 0D 5C 62 61 63 6B 73 6C 61 73 68 5C 0C 08 2F 22 27 DB "hello\t\n\r\\backslash\\\f\b\/\u0022\'" 
-0035                   ; 
 0035 AB 00 00 23 12 0C 16 01 DB 0xab,0b1010,0o1237,$123,12h,12,10110b,%12 
-003D                   ; 
 003D 00 01            DB lsb(label),msb(label) 
-003F                   ; 
 0100                  .ORG $100 
 0100 00        LABEL:   NOP  
 0101 21 01 01         LXI h,label+1 
@@ -29,7 +23,6 @@
 0108 47               MOV b,a 
 0109 80               ADD b 
 010A C3 00 01         JMP label 
-010D                   ; 
 010D                  IF 1 
 010D 00               NOP  
 010E                  ELSE  
@@ -40,18 +33,14 @@
 010E                  ENDIF  
                       DB 1 
 010E                  ENDIF  
-010E                   ; 
 010E                  IFN 0 
 010E 59 45 53         DB "YES" 
 0111                  ENDIF  
-0111                   ; 
 0111 00               NOP  
-0112                   ; 
 0112                  .M16  
 0112                  .M8  
 0112                  .X16  
 0112                  .X8  
-0112                   ; 
 0112                  .PHASE $200 
 0200 @0112 00         NOP  
 0201 @0113            .DEPHASE  
@@ -66,8 +55,7 @@
 015D 79               MOV A,C 
 015E CA 00 01         JZ LABEL 
 0161 3E 0F            MVI a,0x0f 
-0163 79        LABEL3:   MOV a,C ;with remark as a,b,c  
-0164                   ; 
+0163 79        LABEL3:   MOV a,C ;with remark as a,b,c
 0164           LABEL5:   = 1 
 0164 01               DB 1 
 0165 01               DB 1 
@@ -89,27 +77,18 @@
 01BB                  ELSE  
                       NOP  
 01BB                  ENDIF  
-01BB                   ; 
 01BB 00               NOP  
-01BC                   ; 
 01BC 00        AA:    NOP  
-01BD                   ; 
-01BD                   ; 
 01BD                  SETDP 0 
-01BD                   ; 
 01BD           VAR:   .SET 3 ;test
 01BD           VAR:   .SET 4 ;test
-01BD                   ; 
 01BD                  .BLOCK blk 
 01BD 01 00     OMA:   DW 1 
 01BF                  .ENDBLOCK  
-01BF                   ; 
 01BF 00        SOMELABEL:   NOP  
 01C0                  .PRAGMA 6309 
-01C0                   ; 
-01C0                   ; empty line   
+01C0                   ; empty line
 01C0                   ; with remark
-01C0                   ; 
 01C0           .macro XYZ,
 01C0                   ; 
 01C0            loop%%M: inr a
@@ -117,27 +96,22 @@
 01C0            jnz loop%%M
 01C0           .endm
 01C0            
-01C0                   ; 
 01C0                  ;*Macro unroll:  xyz
-01C0 3C        LOOPM_120S117:   INR a 
+01C0 3C        LOOPM_98S117:   INR a 
 01C1 05               DCR b 
-01C2 C2 C0 01         JNZ loopM_120S117 
+01C2 C2 C0 01         JNZ loopM_98S117 
 01C5                  ;*Macro unroll:  xyz
-01C5 3C        LOOPM_121S118:   INR a 
+01C5 3C        LOOPM_99S118:   INR a 
 01C6 05               DCR b 
-01C7 C2 C5 01         JNZ loopM_121S118 
+01C7 C2 C5 01         JNZ loopM_99S118 
 01CA                  ;*Macro unroll:  xyz
-01CA 3C        LOOPM_122S119:   INR a 
+01CA 3C        LOOPM_100S119:   INR a 
 01CB 05               DCR b 
-01CC C2 CA 01         JNZ loopM_122S119 
-01CF                   ; 
+01CC C2 CA 01         JNZ loopM_100S119 
 01CF 54 48 49 53 20 49 53 20 41 4E 20 46 43 43 20 53 54 52 49 4E 47 FX1:   FCC "THIS IS AN FCC STRING" 
 01E4 53 4F 20 49 53 20 54 48 49 53 FX2:   FCC .SO IS THIS. 
-01EE                   ; 
 01EE 68               DS 1,"hello" 
-01EF                   ; 
 0000                  .DSEG  
-0000                   ; 
 0000 00 00 00 00 00 00 F0 3F DFF 1.234 
 0008 48 65 6C 6C EF   .ISTR "Hello" 
 000D 8C               .ISTR 12 
@@ -158,12 +132,9 @@
 0000                  .ESEG  
 0000 01               DB 1 
 0001 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 BSZ 50 
-0033                   ; 
 0033 6E 6F 70 0A 20 20 20 20 2E 62 6C 6F 63 6B 20 62 6C 6B 0A 20 20 20 20 6F 6D 61 3A 20 64 77 20 31 0A 20 20 20 20 2E 65 6E 64 62 6C 6F 63 6B .INCBIN test.bin 
-0061                   ; 
 0000                  .BSSEG  
 0000           BSTEST:   DS 5 
-0005                   ; 
 0005                  .END  
 
 
@@ -200,11 +171,11 @@ AA:                 01BC DEFINED AT LINE 95
 VAR:                0004 DEFINED AT LINE 101
 OMA:                01BD DEFINED AT LINE 3 IN test.a80
 SOMELABEL:          01BF DEFINED AT LINE 105
-LOOPM_120S117:      01C0 DEFINED AT LINE 112
+LOOPM_98S117:       01C0 DEFINED AT LINE 112
                     > USED AT LINE 114
-LOOPM_121S118:      01C5 DEFINED AT LINE 112
+LOOPM_99S118:       01C5 DEFINED AT LINE 112
                     > USED AT LINE 114
-LOOPM_122S119:      01CA DEFINED AT LINE 112
+LOOPM_100S119:      01CA DEFINED AT LINE 112
                     > USED AT LINE 114
 FX1:                01CF DEFINED AT LINE 121
 FX2:                01E4 DEFINED AT LINE 122
