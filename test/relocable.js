@@ -82,7 +82,7 @@ const doLink = (data, showError=false, assembler=I8080, name="") => {
 
     let out = linkModules(data,modules, library)
 
-    fs.writeFileSync("./test/suite/"+name+".combined",JSON.stringify(out,null,2))    
+    fs.writeFileSync("./test/suite/"+name+".combined",JSON.stringify(out))    
 }
 
 

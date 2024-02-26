@@ -1261,37 +1261,42 @@ ok 1255 ASM - Z80 > SRL (HL)
 ok 1256 ASM - Z80 > SRL (IX+0x34)
 ok 1257 ASM - Z80 > SRL (IY+0x34)
 ok 1258 beautify > basic
-ok 1259 parser > vanilla
-ok 1260 parser > Unrecognized instruction
-ok 1261 parser > Unrecognized instruction 
-ok 1262 parser > Unrecognized instruction  
-ok 1263 parser > Unrecognized instruction   
-ok 1264 parser > Macro params
-ok 1265 parser > Macro param string
-ok 1266 parser > Strings
-ok 1267 parser > Macro params OK
-ok 1268 parser > Macro params too few
-ok 1269 parser > ENDM without MACRO at line
-ok 1270 parser > Bad macro name at line
-ok 1271 parser > Macro nest
-ok 1272 parser > macro redefinition
-ok 1273 parser > REPT
-ok 1274 parser > REPT named
-ok 1275 parser > INCLUDE
-ok 1276 parser > INCLUDE BLOCK
-ok 1277 parser > INCLUDE bad block
-ok 1278 parser > INCLUDE no name given
-ok 1279 parser > No repeat count given
-ok 1280 parser > Bad repeat count given
-ok 1281 parser > MACRO *REPT1 has no appropriate ENDM
-ok 1282 pass1 > basic
-ok 1283 pass1 > ENDIF without IF
-ok 1284 pass1 > ELSE without IF
-ok 1285 pass1 > PHASE cannot be nested
-ok 1286 pass1 > Delimiters does not match
-ok 1287 pass1 > DS / RMB needs a numerical parameter
-ok 1288 pass1 > DB in BSS
-ok 1289 pass1 > Redefine label
+[ 2, 3, 4, '*', '+' ]
+ok 1259 expression-parser > vanilla
+[ 2, 5, '*' ]
+[ 2, 'lsb' ]
+ok 1260 expression-parser > 2PI
+ok 1261 parser > vanilla
+ok 1262 parser > Unrecognized instruction
+ok 1263 parser > Unrecognized instruction 
+ok 1264 parser > Unrecognized instruction  
+ok 1265 parser > Unrecognized instruction   
+ok 1266 parser > Macro params
+ok 1267 parser > Macro param string
+ok 1268 parser > Strings
+ok 1269 parser > Macro params OK
+ok 1270 parser > Macro params too few
+ok 1271 parser > ENDM without MACRO at line
+ok 1272 parser > Bad macro name at line
+ok 1273 parser > Macro nest
+ok 1274 parser > macro redefinition
+ok 1275 parser > REPT
+ok 1276 parser > REPT named
+ok 1277 parser > INCLUDE
+ok 1278 parser > INCLUDE BLOCK
+ok 1279 parser > INCLUDE bad block
+ok 1280 parser > INCLUDE no name given
+ok 1281 parser > No repeat count given
+ok 1282 parser > Bad repeat count given
+ok 1283 parser > MACRO *REPT1 has no appropriate ENDM
+ok 1284 pass1 > basic
+ok 1285 pass1 > ENDIF without IF
+ok 1286 pass1 > ELSE without IF
+ok 1287 pass1 > PHASE cannot be nested
+ok 1288 pass1 > Delimiters does not match
+ok 1289 pass1 > DS / RMB needs a numerical parameter
+ok 1290 pass1 > DB in BSS
+ok 1291 pass1 > Redefine label
 VARS {
   _PC: 5,
   'ANYVAL$': 2,
@@ -1321,12 +1326,12 @@ VARS {
   __blocks: '[]',
   'SOMELABEL$': 447,
   SOMELABEL: 447,
-  'LOOPM_120S117$': 448,
-  LOOPM_120S117: 448,
-  'LOOPM_121S118$': 453,
-  LOOPM_121S118: 453,
-  'LOOPM_122S119$': 458,
-  LOOPM_122S119: 458,
+  'LOOPM_98S117$': 448,
+  LOOPM_98S117: 448,
+  'LOOPM_99S118$': 453,
+  LOOPM_99S118: 453,
+  'LOOPM_100S119$': 458,
+  LOOPM_100S119: 458,
   'FX1$': 463,
   FX1: 463,
   'FX2$': 484,
@@ -1372,17 +1377,17 @@ XREF {
   VAR: { defined: { line: 101, file: '*main*' }, value: 4 },
   OMA: { defined: { line: 3, file: 'test.a80' }, value: 445 },
   SOMELABEL: { defined: { line: 105, file: '*main*' }, value: 447 },
-  LOOPM_120S117: {
+  LOOPM_98S117: {
     defined: { line: 112, file: '*main*' },
     value: 448,
     usage: [ [Object] ]
   },
-  LOOPM_121S118: {
+  LOOPM_99S118: {
     defined: { line: 112, file: '*main*' },
     value: 453,
     usage: [ [Object] ]
   },
-  LOOPM_122S119: {
+  LOOPM_100S119: {
     defined: { line: 112, file: '*main*' },
     value: 458,
     usage: [ [Object] ]
@@ -1391,7 +1396,7 @@ XREF {
   FX2: { defined: { line: 122, file: '*main*' }, value: 484 },
   BSTEST: { defined: { line: 152, file: '*main*' }, value: 0 }
 }
-ok 1290 pass2 > basic 8080
+ok 1292 pass2 > basic 8080
 VARS { _PC: 47, 'LOOP$': 0, LOOP: 0, __PRAGMAS: [ 'RELAX' ] }
 XREF {
   LOOP: {
@@ -1400,9 +1405,9 @@ XREF {
     usage: [ [Object] ]
   }
 }
-ok 1291 pass2 > basic 6800
+ok 1293 pass2 > basic 6800
 VARS {
-  _PC: 36,
+  _PC: 46,
   'LABEL$': 0,
   LABEL: 0,
   '__2@13': [ 'OMA' ],
@@ -1418,9 +1423,9 @@ XREF {
   OMA: { defined: { line: 3, file: 'test2.dummy' }, value: 30 },
   LABEL2: { defined: { line: 15, file: '*main*' }, value: 32 }
 }
-ok 1292 pass2 > basic dummy
+ok 1294 pass2 > basic dummy
 VARS {
-  _PC: 36,
+  _PC: 46,
   'LABEL$': 0,
   LABEL: 0,
   '__2@13': [ 'OMA' ],
@@ -1436,44 +1441,52 @@ XREF {
   OMA: { defined: { line: 3, file: 'test2.dummy' }, value: 30 },
   LABEL2: { defined: { line: 15, file: '*main*' }, value: 32 }
 }
-ok 1293 pass2 > basic dummy-endian
-ok 1294 pass2 > ORG in module
-ok 1295 pass2 > EQU without label
-ok 1296 pass2 > .ERROR
-ok 1297 pass2 > .IF nonsense
-ok 1298 pass2 > .IFN nonsense
-ok 1299 relocable > relocable 8080
-ok 1300 relocable > relocable1 8080
-ok 1301 relocable > relocable2 8080
-Not resolved yet: PRINT
-Not resolved:  [ 'PRINT' ]
-Resolving PRINT 1
-ok 1302 relocable > link 8080
-1..1302
-# pass 1302
+ok 1295 pass2 > basic dummy-endian
+ok 1296 pass2 > ORG in module
+ok 1297 pass2 > EQU without label
+ok 1298 pass2 > .ERROR
+ok 1299 pass2 > .IF nonsense
+ok 1300 pass2 > .IFN nonsense
+ok 1301 relocable > relocable 8080
+ok 1302 relocable > relocable1 8080
+ok 1303 relocable > relocable2 8080
+PASS1: Resolves init:  { BIOS_PRINT: { addr: 5, seg: null } }
+PASS1: Resolved:  {
+  BIOS_PRINT: { addr: 5, seg: null },
+  MAIN: { addr: 0, seg: 'CSEG' },
+  KEYIN: { addr: 0, seg: 'CSEG' },
+  PRINT: { addr: 0, seg: 'CSEG' },
+  PRINT_CHAR: { addr: 13, seg: 'CSEG' }
+} []
+PASS1: Modules:  [ 'relocable', 'relocable1', 'relocable2' ]
+PASS1: Seglen:  { CSEG: 44, DSEG: 37, ESEG: 0, BSSEG: 20 }
+PASS2: CSEG 10 DSEG 54 ESEG 91 BSSEG 91
+ok 1304 relocable > link 8080
+1..1304
+# pass 1304
 # skip 0
 # todo 0
 # fail 0
 -----------------------|---------|----------|---------|---------|-----------------------------------
 File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                 
 -----------------------|---------|----------|---------|---------|-----------------------------------
-All files              |   90.73 |    88.92 |   83.42 |   90.73 |                                   
- asm80-core            |    87.8 |    87.88 |   79.76 |    87.8 |                                   
+All files              |   91.42 |    89.32 |   84.65 |   91.42 |                                   
+ asm80-core            |   88.89 |     88.5 |   82.35 |   88.89 |                                   
   beautify.js          |     100 |      100 |     100 |     100 |                                   
-  expression-parser.js |   73.33 |    84.16 |   72.58 |   73.33 | ...-1213,1223,1258-1262,1297-1302 
+  expression-parser.js |   75.24 |    85.02 |    75.8 |   75.24 | ...-1213,1223,1258-1262,1299-1300 
   listing.js           |   97.61 |    90.12 |     100 |   97.61 | 54-55,57-58                       
-  objcode.js           |   93.75 |    70.49 |     100 |   93.75 | ...26-127,132-133,233-234,244-245 
+  objcode.js           |   95.89 |    79.26 |     100 |   95.89 | ...98-199,252-253,274-275,346-347 
   parseLine.js         |   95.46 |    95.15 |     100 |   95.46 | ...99-100,102-103,370-372,383-385 
   parser.js            |     100 |      100 |     100 |     100 |                                   
-  pass1.js             |   94.68 |       90 |     100 |   94.68 | ...00-502,507-509,516-517,556-560 
+  pass1.js             |   94.69 |    90.58 |     100 |   94.69 | ...02-504,509-511,518-519,558-562 
   pass2.js             |   96.02 |    89.93 |     100 |   96.02 | ...74-575,577-581,583-586,588-589 
-  preprocessor.js      |   94.95 |    86.48 |     100 |   94.95 | ...49-151,169-170,280-282,288-290 
- asm80-core/cpu        |   96.87 |    91.59 |   87.34 |   96.87 |                                   
-  c6502.js             |   99.69 |    94.52 |   66.66 |   99.69 | 323                               
+  preprocessor.js      |   94.95 |    86.36 |     100 |   94.95 | ...49-151,169-170,280-282,288-290 
+ asm80-core/cpu        |   96.89 |    91.59 |   87.34 |   96.89 |                                   
+  c6502.js             |    99.7 |    94.52 |   66.66 |    99.7 | 326                               
   dummy.js             |     100 |      100 |     100 |     100 |                                   
-  i8080.js             |     100 |    76.31 |     100 |     100 | ...45,151,156-157,165,171,177,183 
-  m6800.js             |   91.48 |    76.47 |   57.14 |   91.48 | 177-180,211-217,219-224,234-239   
-  z80.js               |   96.39 |    94.01 |   93.93 |   96.39 | ...84,500-501,592-597,738-744,775 
+  i8080.js             |     100 |    76.31 |     100 |     100 | ...48,154,159-160,168,174,180,186 
+  m6800.js             |   91.57 |    76.47 |   57.14 |   91.57 | 180-183,214-220,222-227,237-242   
+  z80.js               |   96.41 |    94.01 |   93.93 |   96.41 | ...87,503-504,595-600,741-747,778 
  asm80-core/utils      |   98.95 |    87.23 |   83.33 |   98.95 |                                   
   base64escaped.js     |     100 |      100 |     100 |     100 |                                   
   fp.js                |   97.56 |       76 |     100 |   97.56 | 35                                

@@ -8,6 +8,7 @@ import QUnit from "qunit";
 
 import * as Parser from "../parser.js";
 
+
 QUnit.module('parser');
 QUnit.config.hidepassed = true;
 

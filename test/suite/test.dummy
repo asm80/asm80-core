@@ -15,3 +15,7 @@ pb2 10
 label2: equ $
 px2 10
 py2 10
+p1 +10
+p2 lsb(label2)
+db 3*"A"
+db /*test*/ "Hel"+"lo" /* "Hello" */

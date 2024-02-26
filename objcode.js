@@ -65,7 +65,7 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
         if (opcode==".EXPORT") {
             //must export this var
             let name = ln.params[0];
-            if (!name) name = ln.label
+            //if (!name) name = ln.label
             name = name.toUpperCase()
             exports[name] = {addr:vars[name],seg:varsSegs[name]}
         }
@@ -175,7 +175,7 @@ const addModule = (mod, st, out) => {
     for (let k in mod.exports) {
         let v = mod.exports[k]
         if (typeof st.resolves[k] == "undefined") {
-            throw new Error("Variable "+k+" is not resolved")
+            throw {msg:"Variable "+k+" is not resolved"}
         }
         if (v.seg=="CSEG") v.addr += st.caddr
         else if (v.seg=="DSEG") v.addr += st.daddr
@@ -204,6 +204,8 @@ const addModule = (mod, st, out) => {
             else if (s.relseg=="ESEG") s.base = ebase
             else if (s.relseg=="BSSEG") s.base = bsbase
         }
+        // no unresolved at this point
+        /*
         if (s.ext) {
             if (!st.resolves[s.ext]) {
                 //we need to resolve this external
@@ -211,6 +213,7 @@ const addModule = (mod, st, out) => {
                 st.notresolved.push(s.ext)
             }
         }
+        */
         out.push(s)       
     }
     return st
@@ -246,7 +249,7 @@ export const linkModules = (data, modules, library) => {
 
         for (let k in mod.exports) {
             if (resolves[k]) {
-                throw new Error("Variable "+k+" is already defined")
+                throw {msg:"Variable "+k+" is already defined"}
             }
             resolves[k] = mod.exports[k]
             notresolved = notresolved.filter((item) => item !== k)
@@ -268,7 +271,7 @@ export const linkModules = (data, modules, library) => {
             //add module to the module list
             modules.push(mod)
         } else {
-            throw new Error("PASS1 Unresolved external "+name)
+            throw {msg:"PASS1 Unresolved external "+name}
         }
     }
 
@@ -328,7 +331,7 @@ export const linkModules = (data, modules, library) => {
         if (mod) {
             state = addModule(mod, state, out)
         } else {
-            throw new Error("Unresolved external "+name)
+            throw {msg:"Unresolved external "+name}
         }
     }
     */
@@ -340,7 +343,7 @@ export const linkModules = (data, modules, library) => {
                 if (resolves[s.ext]) {
                     s.resolved = resolves[s.ext].addr
                 } else {
-                    throw new Error("Unresolved external "+s.ext)
+                    throw {msg:"Unresolved external "+s.ext}
                 }
             }
         }
@@ -375,6 +378,7 @@ export const linkModules = (data, modules, library) => {
             delete s.add
             delete s.wia
             delete s.base
+            delete s.resolved
         }
 
         out.sort((a,b) => a.addr-b.addr)
@@ -390,4 +394,21 @@ export const linkModules = (data, modules, library) => {
         code:out, 
 
     }
+
+    /*
+    return {
+        CSEG, DSEG, ESEG, BSSEG: addresses of segments
+        seglen: lengths of segments
+        entry: entry point
+        code: array of instructions/data
+    }
+
+    code:
+    {
+        lens: array of bytes
+        addr: address
+        segment: segment
+    }
+    
+    */
 }

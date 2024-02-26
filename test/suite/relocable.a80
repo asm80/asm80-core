@@ -2,7 +2,7 @@
 
 
 .extern print
-.extern keyin
+keyin: .extern
 
 main: lxi h,hello
       call print

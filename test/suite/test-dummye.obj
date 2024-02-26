@@ -325,5 +325,80 @@
     ],
     "pass": 2,
     "segment": "CSEG"
+  },
+  {
+    "line": "p1 +10",
+    "numline": 18,
+    "addr": 40,
+    "bytes": 2,
+    "_dp": 0,
+    "params": [
+      "+10"
+    ],
+    "opcode": "P1",
+    "paramstring": "+10",
+    "notparsed": "",
+    "lens": [
+      1,
+      10
+    ],
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "p2 lsb(label2)",
+    "numline": 19,
+    "addr": 42,
+    "bytes": 3,
+    "_dp": 0,
+    "params": [
+      "lsb(label2)"
+    ],
+    "opcode": "P2",
+    "paramstring": "lsb(label2)",
+    "notparsed": "",
+    "lens": [
+      1,
+      0,
+      32
+    ],
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "db 3*\"A\"",
+    "numline": 20,
+    "addr": 45,
+    "bytes": 1,
+    "_dp": 0,
+    "params": [
+      "3*\"A\""
+    ],
+    "opcode": "DB",
+    "paramstring": "3*00ssIkEi!",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "lens": [
+      null
+    ]
+  },
+  {
+    "line": "db /*test*/ \"Hel\"+\"lo\" /* \"Hello\" */",
+    "numline": 21,
+    "addr": 46,
+    "bytes": 1,
+    "_dp": 0,
+    "params": [
+      "/*test*/ \"Hel\"+\"lo\" /* \"Hello\" */"
+    ],
+    "opcode": "DB",
+    "paramstring": "/*test*/ 00ssIkhlbCI=!+00ssImxvIg==! /* 00ssIkhlbGxvIg==! */",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "lens": [
+      219
+    ]
   }
 ]

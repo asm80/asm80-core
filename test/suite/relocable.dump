@@ -33,22 +33,17 @@
     ]
   },
   {
-    "line": ".extern keyin",
+    "line": "keyin: .extern",
     "numline": 5,
     "addr": 0,
     "bytes": 0,
+    "label": "KEYIN",
     "_dp": 0,
-    "params": [
-      "keyin"
-    ],
+    "params": [],
     "opcode": ".EXTERN",
-    "paramstring": "keyin",
     "notparsed": "",
     "pass": 2,
-    "segment": "CSEG",
-    "usage": [
-      "KEYIN"
-    ]
+    "segment": "CSEG"
   },
   {
     "line": "main: lxi h,hello",

@@ -16,6 +16,10 @@
 0020           LABEL2:   EQU $ 
 0020 01 00 00 0A      PX2 10 
 0024 01 00 00 00 0A   PY2 10 
+0028 01 0A            P1 +10 
+002A 01 00 20         P2 lsb(label2) 
+002D 00               DB 3*"A" 
+002E DB               DB /*test*/ "Hel"+"lo" /* "Hello" */ 
 
 
 LABEL:              0000 DEFINED AT LINE 2
