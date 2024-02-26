@@ -34,6 +34,15 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
         }
     }
 
+    let seglen = {
+        CSEG: 0,
+        DSEG: 0,
+        ESEG: 0,
+        BSSEG: 0,
+    }
+
+    let lastOne = null
+
     for (let ln of V) {
         if (!ln.opcode) {
             continue
@@ -43,6 +52,8 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
             lens: ln.lens,
             segment: ln.segment,
         }
+
+
 
         let opcode = ln.opcode
         if (opcode==".EXTERN") {
@@ -60,6 +71,9 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
         }
 
         if (!ln.lens || !ln.lens.length) continue;
+
+        //seglen++
+        seglen[ln.segment] += ln.lens.length
 
         //is there some variables used?
         if (ln.usage && ln.usage.length) {
@@ -80,7 +94,19 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
 
         }
 
+        //is this only code? And the last one?
+        if (typeof op.rel=="undefined" && typeof op.ext=="undefined" && lastOne && lastOne.segment==op.segment) {
+            //join them
+            lastOne.lens = lastOne.lens.concat(op.lens)
+            continue
+        }
+
         out.push(op)
+        if (typeof op.rel=="undefined" && typeof op.ext=="undefined") {
+            lastOne = op
+        } else {
+            lastOne = null
+        }
     }
 
     /**
@@ -106,6 +132,7 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
         cpu:opts.assembler.cpu, //cpu id
         endian:opts.assembler.endian, //endianness
         name: moduleName, //module name
+        seglen: seglen, //segment lengths
     }
 }
 
@@ -172,7 +199,7 @@ const addModule = (mod, st, out) => {
         if (s.ext) {
             if (!st.resolves[s.ext]) {
                 //we need to resolve this external
-                console.log("Not resolved yet: "+s.ext)
+                //console.log("Not resolved yet: "+s.ext)
                 st.notresolved.push(s.ext)
             }
         }
@@ -202,15 +229,69 @@ export const linkModules = (data, modules, library) => {
         let val = parseInt(data.vars[v])
         resolves[v] = {addr:val,seg:null}
     }
-    let state = {caddr,daddr,eaddr,bsaddr, resolves, notresolved, library}
+    console.log("PASS1: Resolves init: ", resolves)
 
-    
+    //resolve references
+    const resolveModule = (mod) => {
+        //module needs to be resolved
+        for (let k of mod.externs) {
+            if (resolves[k]) {
+                continue
+            }
+            if (notresolved.indexOf(k) < 0) {
+                notresolved.push(k)
+            }
+        }
+
+        for (let k in mod.exports) {
+            if (resolves[k]) {
+                throw new Error("Variable "+k+" is already defined")
+            }
+            resolves[k] = mod.exports[k]
+            notresolved = notresolved.filter((item) => item !== k)
+        }
+        
+    }
+
+    for (let mod of modules) {
+        //take each module and check externs/exports
+        for (let k in mod.exports) {
+            resolveModule(mod)
+        }
+    }
+    while (notresolved.length) {
+        let name = notresolved.pop()
+        let mod = findInLibrary(name, library)
+        if (mod) {
+            resolveModule(mod)
+            //add module to the module list
+            modules.push(mod)
+        } else {
+            throw new Error("PASS1 Unresolved external "+name)
+        }
+    }
+
+    //all modules are resolved now
+    console.log("PASS1: Resolved: ", resolves, notresolved)
+    console.log("PASS1: Modules: ", modules.map(q=>q.name))
+
+    //drop all, do it again then
+    notresolved=[]
+    resolves = {}
+    for (let v in data.vars) {
+        let val = parseInt(data.vars[v])
+        resolves[v] = {addr:val,seg:null}
+    }
+    let state = {caddr,daddr,eaddr,bsaddr, resolves, notresolved, library}
 
     //add all modules we have specified in link recipe
     for (let mod of modules) {
         state = addModule(mod, state, out)
     }
 
+
+    //with pre-resolving, we don't need this anymore
+    /*
     //still not resolved?!
     console.log("Not resolved: ", state.notresolved)
     while (state.notresolved.length) {
@@ -223,6 +304,7 @@ export const linkModules = (data, modules, library) => {
             throw new Error("Unresolved external "+name)
         }
     }
+    */
 
 
         //resolves

@@ -61,5 +61,11 @@
   },
   "cpu": "i8080",
   "endian": false,
-  "name": "noname"
+  "name": "relocable",
+  "seglen": {
+    "CSEG": 7,
+    "DSEG": 15,
+    "ESEG": 0,
+    "BSSEG": 0
+  }
 }

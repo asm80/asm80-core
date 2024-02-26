@@ -3,12 +3,7 @@
     {
       "lens": [
         219,
-        122
-      ],
-      "segment": "CSEG"
-    },
-    {
-      "lens": [
+        122,
         254,
         255
       ],
@@ -42,5 +37,11 @@
   },
   "cpu": "i8080",
   "endian": false,
-  "name": "noname"
+  "name": "relocable1",
+  "seglen": {
+    "CSEG": 8,
+    "DSEG": 0,
+    "ESEG": 0,
+    "BSSEG": 0
+  }
 }

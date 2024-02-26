@@ -2,12 +2,7 @@
   "code": [
     {
       "lens": [
-        126
-      ],
-      "segment": "CSEG"
-    },
-    {
-      "lens": [
+        126,
         183
       ],
       "segment": "CSEG"
@@ -92,6 +87,14 @@
         101,
         114,
         101,
+        0,
+        83,
+        116,
+        114,
+        105,
+        110,
+        103,
+        50,
         0
       ],
       "segment": "DSEG"
@@ -112,5 +115,11 @@
   },
   "cpu": "i8080",
   "endian": false,
-  "name": "noname"
+  "name": "relocable2",
+  "seglen": {
+    "CSEG": 17,
+    "DSEG": 22,
+    "ESEG": 0,
+    "BSSEG": 0
+  }
 }

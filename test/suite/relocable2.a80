@@ -21,3 +21,4 @@ print_char:
 
 .dseg
 dummy: .cstr "Any data here"
+.cstr "String2"
