@@ -1,8 +1,15 @@
 .pragma module
 
 keyin: in 0x7a
+ sta buffer_key
  cpi 0xff
  jz keyin
+ sta last_key
  ret
 
 .export keyin 
+
+.BSSEG
+last_key ds 1
+past_key ds 8
+buffer_key ds 1

@@ -70,6 +70,12 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
             exports[name] = {addr:vars[name],seg:varsSegs[name]}
         }
 
+        //BSS reserved space
+        if (ln.segment=="BSSEG") {
+            seglen.BSSEG += ln.bytes
+            continue
+        }
+
         if (!ln.lens || !ln.lens.length) continue;
 
         //seglen++
@@ -157,6 +163,8 @@ const findInLibrary = (name, library) => {
     return null
 }
 
+// addModule
+
 const addModule = (mod, st, out) => {
     //module processor
     let cbase = st.caddr
@@ -166,8 +174,8 @@ const addModule = (mod, st, out) => {
     //resolve vars
     for (let k in mod.exports) {
         let v = mod.exports[k]
-        if (typeof st.resolves[k] != "undefined") {
-            throw new Error("Variable "+k+" is already defined")
+        if (typeof st.resolves[k] == "undefined") {
+            throw new Error("Variable "+k+" is not resolved")
         }
         if (v.seg=="CSEG") v.addr += st.caddr
         else if (v.seg=="DSEG") v.addr += st.daddr
@@ -211,14 +219,7 @@ const addModule = (mod, st, out) => {
 
 
 export const linkModules = (data, modules, library) => {
-    let CSEG = data.segments.CSEG?parseInt(data.segments.CSEG):0
-    let DSEG = data.segments.DSEG?parseInt(data.segments.DSEG):0
-    let ESEG = data.segments.ESEG?parseInt(data.segments.ESEG):0
-    let BSSEG = data.segments.BSSEG?parseInt(data.segments.BSSEG):0
-    let caddr = CSEG
-    let daddr = DSEG
-    let eaddr = ESEG
-    let bsaddr = BSSEG
+
 
     let entrypoint = data.entrypoint?data.entrypoint.toUpperCase():"_MAIN"
 
@@ -275,6 +276,31 @@ export const linkModules = (data, modules, library) => {
     console.log("PASS1: Resolved: ", resolves, notresolved)
     console.log("PASS1: Modules: ", modules.map(q=>q.name))
 
+    let seglen = {
+        CSEG: 0,
+        DSEG: 0,
+        ESEG: 0,
+        BSSEG: 0,
+    }
+
+    //How long are the segments?
+    for (let mod of modules) {
+        for (let s in mod.seglen) {
+            seglen[s] += mod.seglen[s]
+        }
+    }
+    console.log("PASS1: Seglen: ", seglen)
+
+    let CSEG = data.segments.CSEG?parseInt(data.segments.CSEG):0
+    let DSEG = data.segments.DSEG?parseInt(data.segments.DSEG):CSEG+seglen.CSEG
+    let ESEG = data.segments.ESEG?parseInt(data.segments.ESEG):DSEG+seglen.DSEG
+    let BSSEG = data.segments.BSSEG?parseInt(data.segments.BSSEG):ESEG+seglen.ESEG
+    let caddr = CSEG
+    let daddr = DSEG
+    let eaddr = ESEG
+    let bsaddr = BSSEG
+
+    /*
     //drop all, do it again then
     notresolved=[]
     resolves = {}
@@ -282,6 +308,7 @@ export const linkModules = (data, modules, library) => {
         let val = parseInt(data.vars[v])
         resolves[v] = {addr:val,seg:null}
     }
+    */
     let state = {caddr,daddr,eaddr,bsaddr, resolves, notresolved, library}
 
     //add all modules we have specified in link recipe
@@ -338,7 +365,29 @@ export const linkModules = (data, modules, library) => {
             }
         }
 
+        console.log("PASS2: CSEG", CSEG, "DSEG", DSEG, "ESEG", ESEG, "BSSEG", BSSEG)
 
+        //cleaning
+        for (let s of out) {
+            delete s.rel
+            delete s.relseg
+            delete s.ext
+            delete s.add
+            delete s.wia
+            delete s.base
+        }
 
-    return {code:out, notresolved, entry:resolves[entrypoint]}
+        out.sort((a,b) => a.addr-b.addr)
+
+    return {
+        //notresolved, 
+        CSEG,
+        DSEG,
+        ESEG,
+        BSSEG,
+        seglen,
+        entry:resolves[entrypoint],
+        code:out, 
+
+    }
 }

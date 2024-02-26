@@ -1,38 +1,179 @@
 {
+  "CSEG": 10,
+  "DSEG": 54,
+  "ESEG": 91,
+  "BSSEG": 91,
+  "seglen": {
+    "CSEG": 44,
+    "DSEG": 37,
+    "ESEG": 0,
+    "BSSEG": 20
+  },
+  "entry": {
+    "addr": 10,
+    "seg": "CSEG"
+  },
   "code": [
     {
       "lens": [
         33,
-        0,
-        2
+        54,
+        0
       ],
       "segment": "CSEG",
-      "rel": true,
-      "relseg": "DSEG",
-      "add": 0,
-      "wia": 1,
-      "addr": 256,
-      "base": 512
+      "addr": 10
     },
     {
       "lens": [
         205,
-        7,
-        1
+        34,
+        0
       ],
       "segment": "CSEG",
-      "ext": "PRINT",
-      "add": 0,
-      "wia": 1,
-      "addr": 259,
-      "resolved": 263
+      "addr": 13,
+      "resolved": 34
+    },
+    {
+      "lens": [
+        205,
+        20,
+        0
+      ],
+      "segment": "CSEG",
+      "addr": 16,
+      "resolved": 20
     },
     {
       "lens": [
         118
       ],
       "segment": "CSEG",
-      "addr": 262
+      "addr": 19
+    },
+    {
+      "lens": [
+        219,
+        122
+      ],
+      "segment": "CSEG",
+      "addr": 20
+    },
+    {
+      "lens": [
+        50,
+        100,
+        0
+      ],
+      "segment": "CSEG",
+      "addr": 22
+    },
+    {
+      "lens": [
+        254,
+        255
+      ],
+      "segment": "CSEG",
+      "addr": 25
+    },
+    {
+      "lens": [
+        202,
+        20,
+        0
+      ],
+      "segment": "CSEG",
+      "addr": 27
+    },
+    {
+      "lens": [
+        50,
+        91,
+        0
+      ],
+      "segment": "CSEG",
+      "addr": 30
+    },
+    {
+      "lens": [
+        201
+      ],
+      "segment": "CSEG",
+      "addr": 33
+    },
+    {
+      "lens": [
+        126,
+        183
+      ],
+      "segment": "CSEG",
+      "addr": 34
+    },
+    {
+      "lens": [
+        202,
+        46,
+        0
+      ],
+      "segment": "CSEG",
+      "addr": 36
+    },
+    {
+      "lens": [
+        205,
+        47,
+        0
+      ],
+      "segment": "CSEG",
+      "addr": 39
+    },
+    {
+      "lens": [
+        35
+      ],
+      "segment": "CSEG",
+      "addr": 42
+    },
+    {
+      "lens": [
+        195,
+        34,
+        0
+      ],
+      "segment": "CSEG",
+      "addr": 43
+    },
+    {
+      "lens": [
+        201
+      ],
+      "segment": "CSEG",
+      "addr": 46
+    },
+    {
+      "lens": [
+        50,
+        100,
+        0
+      ],
+      "segment": "CSEG",
+      "addr": 47
+    },
+    {
+      "lens": [
+        205,
+        5,
+        0
+      ],
+      "segment": "CSEG",
+      "addr": 50,
+      "resolved": 5
+    },
+    {
+      "lens": [
+        201
+      ],
+      "segment": "CSEG",
+      "addr": 53
     },
     {
       "lens": [
@@ -53,91 +194,7 @@
         0
       ],
       "segment": "DSEG",
-      "addr": 512
-    },
-    {
-      "lens": [
-        126,
-        183
-      ],
-      "segment": "CSEG",
-      "addr": 263
-    },
-    {
-      "lens": [
-        202,
-        19,
-        1
-      ],
-      "segment": "CSEG",
-      "rel": true,
-      "relseg": "CSEG",
-      "add": 12,
-      "wia": 1,
-      "addr": 265,
-      "base": 263
-    },
-    {
-      "lens": [
-        205,
-        20,
-        1
-      ],
-      "segment": "CSEG",
-      "rel": true,
-      "relseg": "CSEG",
-      "add": 13,
-      "wia": 1,
-      "addr": 268,
-      "base": 263
-    },
-    {
-      "lens": [
-        35
-      ],
-      "segment": "CSEG",
-      "addr": 271
-    },
-    {
-      "lens": [
-        195,
-        7,
-        1
-      ],
-      "segment": "CSEG",
-      "rel": true,
-      "relseg": "CSEG",
-      "add": 0,
-      "wia": 1,
-      "addr": 272,
-      "base": 263
-    },
-    {
-      "lens": [
-        201
-      ],
-      "segment": "CSEG",
-      "addr": 275
-    },
-    {
-      "lens": [
-        205,
-        5,
-        0
-      ],
-      "segment": "CSEG",
-      "ext": "BIOS_PRINT",
-      "add": 0,
-      "wia": 1,
-      "addr": 276,
-      "resolved": 5
-    },
-    {
-      "lens": [
-        201
-      ],
-      "segment": "CSEG",
-      "addr": 279
+      "addr": 54
     },
     {
       "lens": [
@@ -165,12 +222,7 @@
         0
       ],
       "segment": "DSEG",
-      "addr": 527
+      "addr": 69
     }
-  ],
-  "notresolved": [],
-  "entry": {
-    "addr": 256,
-    "seg": "CSEG"
-  }
+  ]
 }

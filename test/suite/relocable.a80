@@ -2,9 +2,12 @@
 
 
 .extern print
+.extern keyin
 
 main: lxi h,hello
       call print
+
+      call keyin
       hlt
 
 .export main      

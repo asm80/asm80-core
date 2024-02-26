@@ -13,6 +13,7 @@ done:   ret
 .extern not_used
 
 print_char: 
+    sta prev_char
             call bios_print
             ret
 
@@ -22,3 +23,8 @@ print_char:
 .dseg
 dummy: .cstr "Any data here"
 .cstr "String2"
+
+.BSSEG
+last_char ds 1
+buff_char ds 8
+prev_char ds 1

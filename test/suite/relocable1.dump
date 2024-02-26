@@ -1,0 +1,230 @@
+[
+  {
+    "line": ".pragma module",
+    "numline": 1,
+    "addr": 0,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "module"
+    ],
+    "opcode": ".PRAGMA",
+    "paramstring": "module",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "keyin: in 0x7a",
+    "numline": 3,
+    "addr": 0,
+    "bytes": 2,
+    "label": "KEYIN",
+    "_dp": 0,
+    "params": [
+      "0x7a"
+    ],
+    "opcode": "IN",
+    "paramstring": "0x7a",
+    "notparsed": "",
+    "lens": [
+      219,
+      122
+    ],
+    "wia": 1,
+    "resolve": 1,
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": " sta buffer_key",
+    "numline": 4,
+    "addr": 2,
+    "bytes": 3,
+    "_dp": 0,
+    "params": [
+      "buffer_key"
+    ],
+    "opcode": "STA",
+    "paramstring": "buffer_key",
+    "notparsed": "",
+    "lens": [
+      50,
+      9,
+      0
+    ],
+    "wia": 1,
+    "resolve": 1,
+    "pass": 2,
+    "segment": "CSEG",
+    "usage": [
+      "BUFFER_KEY"
+    ]
+  },
+  {
+    "line": " cpi 0xff",
+    "numline": 5,
+    "addr": 5,
+    "bytes": 2,
+    "_dp": 0,
+    "params": [
+      "0xff"
+    ],
+    "opcode": "CPI",
+    "paramstring": "0xff",
+    "notparsed": "",
+    "lens": [
+      254,
+      255
+    ],
+    "wia": 1,
+    "resolve": 1,
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": " jz keyin",
+    "numline": 6,
+    "addr": 7,
+    "bytes": 3,
+    "_dp": 0,
+    "params": [
+      "keyin"
+    ],
+    "opcode": "JZ",
+    "paramstring": "keyin",
+    "notparsed": "",
+    "lens": [
+      202,
+      0,
+      0
+    ],
+    "wia": 1,
+    "resolve": 1,
+    "pass": 2,
+    "segment": "CSEG",
+    "usage": [
+      "KEYIN"
+    ]
+  },
+  {
+    "line": " sta last_key",
+    "numline": 7,
+    "addr": 10,
+    "bytes": 3,
+    "_dp": 0,
+    "params": [
+      "last_key"
+    ],
+    "opcode": "STA",
+    "paramstring": "last_key",
+    "notparsed": "",
+    "lens": [
+      50,
+      0,
+      0
+    ],
+    "wia": 1,
+    "resolve": 1,
+    "pass": 2,
+    "segment": "CSEG",
+    "usage": [
+      "LAST_KEY"
+    ]
+  },
+  {
+    "line": " ret",
+    "numline": 8,
+    "addr": 13,
+    "bytes": 1,
+    "_dp": 0,
+    "params": [],
+    "opcode": "RET",
+    "notparsed": "",
+    "lens": [
+      201
+    ],
+    "wia": 1,
+    "resolve": 0,
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": ".export keyin",
+    "numline": 10,
+    "addr": 14,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "keyin"
+    ],
+    "opcode": ".EXPORT",
+    "paramstring": "keyin",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG",
+    "usage": [
+      "KEYIN"
+    ]
+  },
+  {
+    "line": ".BSSEG",
+    "numline": 12,
+    "addr": 0,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "opcode": ".BSSEG",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "BSSEG"
+  },
+  {
+    "line": "LAST_KEY: ds 1",
+    "numline": 13,
+    "addr": 0,
+    "bytes": 1,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DS",
+    "paramstring": "1",
+    "notparsed": "",
+    "label": "LAST_KEY",
+    "pass": 2,
+    "segment": "BSSEG"
+  },
+  {
+    "line": "PAST_KEY: ds 8",
+    "numline": 14,
+    "addr": 1,
+    "bytes": 8,
+    "_dp": 0,
+    "params": [
+      "8"
+    ],
+    "opcode": "DS",
+    "paramstring": "8",
+    "notparsed": "",
+    "label": "PAST_KEY",
+    "pass": 2,
+    "segment": "BSSEG"
+  },
+  {
+    "line": "BUFFER_KEY: ds 1",
+    "numline": 15,
+    "addr": 9,
+    "bytes": 1,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DS",
+    "paramstring": "1",
+    "notparsed": "",
+    "label": "BUFFER_KEY",
+    "pass": 2,
+    "segment": "BSSEG"
+  }
+]

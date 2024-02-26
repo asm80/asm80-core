@@ -25,6 +25,17 @@
     },
     {
       "lens": [
+        205,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "ext": "KEYIN",
+      "add": 0,
+      "wia": 1
+    },
+    {
+      "lens": [
         118
       ],
       "segment": "CSEG"
@@ -51,7 +62,8 @@
     }
   ],
   "externs": [
-    "PRINT"
+    "PRINT",
+    "KEYIN"
   ],
   "exports": {
     "MAIN": {
@@ -63,7 +75,7 @@
   "endian": false,
   "name": "relocable",
   "seglen": {
-    "CSEG": 7,
+    "CSEG": 10,
     "DSEG": 15,
     "ESEG": 0,
     "BSSEG": 0

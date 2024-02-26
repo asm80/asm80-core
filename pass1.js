@@ -364,6 +364,7 @@ export const pass1 = (V, vxs, opts) => {
       if (op.opcode === "DS" || op.opcode === "RMB") {
         //op.bytes = Parser.evaluate(op.params[0]);
         let bytes = Parser.evaluate(op.params[0], vars);
+        op.bytes = bytes;
         //console.log(bytes, typeof bytes)
         if (typeof bytes !== "number")
           throw {
@@ -381,6 +382,7 @@ export const pass1 = (V, vxs, opts) => {
           }
           //console.log(op.lens);
         }
+
         PC = PC + bytes;
 
         continue;

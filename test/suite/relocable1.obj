@@ -3,7 +3,24 @@
     {
       "lens": [
         219,
-        122,
+        122
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        50,
+        9,
+        0
+      ],
+      "segment": "CSEG",
+      "rel": true,
+      "relseg": "BSSEG",
+      "add": 9,
+      "wia": 1
+    },
+    {
+      "lens": [
         254,
         255
       ],
@@ -18,6 +35,18 @@
       "segment": "CSEG",
       "rel": true,
       "relseg": "CSEG",
+      "add": 0,
+      "wia": 1
+    },
+    {
+      "lens": [
+        50,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "rel": true,
+      "relseg": "BSSEG",
       "add": 0,
       "wia": 1
     },
@@ -39,9 +68,9 @@
   "endian": false,
   "name": "relocable1",
   "seglen": {
-    "CSEG": 8,
+    "CSEG": 14,
     "DSEG": 0,
     "ESEG": 0,
-    "BSSEG": 0
+    "BSSEG": 10
   }
 }

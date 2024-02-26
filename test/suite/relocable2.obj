@@ -57,6 +57,18 @@
     },
     {
       "lens": [
+        50,
+        9,
+        0
+      ],
+      "segment": "CSEG",
+      "rel": true,
+      "relseg": "BSSEG",
+      "add": 9,
+      "wia": 1
+    },
+    {
+      "lens": [
         205,
         0,
         0
@@ -117,9 +129,9 @@
   "endian": false,
   "name": "relocable2",
   "seglen": {
-    "CSEG": 17,
+    "CSEG": 20,
     "DSEG": 22,
     "ESEG": 0,
-    "BSSEG": 0
+    "BSSEG": 10
   }
 }

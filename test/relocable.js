@@ -50,6 +50,7 @@ const doPass = (data, showError=false, assembler=I8080, name="") => {
     if (showError==2) console.log(vx)
     let l = lst(vx[0],vx[1],false, true,opts)
     if (name) fs.writeFileSync("./test/suite/"+name+".lst",l)
+    if (name) fs.writeFileSync("./test/suite/"+name+".dump",JSON.stringify(vx[0],null,2))
     let obj = objCode(vx[0],vx[1],opts,name)
     if (name) fs.writeFileSync("./test/suite/"+name+".obj",JSON.stringify(obj,null,2))
     let l2 = lst(vx[0],vx[1], true, false, opts)
