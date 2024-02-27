@@ -122,6 +122,7 @@
     "opcode": "EQU",
     "paramstring": "5",
     "notparsed": "",
+    "oldline": "anyval equ 5",
     "label": "ANYVAL",
     "pass": 2,
     "segment": "CSEG"
@@ -854,6 +855,7 @@
     "opcode": "EQU",
     "paramstring": "123",
     "notparsed": "",
+    "oldline": " va equ 123",
     "label": "VA",
     "pass": 2,
     "segment": "CSEG"
@@ -886,6 +888,7 @@
     "opcode": "EQU",
     "paramstring": "va",
     "notparsed": "",
+    "oldline": " vc .equ va",
     "label": "VC",
     "pass": 2,
     "segment": "CSEG",
@@ -1163,6 +1166,7 @@
     "opcode": "=",
     "paramstring": "1",
     "notparsed": "",
+    "oldline": "label5 = 1",
     "label": "LABEL5",
     "pass": 2,
     "segment": "CSEG"
@@ -1436,7 +1440,7 @@
     "line": ".incbin test.bin",
     "numline": 86,
     "addr": 396,
-    "bytes": 46,
+    "bytes": 11,
     "_dp": 0,
     "params": [
       "test.bin"
@@ -1447,58 +1451,23 @@
     "pass": 2,
     "segment": "CSEG",
     "lens": [
-      110,
-      111,
-      112,
-      10,
-      32,
-      32,
-      32,
-      32,
-      46,
-      98,
-      108,
-      111,
-      99,
-      107,
-      32,
-      98,
-      108,
-      107,
-      10,
-      32,
-      32,
-      32,
-      32,
-      111,
-      109,
-      97,
-      58,
-      32,
+      59,
       100,
-      119,
-      32,
-      49,
-      10,
-      32,
-      32,
-      32,
-      32,
-      46,
+      105,
+      122,
+      105,
+      122,
       101,
-      110,
-      100,
-      98,
-      108,
-      111,
-      99,
-      107
+      109,
+      112,
+      116,
+      121
     ]
   },
   {
     "line": ".if 1",
     "numline": 87,
-    "addr": 442,
+    "addr": 407,
     "bytes": 0,
     "_dp": 0,
     "params": [
@@ -1513,7 +1482,7 @@
   {
     "line": "nop",
     "numline": 88,
-    "addr": 442,
+    "addr": 407,
     "bytes": 1,
     "_dp": 0,
     "params": [],
@@ -1530,7 +1499,7 @@
   {
     "line": ".else",
     "numline": 89,
-    "addr": 443,
+    "addr": 408,
     "bytes": 0,
     "_dp": 0,
     "params": [],
@@ -1542,7 +1511,7 @@
   {
     "line": "nop",
     "numline": 90,
-    "addr": 443,
+    "addr": 408,
     "bytes": 1,
     "_dp": 0,
     "params": [],
@@ -1560,7 +1529,7 @@
   {
     "line": ".endif",
     "numline": 91,
-    "addr": 443,
+    "addr": 408,
     "bytes": 0,
     "_dp": 0,
     "params": [],
@@ -1572,7 +1541,7 @@
   {
     "line": ": nop",
     "numline": 93,
-    "addr": 443,
+    "addr": 408,
     "bytes": 1,
     "anonymousLabel": "anon__93",
     "_dp": 0,
@@ -1590,7 +1559,7 @@
   {
     "line": "@aa: nop",
     "numline": 95,
-    "addr": 444,
+    "addr": 409,
     "bytes": 1,
     "label": "AA",
     "_dp": 0,
@@ -1609,7 +1578,7 @@
   {
     "line": "setdp 0",
     "numline": 98,
-    "addr": 445,
+    "addr": 410,
     "bytes": 0,
     "_dp": 0,
     "params": [
@@ -1624,7 +1593,7 @@
   {
     "line": "VAR: .set 3 ;test",
     "numline": 100,
-    "addr": 445,
+    "addr": 410,
     "bytes": 0,
     "_dp": 0,
     "params": [
@@ -1634,6 +1603,7 @@
     "paramstring": "3 ",
     "remark": "test",
     "notparsed": "",
+    "oldline": "var .set 3 ;test",
     "label": "VAR",
     "pass": 2,
     "segment": "CSEG"
@@ -1641,7 +1611,7 @@
   {
     "line": "VAR: .SET 4 ;test",
     "numline": 101,
-    "addr": 445,
+    "addr": 410,
     "bytes": 0,
     "_dp": 0,
     "params": [
@@ -1651,6 +1621,7 @@
     "paramstring": "4 ",
     "remark": "test",
     "notparsed": "",
+    "oldline": "var := 4 ;test",
     "label": "VAR",
     "pass": 2,
     "segment": "CSEG"
@@ -1658,7 +1629,7 @@
   {
     "line": " .block blk",
     "numline": 2,
-    "addr": 445,
+    "addr": 410,
     "bytes": 0,
     "_dp": 0,
     "params": [
@@ -1667,7 +1638,7 @@
     "opcode": ".BLOCK",
     "paramstring": "blk",
     "notparsed": "",
-    "includedFile": "test.a80",
+    "includedFile": "test2.dummy",
     "includedFileAtLine": 103,
     "pass": 2,
     "segment": "CSEG"
@@ -1675,7 +1646,7 @@
   {
     "line": " oma: dw 1",
     "numline": 3,
-    "addr": 445,
+    "addr": 410,
     "bytes": 2,
     "label": "OMA",
     "_dp": 0,
@@ -1685,7 +1656,7 @@
     "opcode": "DW",
     "paramstring": "1",
     "notparsed": "",
-    "includedFile": "test.a80",
+    "includedFile": "test2.dummy",
     "includedFileAtLine": 103,
     "pass": 2,
     "segment": "CSEG",
@@ -1697,13 +1668,13 @@
   {
     "line": " .endblock",
     "numline": 4,
-    "addr": 447,
+    "addr": 412,
     "bytes": 0,
     "_dp": 0,
     "params": [],
     "opcode": ".ENDBLOCK",
     "notparsed": "",
-    "includedFile": "test.a80",
+    "includedFile": "test2.dummy",
     "includedFileAtLine": 103,
     "pass": 2,
     "segment": "CSEG"
@@ -1711,13 +1682,14 @@
   {
     "line": "SOMELABEL: nop",
     "numline": 105,
-    "addr": 447,
+    "addr": 412,
     "bytes": 1,
     "_dp": 0,
     "params": [],
     "opcode": "NOP",
     "paramstring": "nop",
     "notparsed": "",
+    "oldline": "somelabel nop",
     "label": "SOMELABEL",
     "lens": [
       0
@@ -1730,7 +1702,7 @@
   {
     "line": ".pragma 6309",
     "numline": 106,
-    "addr": 448,
+    "addr": 413,
     "bytes": 0,
     "_dp": 0,
     "params": [
@@ -1745,7 +1717,7 @@
   {
     "line": "; empty line",
     "numline": 108,
-    "addr": 448,
+    "addr": 413,
     "bytes": 0,
     "_dp": 0,
     "params": [],
@@ -1757,7 +1729,7 @@
   {
     "line": " ; with remark",
     "numline": 109,
-    "addr": 448,
+    "addr": 413,
     "bytes": 0,
     "_dp": 0,
     "params": [],
@@ -1769,7 +1741,7 @@
   {
     "numline": 115,
     "line": ";Macro define XYZ",
-    "addr": 448,
+    "addr": 413,
     "bytes": 0,
     "listing": ".macro XYZ,",
     "_dp": 0,
@@ -1787,7 +1759,7 @@
     "notparsed": "",
     "pass": 2,
     "segment": "CSEG",
-    "addr": 448,
+    "addr": 413,
     "bytes": 0
   },
   {
@@ -1799,7 +1771,7 @@
     "notparsed": "",
     "pass": 2,
     "segment": "CSEG",
-    "addr": 448,
+    "addr": 413,
     "bytes": 0
   },
   {
@@ -1811,7 +1783,7 @@
     "notparsed": "",
     "pass": 2,
     "segment": "CSEG",
-    "addr": 448,
+    "addr": 413,
     "bytes": 0
   },
   {
@@ -1823,7 +1795,7 @@
     "notparsed": "",
     "pass": 2,
     "segment": "CSEG",
-    "addr": 448,
+    "addr": 413,
     "bytes": 0
   },
   {
@@ -1835,7 +1807,7 @@
     "notparsed": "",
     "pass": 2,
     "segment": "CSEG",
-    "addr": 448,
+    "addr": 413,
     "bytes": 0
   },
   {
@@ -1847,20 +1819,20 @@
     "notparsed": "",
     "pass": 2,
     "segment": "CSEG",
-    "addr": 448,
+    "addr": 413,
     "bytes": 0
   },
   {
     "remark": "*Macro unroll:  xyz",
     "pass": 2,
     "segment": "CSEG",
-    "addr": 448,
+    "addr": 413,
     "_dp": 0,
     "bytes": 0
   },
   {
     "line": " loopM_98S117: inr a",
-    "addr": 448,
+    "addr": 413,
     "macro": "XYZ",
     "numline": 112,
     "bytes": 1,
@@ -1882,7 +1854,7 @@
   },
   {
     "line": " dcr b",
-    "addr": 449,
+    "addr": 414,
     "macro": null,
     "numline": 113,
     "bytes": 1,
@@ -1904,7 +1876,7 @@
   },
   {
     "line": " jnz loopM_98S117",
-    "addr": 450,
+    "addr": 415,
     "macro": null,
     "numline": 114,
     "bytes": 3,
@@ -1917,7 +1889,7 @@
     "notparsed": "",
     "lens": [
       194,
-      192,
+      157,
       1
     ],
     "wia": 1,
@@ -1933,13 +1905,13 @@
     "remark": "*Macro unroll:  xyz",
     "pass": 2,
     "segment": "CSEG",
-    "addr": 453,
+    "addr": 418,
     "_dp": 0,
     "bytes": 0
   },
   {
     "line": " loopM_99S118: inr a",
-    "addr": 453,
+    "addr": 418,
     "macro": "XYZ",
     "numline": 112,
     "bytes": 1,
@@ -1961,7 +1933,7 @@
   },
   {
     "line": " dcr b",
-    "addr": 454,
+    "addr": 419,
     "macro": null,
     "numline": 113,
     "bytes": 1,
@@ -1983,7 +1955,7 @@
   },
   {
     "line": " jnz loopM_99S118",
-    "addr": 455,
+    "addr": 420,
     "macro": null,
     "numline": 114,
     "bytes": 3,
@@ -1996,7 +1968,7 @@
     "notparsed": "",
     "lens": [
       194,
-      197,
+      162,
       1
     ],
     "wia": 1,
@@ -2012,13 +1984,13 @@
     "remark": "*Macro unroll:  xyz",
     "pass": 2,
     "segment": "CSEG",
-    "addr": 458,
+    "addr": 423,
     "_dp": 0,
     "bytes": 0
   },
   {
     "line": " loopM_100S119: inr a",
-    "addr": 458,
+    "addr": 423,
     "macro": "XYZ",
     "numline": 112,
     "bytes": 1,
@@ -2040,7 +2012,7 @@
   },
   {
     "line": " dcr b",
-    "addr": 459,
+    "addr": 424,
     "macro": null,
     "numline": 113,
     "bytes": 1,
@@ -2062,7 +2034,7 @@
   },
   {
     "line": " jnz loopM_100S119",
-    "addr": 460,
+    "addr": 425,
     "macro": null,
     "numline": 114,
     "bytes": 3,
@@ -2075,7 +2047,7 @@
     "notparsed": "",
     "lens": [
       194,
-      202,
+      167,
       1
     ],
     "wia": 1,
@@ -2090,7 +2062,7 @@
   {
     "line": "FX1: FCC \"THIS IS AN FCC STRING\"",
     "numline": 121,
-    "addr": 463,
+    "addr": 428,
     "bytes": 21,
     "_dp": 0,
     "params": [
@@ -2099,6 +2071,7 @@
     "opcode": "FCC",
     "paramstring": "00ssIlRISVMgSVMgQU4gRkNDIFNUUklORyI=!",
     "notparsed": "",
+    "oldline": "FX1 FCC 'THIS IS AN FCC STRING'",
     "label": "FX1",
     "pass": 2,
     "segment": "CSEG",
@@ -2129,7 +2102,7 @@
   {
     "line": "FX2: FCC .SO IS THIS.",
     "numline": 122,
-    "addr": 484,
+    "addr": 449,
     "bytes": 10,
     "_dp": 0,
     "params": [
@@ -2138,6 +2111,7 @@
     "opcode": "FCC",
     "paramstring": ".SO IS THIS.",
     "notparsed": "",
+    "oldline": "FX2 FCC .SO IS THIS.",
     "label": "FX2",
     "pass": 2,
     "segment": "CSEG",
@@ -2157,7 +2131,7 @@
   {
     "line": "ds 1,\"hello\"",
     "numline": 124,
-    "addr": 494,
+    "addr": 459,
     "bytes": 1,
     "_dp": 0,
     "params": [
@@ -2646,7 +2620,7 @@
     "line": ".incbin test.bin",
     "numline": 149,
     "addr": 51,
-    "bytes": 46,
+    "bytes": 11,
     "_dp": 0,
     "params": [
       "test.bin"
@@ -2657,52 +2631,17 @@
     "pass": 2,
     "segment": "ESEG",
     "lens": [
-      110,
-      111,
-      112,
-      10,
-      32,
-      32,
-      32,
-      32,
-      46,
-      98,
-      108,
-      111,
-      99,
-      107,
-      32,
-      98,
-      108,
-      107,
-      10,
-      32,
-      32,
-      32,
-      32,
-      111,
-      109,
-      97,
-      58,
-      32,
+      59,
       100,
-      119,
-      32,
-      49,
-      10,
-      32,
-      32,
-      32,
-      32,
-      46,
+      105,
+      122,
+      105,
+      122,
       101,
-      110,
-      100,
-      98,
-      108,
-      111,
-      99,
-      107
+      109,
+      112,
+      116,
+      121
     ]
   },
   {

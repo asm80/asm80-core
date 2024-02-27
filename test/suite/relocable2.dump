@@ -413,6 +413,7 @@
     "opcode": "DS",
     "paramstring": "1",
     "notparsed": "",
+    "oldline": "last_char ds 1",
     "label": "LAST_CHAR",
     "pass": 2,
     "segment": "BSSEG"
@@ -429,6 +430,7 @@
     "opcode": "DS",
     "paramstring": "8",
     "notparsed": "",
+    "oldline": "buff_char ds 8",
     "label": "BUFF_CHAR",
     "pass": 2,
     "segment": "BSSEG"
@@ -445,6 +447,7 @@
     "opcode": "DS",
     "paramstring": "1",
     "notparsed": "",
+    "oldline": "prev_char ds 1",
     "label": "PREV_CHAR",
     "pass": 2,
     "segment": "BSSEG"

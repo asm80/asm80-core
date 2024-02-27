@@ -1,0 +1,296 @@
+[
+  {
+    "line": ".org 0",
+    "numline": 1,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "0"
+    ],
+    "opcode": ".ORG",
+    "paramstring": "0",
+    "notparsed": ""
+  },
+  {
+    "line": ".pragma relax",
+    "numline": 2,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "relax"
+    ],
+    "opcode": ".PRAGMA",
+    "paramstring": "relax",
+    "notparsed": ""
+  },
+  {
+    "line": "loop:",
+    "numline": 3,
+    "addr": null,
+    "bytes": 0,
+    "label": "LOOP",
+    "_dp": 0,
+    "params": [],
+    "notparsed": ""
+  },
+  {
+    "line": "dec 9,X",
+    "numline": 5,
+    "addr": null,
+    "bytes": 2,
+    "_dp": 0,
+    "params": [
+      "9",
+      "X"
+    ],
+    "opcode": "DEC",
+    "paramstring": "9,X",
+    "notparsed": "",
+    "lens": [
+      106,
+      null
+    ],
+    "wia": 1
+  },
+  {
+    "line": "ldaa \"ab\"",
+    "numline": 6,
+    "addr": null,
+    "bytes": 3,
+    "_dp": 0,
+    "params": [
+      "\"ab\""
+    ],
+    "opcode": "LDAA",
+    "paramstring": "00ssImFiIg==!",
+    "notparsed": "",
+    "lens": [
+      182,
+      null,
+      null
+    ],
+    "wia": 1
+  },
+  {
+    "line": "ldx 1234",
+    "numline": 7,
+    "addr": null,
+    "bytes": 3,
+    "_dp": 0,
+    "params": [
+      "1234"
+    ],
+    "opcode": "LDX",
+    "paramstring": "1234",
+    "notparsed": "",
+    "lens": [
+      254,
+      null,
+      null
+    ],
+    "wia": 1
+  },
+  {
+    "line": "bra loop",
+    "numline": 9,
+    "addr": null,
+    "bytes": 2,
+    "_dp": 0,
+    "params": [
+      "loop"
+    ],
+    "opcode": "BRA",
+    "paramstring": "loop",
+    "notparsed": "",
+    "lens": [
+      32,
+      null
+    ],
+    "wia": 1
+  },
+  {
+    "line": "defb 1",
+    "numline": 11,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DB",
+    "paramstring": "1",
+    "notparsed": ""
+  },
+  {
+    "line": ".byte 1",
+    "numline": 12,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DB",
+    "paramstring": "1",
+    "notparsed": ""
+  },
+  {
+    "line": ".db 1",
+    "numline": 13,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DB",
+    "paramstring": "1",
+    "notparsed": ""
+  },
+  {
+    "line": ".word 1",
+    "numline": 14,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DW",
+    "paramstring": "1",
+    "notparsed": ""
+  },
+  {
+    "line": ".dw 2",
+    "numline": 15,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "2"
+    ],
+    "opcode": "DW",
+    "paramstring": "2",
+    "notparsed": ""
+  },
+  {
+    "line": "defw 3",
+    "numline": 16,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "3"
+    ],
+    "opcode": "DW",
+    "paramstring": "3",
+    "notparsed": ""
+  },
+  {
+    "line": ".dd 22",
+    "numline": 17,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "22"
+    ],
+    "opcode": "DD",
+    "paramstring": "22",
+    "notparsed": ""
+  },
+  {
+    "line": ".df 12,3",
+    "numline": 18,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "12",
+      "3"
+    ],
+    "opcode": "DF",
+    "paramstring": "12,3",
+    "notparsed": ""
+  },
+  {
+    "line": ".dfzxs 122",
+    "numline": 19,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "122"
+    ],
+    "opcode": "DFZXS",
+    "paramstring": "122",
+    "notparsed": ""
+  },
+  {
+    "line": ".dff 12",
+    "numline": 20,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "12"
+    ],
+    "opcode": "DFF",
+    "paramstring": "12",
+    "notparsed": ""
+  },
+  {
+    "line": "defs 1",
+    "numline": 21,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DS",
+    "paramstring": "1",
+    "notparsed": ""
+  },
+  {
+    "line": ".res 1",
+    "numline": 22,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DS",
+    "paramstring": "1",
+    "notparsed": ""
+  },
+  {
+    "line": "defm 1",
+    "numline": 23,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "1"
+    ],
+    "opcode": "DS",
+    "paramstring": "1",
+    "notparsed": ""
+  },
+  {
+    "line": ".align 4",
+    "numline": 24,
+    "addr": null,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "4"
+    ],
+    "opcode": "ALIGN",
+    "paramstring": "4",
+    "notparsed": ""
+  }
+]

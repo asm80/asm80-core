@@ -100,7 +100,7 @@ setdp 0
 var .set 3 ;test
 var := 4 ;test
 
-.include test.a80:blk
+.include test2.dummy:blk
 
 somelabel nop
 .pragma 6309

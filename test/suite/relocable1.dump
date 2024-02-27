@@ -191,6 +191,7 @@
     "opcode": "DS",
     "paramstring": "1",
     "notparsed": "",
+    "oldline": "last_key ds 1",
     "label": "LAST_KEY",
     "pass": 2,
     "segment": "BSSEG"
@@ -207,6 +208,7 @@
     "opcode": "DS",
     "paramstring": "8",
     "notparsed": "",
+    "oldline": "past_key ds 8",
     "label": "PAST_KEY",
     "pass": 2,
     "segment": "BSSEG"
@@ -223,6 +225,7 @@
     "opcode": "DS",
     "paramstring": "1",
     "notparsed": "",
+    "oldline": "buffer_key ds 1",
     "label": "BUFFER_KEY",
     "pass": 2,
     "segment": "BSSEG"

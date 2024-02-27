@@ -1,0 +1,4 @@
+nop
+    .block blk
+    oma: dw 1
+    .endblock

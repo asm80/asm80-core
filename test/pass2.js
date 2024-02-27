@@ -7,6 +7,8 @@ import fs from "fs";
 
 import { pass1 } from "../pass1.js";
 import {pass2} from "../pass2.js";
+import { fileSystem} from "./_filesystem.js";
+//console.log("FILE",fileSystem.fileGet)
 
 //QUnit test for parser.js
 
@@ -20,16 +22,11 @@ let asmI8080 = fs.readFileSync("./test/suite/test.a80","utf-8");
 let asmM6800 = fs.readFileSync("./test/suite/test.a68","utf-8");
 let asmDUMMY = fs.readFileSync("./test/suite/test.dummy","utf-8");
 let asmRELOCABLE = fs.readFileSync("./test/suite/relocable.a80","utf-8");
-const fileGet = (filename) => {
-    //console.log("INCLUDE", filename)
-    return `nop
-    .block blk
-    oma: dw 1
-    .endblock`
-}
+
+
 
 const doPass = (data, showError=false, assembler=I8080, name="") => {
-    let opts = {assembler, fileGet, PRAGMAS:[], endian:assembler.endian,}
+    let opts = {assembler, fileGet:fileSystem.fileGet , PRAGMAS:[], endian:assembler.endian,}
     
     try {
         let o = Parser.parse(data, opts);
@@ -43,8 +40,8 @@ const doPass = (data, showError=false, assembler=I8080, name="") => {
     vx[1]["__PRAGMAS"] = opts.PRAGMAS;
     //console.log(ASM.PRAGMAS,vx[1])
     vx = pass2(vx, opts);
-    console.log("VARS",vx[1])
-    console.log("XREF",opts.xref)
+    //console.log("VARS",vx[1])
+    //console.log("XREF",opts.xref)
 
     if (showError==2) console.log(vx)
     let l = lst(vx[0],vx[1],false, true,opts)

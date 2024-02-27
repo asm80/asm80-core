@@ -71,46 +71,46 @@
 0187                  DS 1 
 0188                  DS 1 
 0189                  ALIGN 4 
-018C 6E 6F 70 0A 20 20 20 20 2E 62 6C 6F 63 6B 20 62 6C 6B 0A 20 20 20 20 6F 6D 61 3A 20 64 77 20 31 0A 20 20 20 20 2E 65 6E 64 62 6C 6F 63 6B .INCBIN test.bin 
-01BA                  IF 1 
-01BA 00               NOP  
-01BB                  ELSE  
+018C 3B 64 69 7A 69 7A 65 6D 70 74 79 .INCBIN test.bin 
+0197                  IF 1 
+0197 00               NOP  
+0198                  ELSE  
                       NOP  
-01BB                  ENDIF  
-01BB 00               NOP  
-01BC 00        AA:    NOP  
-01BD                  SETDP 0 
-01BD           VAR:   .SET 3 ;test
-01BD           VAR:   .SET 4 ;test
-01BD                  .BLOCK blk 
-01BD 01 00     OMA:   DW 1 
-01BF                  .ENDBLOCK  
-01BF 00        SOMELABEL:   NOP  
-01C0                  .PRAGMA 6309 
-01C0                   ; empty line
-01C0                   ; with remark
-01C0           .macro XYZ,
-01C0                   ; 
-01C0            loop%%M: inr a
-01C0            dcr b
-01C0            jnz loop%%M
-01C0           .endm
-01C0            
-01C0                  ;*Macro unroll:  xyz
-01C0 3C        LOOPM_98S117:   INR a 
-01C1 05               DCR b 
-01C2 C2 C0 01         JNZ loopM_98S117 
-01C5                  ;*Macro unroll:  xyz
-01C5 3C        LOOPM_99S118:   INR a 
-01C6 05               DCR b 
-01C7 C2 C5 01         JNZ loopM_99S118 
-01CA                  ;*Macro unroll:  xyz
-01CA 3C        LOOPM_100S119:   INR a 
-01CB 05               DCR b 
-01CC C2 CA 01         JNZ loopM_100S119 
-01CF 54 48 49 53 20 49 53 20 41 4E 20 46 43 43 20 53 54 52 49 4E 47 FX1:   FCC "THIS IS AN FCC STRING" 
-01E4 53 4F 20 49 53 20 54 48 49 53 FX2:   FCC .SO IS THIS. 
-01EE 68               DS 1,"hello" 
+0198                  ENDIF  
+0198 00               NOP  
+0199 00        AA:    NOP  
+019A                  SETDP 0 
+019A           VAR:   .SET 3 ;test
+019A           VAR:   .SET 4 ;test
+019A                  .BLOCK blk 
+019A 01 00     OMA:   DW 1 
+019C                  .ENDBLOCK  
+019C 00        SOMELABEL:   NOP  
+019D                  .PRAGMA 6309 
+019D                   ; empty line
+019D                   ; with remark
+019D           .macro XYZ,
+019D                   ; 
+019D            loop%%M: inr a
+019D            dcr b
+019D            jnz loop%%M
+019D           .endm
+019D            
+019D                  ;*Macro unroll:  xyz
+019D 3C        LOOPM_98S117:   INR a 
+019E 05               DCR b 
+019F C2 9D 01         JNZ loopM_98S117 
+01A2                  ;*Macro unroll:  xyz
+01A2 3C        LOOPM_99S118:   INR a 
+01A3 05               DCR b 
+01A4 C2 A2 01         JNZ loopM_99S118 
+01A7                  ;*Macro unroll:  xyz
+01A7 3C        LOOPM_100S119:   INR a 
+01A8 05               DCR b 
+01A9 C2 A7 01         JNZ loopM_100S119 
+01AC 54 48 49 53 20 49 53 20 41 4E 20 46 43 43 20 53 54 52 49 4E 47 FX1:   FCC "THIS IS AN FCC STRING" 
+01C1 53 4F 20 49 53 20 54 48 49 53 FX2:   FCC .SO IS THIS. 
+01CB 68               DS 1,"hello" 
 0000                  .DSEG  
 0000 00 00 00 00 00 00 F0 3F DFF 1.234 
 0008 48 65 6C 6C EF   .ISTR "Hello" 
@@ -132,7 +132,7 @@
 0000                  .ESEG  
 0000 01               DB 1 
 0001 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 BSZ 50 
-0033 6E 6F 70 0A 20 20 20 20 2E 62 6C 6F 63 6B 20 62 6C 6B 0A 20 20 20 20 6F 6D 61 3A 20 64 77 20 31 0A 20 20 20 20 2E 65 6E 64 62 6C 6F 63 6B .INCBIN test.bin 
+0033 3B 64 69 7A 69 7A 65 6D 70 74 79 .INCBIN test.bin 
 0000                  .BSSEG  
 0000           BSTEST:   DS 5 
 0005                  .END  
@@ -167,16 +167,16 @@ VC:                 007B DEFINED AT LINE 60
 LABEL2:             0159 DEFINED AT LINE 64
 LABEL3:             0163 DEFINED AT LINE 69
 LABEL5:             0001 DEFINED AT LINE 71
-AA:                 01BC DEFINED AT LINE 95
+AA:                 0199 DEFINED AT LINE 95
 VAR:                0004 DEFINED AT LINE 101
-OMA:                01BD DEFINED AT LINE 3 IN test.a80
-SOMELABEL:          01BF DEFINED AT LINE 105
-LOOPM_98S117:       01C0 DEFINED AT LINE 112
+OMA:                019A DEFINED AT LINE 3 IN test2.dummy
+SOMELABEL:          019C DEFINED AT LINE 105
+LOOPM_98S117:       019D DEFINED AT LINE 112
                     > USED AT LINE 114
-LOOPM_99S118:       01C5 DEFINED AT LINE 112
+LOOPM_99S118:       01A2 DEFINED AT LINE 112
                     > USED AT LINE 114
-LOOPM_100S119:      01CA DEFINED AT LINE 112
+LOOPM_100S119:      01A7 DEFINED AT LINE 112
                     > USED AT LINE 114
-FX1:                01CF DEFINED AT LINE 121
-FX2:                01E4 DEFINED AT LINE 122
+FX1:                01AC DEFINED AT LINE 121
+FX2:                01C1 DEFINED AT LINE 122
 BSTEST:             0000 DEFINED AT LINE 152

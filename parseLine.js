@@ -356,6 +356,7 @@ export const parseLine = (s, macros, opts = {stopFlag:null, olds:null, assembler
       let s2 = JSON.parse(JSON.stringify(s));
       s2.addr = null;
       s2.bytes = 0;
+      s2.oldline = s.line;
 
       if (s.remark && !s.opcode) {
         return s;

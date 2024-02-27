@@ -315,6 +315,7 @@ export const unroll = (V, macros, uniqseed,opts) => {
       let pars = m[0];
 
       //console.log(s,pars)
+      //console.log("Macro unroll: " + s.line);
       out.push({
         remark: "*Macro unroll: " + s.line
       });

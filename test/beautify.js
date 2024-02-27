@@ -109,7 +109,7 @@ const testParse = (data, showError=false) => {
     }
 }
 
-QUnit.test('basic', assert => {
+QUnit.test('basic beautify', assert => {
     let o = doBeautify(data, true)
     //console.log("BEUA",o)
   assert.ok(o, "beautify returns something");

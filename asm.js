@@ -12,7 +12,6 @@ export const compile = (source, opts = {assembler:null}) => {
         endian:opts.assembler.endian,
         xfre: {},
         xref: {},
-        includedFiles: {},
     
     }
     try {
