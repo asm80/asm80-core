@@ -1,11 +1,14 @@
 0000                  .PRAGMA module 
+0000                   ; 
 0000 DB 7A     KEYIN:   IN 0x7a 
 0002 32 09 00         STA buffer_key 
 0005 FE FF            CPI 0xff 
 0007 CA 00 00         JZ keyin 
 000A 32 00 00         STA last_key 
 000D C9               RET  
+000E                   ; 
 000E                  .EXPORT keyin 
+000E                   ; 
 0000                  .BSSEG  
 0000           LAST_KEY:   DS 1 
 0001           PAST_KEY:   DS 8 

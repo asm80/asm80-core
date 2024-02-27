@@ -233,7 +233,7 @@ export const linkModules = (data, modules, library) => {
         let val = parseInt(data.vars[v])
         resolves[v] = {addr:val,seg:null}
     }
-    console.log("PASS1: Resolves init: ", resolves)
+    //console.log("PASS1: Resolves init: ", resolves)
 
     //resolve references
     const resolveModule = (mod) => {
@@ -276,8 +276,8 @@ export const linkModules = (data, modules, library) => {
     }
 
     //all modules are resolved now
-    console.log("PASS1: Resolved: ", resolves, notresolved)
-    console.log("PASS1: Modules: ", modules.map(q=>q.name))
+    //console.log("PASS1: Resolved: ", resolves, notresolved)
+    //console.log("PASS1: Modules: ", modules.map(q=>q.name))
 
     let seglen = {
         CSEG: 0,
@@ -292,7 +292,7 @@ export const linkModules = (data, modules, library) => {
             seglen[s] += mod.seglen[s]
         }
     }
-    console.log("PASS1: Seglen: ", seglen)
+    //console.log("PASS1: Seglen: ", seglen)
 
     let CSEG = data.segments.CSEG?parseInt(data.segments.CSEG):0
     let DSEG = data.segments.DSEG?parseInt(data.segments.DSEG):CSEG+seglen.CSEG
@@ -368,7 +368,7 @@ export const linkModules = (data, modules, library) => {
             }
         }
 
-        console.log("PASS2: CSEG", CSEG, "DSEG", DSEG, "ESEG", ESEG, "BSSEG", BSSEG)
+    //    console.log("PASS2: CSEG", CSEG, "DSEG", DSEG, "ESEG", ESEG, "BSSEG", BSSEG)
 
         //cleaning
         for (let s of out) {

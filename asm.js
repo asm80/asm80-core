@@ -1,8 +1,17 @@
-export const compile = (source, opts = {assembler:null}) => {
+// this is a main file, you know...
 
-  
+import {lst, html} from "./listing.js"
+import { pass1 } from "./pass1.js";
+import {pass2} from "./pass2.js";
+import {objCode, linkModules} from "./objcode.js"
+import * as Parser from "./parser.js";
 
-    opts = {...opts, fileGet, endian:false,
+export const lst=lst, html=html;
+
+
+export const compile = (source, fileSystem, opts = {assembler:null}, filename="noname") => {
+
+    opts = {...opts, fileGet: fileSystem.fileGet, endian:false,
         ENT:null,
         BINFROM:null,
         BINTO:null, 
@@ -72,4 +81,9 @@ export const compile = (source, opts = {assembler:null}) => {
         
         return [e, null];
     }
+}
+
+export const asmFromFile = (filename, fileSystem, opts = {assembler:null}) => {
+    let source = fileSystem.fileGet(filename);
+    return compile(source, fileSystem, opts, filename);
 }

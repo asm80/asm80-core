@@ -1,4 +1,6 @@
 0000                  .PRAGMA module 
+0000                   ; 
+0000                   ; 
 0000 7E        PRINT:   MOV a,M 
 0001 B7               ORA a 
 0002 CA 0C 00         JZ done 
@@ -6,17 +8,22 @@
 0008 23               INX H 
 0009 C3 00 00         JMP print 
 000C C9        DONE:   RET  
+000D                   ; 
 000D                  .EXTERN bios_print 
 000D                  .EXTERN not_used 
+000D                   ; 
 000D           PRINT_CHAR:    
 000D 32 09 00         STA prev_char 
 0010 CD 00 00         CALL bios_print 
 0013 C9               RET  
+0014                   ; 
 0014                  .EXPORT print 
 0014                  .EXPORT print_char 
+0014                   ; 
 0000                  .DSEG  
 0000 41 6E 79 20 64 61 74 61 20 68 65 72 65 00 DUMMY:   .CSTR "Any data here" 
 000E 53 74 72 69 6E 67 32 00 .CSTR "String2" 
+0016                   ; 
 0000                  .BSSEG  
 0000           LAST_CHAR:   DS 1 
 0001           BUFF_CHAR:   DS 8 
