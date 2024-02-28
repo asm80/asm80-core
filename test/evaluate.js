@@ -35,16 +35,27 @@ QUnit.test('vanilla', assert => {
 
 QUnit.test('2PI', assert => {
     assert.equal(doParse(`2*5`), 10, "2+3*4");
+    assert.equal(doParse(`0x10`), 16, "0x10");
+    assert.equal(doParse(`$10`), 16, "$10");
+    assert.equal(doParse(`1 + +1 \t \n \r`), 2, "$10");
+
     assert.equal(doParse(`lsb(2)`), 2, "2+3*4");
   });
   
 
-  /*
-QUnit.test("Unrecognized instruction", assert => {
+  
+QUnit.test("(2+3*4", assert => {
     assert.throws(() => {
-        let data = `haf`
+        let data = `(2+3*4`
         Parser.parse(data);
     })
 })
-*/
 
+
+  
+QUnit.test("(2+3*4))", assert => {
+    assert.throws(() => {
+        let data = `(2+3*4))`
+        Parser.parse(data);
+    })
+})

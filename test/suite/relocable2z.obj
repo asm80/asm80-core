@@ -9,26 +9,25 @@
     },
     {
       "lens": [
-        202,
-        12,
-        0
+        40,
+        6
       ],
       "segment": "CSEG",
       "rel": true,
       "relseg": "CSEG",
-      "add": 12,
+      "add": 6,
       "wia": 1
     },
     {
       "lens": [
         205,
-        13,
+        11,
         0
       ],
       "segment": "CSEG",
       "rel": true,
       "relseg": "CSEG",
-      "add": 13,
+      "add": 11,
       "wia": 1
     },
     {
@@ -39,14 +38,13 @@
     },
     {
       "lens": [
-        195,
-        0,
-        0
+        24,
+        246
       ],
       "segment": "CSEG",
       "rel": true,
       "relseg": "CSEG",
-      "add": 0,
+      "add": 246,
       "wia": 1
     },
     {
@@ -133,7 +131,7 @@
       "seg": "CSEG"
     },
     "PRINT_CHAR": {
-      "addr": 13,
+      "addr": 11,
       "seg": "CSEG"
     },
     "DUMMY": {
@@ -143,17 +141,13 @@
     "DUMMY2": {
       "addr": 0,
       "seg": "ESEG"
-    },
-    "LAST_CHAR": {
-      "addr": 0,
-      "seg": "BSSEG"
     }
   },
-  "cpu": "i8080",
+  "cpu": "z80",
   "endian": false,
-  "name": "relocable2",
+  "name": "relocable2z.z80",
   "seglen": {
-    "CSEG": 20,
+    "CSEG": 18,
     "DSEG": 22,
     "ESEG": 3,
     "BSSEG": 10

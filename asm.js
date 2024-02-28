@@ -76,10 +76,13 @@ export const compile = (source, fileSystem, opts = {assembler:null}, filename="n
     return out
     } catch (e) {
         // Some error occured
+        //console.log(e)
         let s = e.s || "Internal error";
 
 
         // Handle different kinds of errors
+        //error with "throw {e}" - hope it will never happen
+        /*
         if (e.e) {
           if (typeof e.e == "object") {
             e = e.e;
@@ -90,15 +93,19 @@ export const compile = (source, fileSystem, opts = {assembler:null}, filename="n
             };
           }
         }
+        console.log("E2",e)
+        */
         
-        //fix format msg vs message
+        //fix format msg vs message - hope not occur
+        /*
         if (!e.msg && e.message) {
           e.msg = e.message;
         }
+        */
 
         //no message, so we use the general one
         if (!e.msg) {
-          return {
+          throw {
             error:
             {
               msg: `Cannot evaluate line ${opts.WLINE.numline}, there is some unspecified error (e.g. reserved world as label etc.)`,
@@ -109,11 +116,11 @@ export const compile = (source, fileSystem, opts = {assembler:null}, filename="n
         }
         if (!e.s) e.s = s;
         
-        return {
+        throw {
           error: {
             msg: e.msg,
             s: e.s,
-            wline: opts.WLINE
+            //wline: opts.WLINE
           }
         };
     }

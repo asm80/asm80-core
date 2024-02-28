@@ -14,11 +14,11 @@ export const pass2 = (vx, opts) => {
         } else {
           //strict
           if (typeof dta == "string") {
-            if (dta.length != 1) throw "String parameter too long (" + dta + ")";
+            if (dta.length != 1) throw {msg:"String parameter too long (" + dta + ")"};
             return dta.charCodeAt(0) & 0xff;
           } else {
-            if (dta > 255) throw "Param out of bound (" + dta + ")";
-            if (dta < -128) throw "Param out of bound (" + dta + ")";
+            if (dta > 255) throw {msg:"Param out of bound (" + dta + ")"};
+            if (dta < -128) throw {msg:"Param out of bound (" + dta + ")"};
             return dta & 0xff;
           }
         }

@@ -1,19 +1,19 @@
 .pragma module
 
 
-print: mov a,M
-         ora a
-         jz done
+print: ld a,(hl)
+         or a
+         jr z,done
          call print_char
-         inx H
-         jmp print
+         inc HL
+         jr print
 done:   ret
 
 .extern bios_print
 .extern not_used
 
 print_char: 
-    sta prev_char
+    ld (prev_char),a
             call bios_print
             ret
 
@@ -26,11 +26,11 @@ dummy: .cstr "Any data here"
 .export dummy
 
 .eseg
-dummy2: jmp dummy2
+dummy2: jp dummy2
 .export dummy2
 
 .BSSEG
 last_char ds 1
 buff_char ds 8
 prev_char ds 1
-.export last_char
+; .export last_char

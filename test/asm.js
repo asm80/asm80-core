@@ -57,22 +57,24 @@ const doPass = (data, showError=false, assembler=I8080, name="") => {
 
 
 
-const doLink = (data, showError=false, assembler=I8080, name="") => {
-    let modules = data.modules.map(m => {
-        let f = JSON.parse(fs.readFileSync("./test/suite/"+m+".obj","utf-8"))
-        return f
+QUnit.test('relocable 8080 - no asm spec', assert => {
+    
+    assert.throws(()=>{
+        asm.compile(asmREL, fileSystem, {})
     })
-    let library = data.library.map(m => {
-        let f = JSON.parse(fs.readFileSync("./test/suite/"+m+".obj","utf-8"))
-        return f
+});
+
+QUnit.test('relocable 8080 - errr', assert => {
+    assert.throws(()=>{
+        asm.compile("Total bullshit", fileSystem, {assembler:"I8080"})
     })
+});
 
-    data.endian = assembler.endian
-
-    let out = linkModules(data,modules, library)
-
-    fs.writeFileSync("./test/suite/"+name+".combined",JSON.stringify(out))    
-}
+QUnit.test('undefined var', assert => {
+    assert.throws(()=>{
+        asm.compile("MVI undef", fileSystem, {assembler:"I8080"})
+    })
+});
 
 
 QUnit.test('relocable 8080', assert => {
@@ -92,7 +94,94 @@ QUnit.test('relocable2 8080', assert => {
     fileSystem.filePut("relocable2.obj", JSON.stringify(obj,null,2))
 });
 
+QUnit.test('relocable2 Z80', assert => {
+    try {
+    let {obj} = asm.compileFromFile("relocable2z.z80", fileSystem, {assembler:"Z80"})
+    assert.ok(typeof obj == "object")
+    fileSystem.filePut("relocable2z.obj", JSON.stringify(obj,null,2))
+    } catch (e) {
+        console.log(e)
+    }
+});
+
+
 QUnit.test('link 8080', assert => {
     asm.link(asmLNK, fileSystem, "relocable")
     assert.ok(true)
+});
+
+QUnit.test('link 8080 - all segs', assert => {
+    let lnk = {
+        "segments": {
+            "CSEG":"10",
+            "DSEG":"20",
+            "ESEG":"30",
+            "BSSEG":"40",
+        },
+        "vars": {
+            "BIOS_PRINT":"0x5"
+        },
+        "modules": ["relocable"],
+        "library": ["relocable1","relocable2"],
+    
+        "entrypoint":"main"
+    }
+    asm.link(lnk, fileSystem, "relocable")
+    assert.ok(true)
+});
+
+QUnit.test('link 8080 - errr', assert => {
+    assert.throws(()=>{
+        asm.link({modules:["nonexistent"]}, fileSystem, "relocable")
+    })
+});
+
+QUnit.test('link 8080 - errr2', assert => {
+    assert.throws(()=>{
+        asm.link({modules:["relocable"]}, fileSystem, "relocable")
+    })
+});
+
+QUnit.test('link 8080+Z80', assert => {
+    assert.throws(()=>{
+        asm.link({modules:["relocable","relocable2z"]}, fileSystem, "relocable")
+    })
+});
+
+QUnit.test('link 8080+Z80', assert => {
+    assert.throws(()=>{
+        asm.link({modules:["relocable"],library:["relocable2z"]}, fileSystem, "relocable")
+    })
+});
+
+QUnit.test('link 8080 - errr3', assert => {
+    assert.throws(()=>{
+        asm.link({modules:["relocable"], library:["nonexistent"]}, fileSystem, "relocable")
+    })
+});
+
+QUnit.test('link 8080 - errr4', assert => {
+    assert.throws(()=>{
+        asm.link({modules:["relocable"], library:["relocable"]}, fileSystem, "relocable")
+    })
+});
+
+
+
+QUnit.test('link 8080 - errr5', assert => {
+    let lnk = {
+        "segments": {
+            "CSEG":"10"
+        },
+        "vars": {
+            "BIOS_PRINT":"0x5"
+        },
+        "modules": ["relocable1", "relocable1"],
+        "library": ["relocable2"],
+    
+        "entrypoint":"main"
+    }
+    assert.throws(()=>{
+        asm.link(lnk, fileSystem, "relocable")
+    })
 });

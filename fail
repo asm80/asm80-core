@@ -1260,86 +1260,103 @@ ok 1254 ASM - Z80 > SRL L
 ok 1255 ASM - Z80 > SRL (HL)
 ok 1256 ASM - Z80 > SRL (IX+0x34)
 ok 1257 ASM - Z80 > SRL (IY+0x34)
-ok 1258 asm > relocable 8080
-ok 1259 asm > relocable1 8080
-ok 1260 asm > relocable2 8080
-ok 1261 asm > link 8080
-ok 1262 beautify > basic beautify
+ok 1258 asm > relocable 8080 - no asm spec
+ok 1259 asm > relocable 8080 - errr
+ok 1260 asm > undefined var
+ok 1261 asm > relocable 8080
+ok 1262 asm > relocable1 8080
+ok 1263 asm > relocable2 8080
+ok 1264 asm > relocable2 Z80
+ok 1265 asm > link 8080
+ok 1266 asm > link 8080 - all segs
+ok 1267 asm > link 8080 - errr
+ok 1268 asm > link 8080 - errr2
+ok 1269 asm > link 8080+Z80
+ok 1270 asm > link 8080+Z80 
+ok 1271 asm > link 8080 - errr3
+ok 1272 asm > link 8080 - errr4
+ok 1273 asm > link 8080 - errr5
+ok 1274 beautify > basic beautify
 [ 2, 3, 4, '*', '+' ]
-ok 1263 expression-parser > vanilla
+ok 1275 expression-parser > vanilla
 [ 2, 5, '*' ]
+[ 16 ]
+[ 16 ]
+[ 1, 1, '+' ]
 [ 2, 'lsb' ]
-ok 1264 expression-parser > 2PI
-ok 1265 parser > vanilla
-ok 1266 parser > Unrecognized instruction
-ok 1267 parser > Unrecognized instruction 
-ok 1268 parser > Unrecognized instruction  
-ok 1269 parser > Unrecognized instruction   
-ok 1270 parser > Macro params
-ok 1271 parser > Macro param string
-ok 1272 parser > Strings
-ok 1273 parser > Macro params OK
-ok 1274 parser > Macro params too few
-ok 1275 parser > ENDM without MACRO at line
-ok 1276 parser > Bad macro name at line
-ok 1277 parser > Macro nest
-ok 1278 parser > macro redefinition
-ok 1279 parser > REPT
-ok 1280 parser > REPT named
-ok 1281 parser > INCLUDE
-ok 1282 parser > INCLUDE BLOCK
-ok 1283 parser > INCLUDE bad block
-ok 1284 parser > INCLUDE no name given
-ok 1285 parser > No repeat count given
-ok 1286 parser > Bad repeat count given
-ok 1287 parser > MACRO *REPT1 has no appropriate ENDM
-ok 1288 pass1 > basic
-ok 1289 pass1 > ENDIF without IF
-ok 1290 pass1 > ELSE without IF
-ok 1291 pass1 > PHASE cannot be nested
-ok 1292 pass1 > Delimiters does not match
-ok 1293 pass1 > DS / RMB needs a numerical parameter
-ok 1294 pass1 > DB in BSS
-ok 1295 pass1 > Redefine label
-ok 1296 pass2 > basic 8080
-ok 1297 pass2 > basic 6800
-ok 1298 pass2 > basic dummy
-ok 1299 pass2 > basic dummy-endian
-ok 1300 pass2 > ORG in module
-ok 1301 pass2 > EQU without label
-ok 1302 pass2 > .ERROR
-ok 1303 pass2 > .IF nonsense
-ok 1304 pass2 > .IFN nonsense
-ok 1305 relocable > relocable 8080
-ok 1306 relocable > relocable1 8080
-ok 1307 relocable > relocable2 8080
-ok 1308 relocable > link 8080
-1..1308
-# pass 1308
+ok 1276 expression-parser > 2PI
+ok 1277 expression-parser > (2+3*4
+ok 1278 expression-parser > (2+3*4))
+ok 1279 parser > vanilla
+ok 1280 parser > Unrecognized instruction
+ok 1281 parser > Unrecognized instruction 
+ok 1282 parser > Unrecognized instruction  
+ok 1283 parser > Unrecognized instruction   
+ok 1284 parser > Macro params
+ok 1285 parser > Macro param string
+ok 1286 parser > Strings
+ok 1287 parser > Macro params OK
+ok 1288 parser > Macro params too few
+ok 1289 parser > ENDM without MACRO at line
+ok 1290 parser > Bad macro name at line
+ok 1291 parser > Macro nest
+ok 1292 parser > macro redefinition
+ok 1293 parser > REPT
+ok 1294 parser > REPT named
+ok 1295 parser > INCLUDE
+ok 1296 parser > INCLUDE BLOCK
+ok 1297 parser > INCLUDE bad block
+ok 1298 parser > INCLUDE no name given
+ok 1299 parser > No repeat count given
+ok 1300 parser > Bad repeat count given
+ok 1301 parser > MACRO *REPT1 has no appropriate ENDM
+ok 1302 pass1 > basic
+ok 1303 pass1 > ENDIF without IF
+ok 1304 pass1 > ELSE without IF
+ok 1305 pass1 > PHASE cannot be nested
+ok 1306 pass1 > Delimiters does not match
+ok 1307 pass1 > DS / RMB needs a numerical parameter
+ok 1308 pass1 > DB in BSS
+ok 1309 pass1 > Redefine label
+ok 1310 pass2 > basic 8080
+ok 1311 pass2 > basic 6800
+ok 1312 pass2 > basic dummy
+ok 1313 pass2 > basic dummy-endian
+ok 1314 pass2 > ORG in module
+ok 1315 pass2 > EQU without label
+ok 1316 pass2 > .ERROR
+ok 1317 pass2 > .IF nonsense
+ok 1318 pass2 > .IFN nonsense
+ok 1319 relocable > relocable 8080
+ok 1320 relocable > relocable1 8080
+ok 1321 relocable > relocable2 8080
+ok 1322 relocable > link 8080
+1..1322
+# pass 1322
 # skip 0
 # todo 0
 # fail 0
 -----------------------|---------|----------|---------|---------|-----------------------------------
 File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                 
 -----------------------|---------|----------|---------|---------|-----------------------------------
-All files              |   90.92 |    89.05 |      85 |   90.92 |                                   
- asm80-core            |   88.29 |    88.11 |   83.14 |   88.29 |                                   
-  asm.js               |   74.26 |    57.14 |     100 |   74.26 | 24-25,78-119                      
+All files              |   94.65 |    90.42 |   88.43 |   94.65 |                                   
+ asm80-core            |   93.61 |    89.83 |   90.24 |   93.61 |                                   
+  asm.js               |   94.94 |    82.75 |     100 |   94.94 | 108-116                           
   beautify.js          |     100 |      100 |     100 |     100 |                                   
-  expression-parser.js |   75.24 |    85.02 |    75.8 |   75.24 | ...-1213,1223,1258-1262,1299-1300 
+  expression-parser.js |   88.54 |    86.22 |   85.45 |   88.54 | ...-1226,1236,1271-1275,1312-1313 
   listing.js           |   97.61 |    90.12 |     100 |   97.61 | 54-55,57-58                       
-  objcode.js           |   95.89 |    79.01 |     100 |   95.89 | ...98-199,252-253,274-275,346-347 
-  parseLine.js         |   95.47 |    95.15 |     100 |   95.47 | ...99-100,102-103,371-373,384-386 
+  objcode.js           |   98.06 |    93.57 |     100 |   98.06 | 5,14-15,178-179,199,346-347       
+  parseLine.js         |   95.47 |    95.18 |     100 |   95.47 | ...99-100,102-103,371-373,384-386 
   parser.js            |     100 |      100 |     100 |     100 |                                   
   pass1.js             |   94.69 |    90.58 |     100 |   94.69 | ...02-504,509-511,518-519,558-562 
   pass2.js             |   96.02 |    89.93 |     100 |   96.02 | ...74-575,577-581,583-586,588-589 
   preprocessor.js      |   94.97 |    86.48 |     100 |   94.97 | ...49-151,169-170,280-282,288-290 
- asm80-core/cpu        |   96.89 |    91.59 |   87.34 |   96.89 |                                   
+ asm80-core/cpu        |   96.95 |    92.29 |   87.34 |   96.95 |                                   
   c6502.js             |    99.7 |    94.52 |   66.66 |    99.7 | 326                               
   dummy.js             |     100 |      100 |     100 |     100 |                                   
-  i8080.js             |     100 |    76.31 |     100 |     100 | ...48,154,159-160,168,174,180,186 
+  i8080.js             |     100 |    79.48 |     100 |     100 | 148,154,159-160,168,174,180,186   
   m6800.js             |   91.57 |    76.47 |   57.14 |   91.57 | 180-183,214-220,222-227,237-242   
-  z80.js               |   96.41 |    94.01 |   93.93 |   96.41 | ...87,503-504,595-600,741-747,778 
+  z80.js               |   96.53 |    94.73 |   93.93 |   96.53 | ...86-487,503-504,595-600,741-747 
  asm80-core/utils      |   98.95 |    87.23 |   83.33 |   98.95 |                                   
   base64escaped.js     |     100 |      100 |     100 |     100 |                                   
   fp.js                |   97.56 |       76 |     100 |   97.56 | 35                                

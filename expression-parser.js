@@ -84,6 +84,7 @@ export function Token(type_, index_, prio_, number_) {
       "\\": "\\\\",
     };
 
+    /*
   function escapeValue(v) {
     if (typeof v === "string") {
       escapable.lastIndex = 0;
@@ -100,8 +101,10 @@ export function Token(type_, index_, prio_, number_) {
     }
     return v;
   }
+  */
 
   Expression.prototype = {
+    /*
     simplify: function (values) {
       values = values || {};
       let nstack = [];
@@ -185,6 +188,7 @@ export function Token(type_, index_, prio_, number_) {
       );
       return ret;
     },
+    */
 
     evaluate: function (values) {
       values = values || {};
@@ -221,7 +225,7 @@ export function Token(type_, index_, prio_, number_) {
           } else if (item.index_ in this.functions) {
             nstack.push(this.functions[item.index_]);
           } else {
-            throw new Error("undefined variable: " + item.index_);
+            throw {msg: "undefined variable: " + item.index_};
           }
         } else if (type_ === TOP1) {
           n1 = nstack.pop();
@@ -237,14 +241,14 @@ export function Token(type_, index_, prio_, number_) {
               nstack.push(f.call(undefined, n1));
             }
           } else {
-            throw new Error(f + " is not a function");
+            throw {msg: f + " is not a function"};
           }
         } else {
-          throw new Error("invalid Expression");
+          throw {msg: "invalid Expression"};
         }
       }
       if (nstack.length > 1) {
-        throw new Error("invalid Expression (parity)");
+        throw {msg: "invalid Expression (parity)"};
       }
       let ev = nstack[0];
       let pragmas = values.__PRAGMAS;
@@ -298,7 +302,7 @@ export function Token(type_, index_, prio_, number_) {
             nstack.push(this.functions[item.index_]);
             xref.push(item.index_);
           } else {
-            throw new Error("undefined variable: " + item.index_);
+            throw {msg: "undefined variable: " + item.index_};
           }
         } else if (type_ === TOP1) {
           n1 = nstack.pop();
@@ -314,18 +318,18 @@ export function Token(type_, index_, prio_, number_) {
               nstack.push(f.call(undefined, n1));
             }
           } else {
-            throw new Error(f + " is not a function");
+            throw {msg: f + " is not a function"};
           }
         } else {
-          throw new Error("invalid Expression");
+          throw {msg: "invalid Expression"};
         }
       }
       if (nstack.length > 1) {
-        throw new Error("invalid Expression (parity)");
+        throw {msg: "invalid Expression (parity)"};
       }
       return xref;
     },
-
+    /*
     toString: function (toJS) {
       let nstack = [];
       let n1;
@@ -363,15 +367,17 @@ export function Token(type_, index_, prio_, number_) {
           f = nstack.pop();
           nstack.push(f + "(" + n1 + ")");
         } else {
-          throw new Error("invalid Expression");
+          throw {msg: "invalid Expression"};
         }
       }
       if (nstack.length > 1) {
-        throw new Error("invalid Expression (parity)");
+        throw {msg: "invalid Expression (parity)"};
       }
       return nstack[0];
     },
+    */
 
+    /*
     variables: function () {
       let L = this.tokens.length;
       let vars = [];
@@ -384,7 +390,9 @@ export function Token(type_, index_, prio_, number_) {
 
       return vars;
     },
+    */
 
+    /*
     toJSFunction: function (param, variables) {
       let f = new Function(
         param,
@@ -394,6 +402,7 @@ export function Token(type_, index_, prio_, number_) {
       );
       return f;
     },
+    */
   };
 
   function stringCode(s) {
@@ -666,7 +675,7 @@ export function Token(type_, index_, prio_, number_) {
       this.pos = 0;
 
       if (!this.expression)
-        throw new Error("Empty expression, probably missing argument");
+        throw {msg: "Empty expression, probably missing argument"};
 
       while (this.pos < this.expression.length) {
         if (this.isNumber()) {
@@ -803,7 +812,7 @@ export function Token(type_, index_, prio_, number_) {
     error_parsing: function (column, msg) {
       this.success = false;
       this.errormsg = "parse error [column " + column + "]: " + msg;
-      throw new Error(this.errormsg);
+      throw {msg: this.errormsg};
     },
 
     //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
@@ -1032,6 +1041,7 @@ export function Token(type_, index_, prio_, number_) {
 
     isConst: function () {
       return false; //false positive on E, PI
+      /*
       let str;
       for (let i in this.consts) {
         if (true) {
@@ -1045,6 +1055,7 @@ export function Token(type_, index_, prio_, number_) {
         }
       }
       return false;
+      */
     },
 
     isOperator: function () {
@@ -1162,6 +1173,7 @@ export function Token(type_, index_, prio_, number_) {
       return false;
     },
 
+    /*
     isPositiveSign: function () {
       let code = this.expression.charCodeAt(this.pos - 1);
       if (code === 43) {
@@ -1170,6 +1182,7 @@ export function Token(type_, index_, prio_, number_) {
       }
       return false;
     },
+    */
 
     isNegativeSign: function () {
       let code = this.expression.charCodeAt(this.pos - 1);
