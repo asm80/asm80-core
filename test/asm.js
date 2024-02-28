@@ -4,6 +4,7 @@ import fs from "fs";
 
 import { fileSystem } from "./_filesystem.js";
 import { ihex } from "../utils/ihex.js";
+import { isrec, isrec28 } from "../utils/srec.js";
 import { lst, html } from "../listing.js";
 
 
@@ -170,8 +171,11 @@ QUnit.test('hex', assert => {
 
 QUnit.test('hex2', assert => {
     let result = asm.compileFromFile("tinybasic.a80", fileSystem, {assembler:"I8080"})
+    //fileSystem.filePut("tinybasic.a80.obj", JSON.stringify(result,null,2))
     assert.ok(typeof result.dump == "object")
     let hex = ihex(result)
+    let srec = isrec(result)
+    let srec28 = isrec28(result)
     fileSystem.filePut("tinybasic.a80.hex", hex)
     //check
     let hexmaster = fileSystem.fileGet("tinybasic.a80.master.hex")
