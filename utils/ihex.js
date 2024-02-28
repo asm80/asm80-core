@@ -26,14 +26,14 @@ const makeHex =  (addr, dta, linelen) => {
       buffer.push(dta[i]);
       if (++inter === ilen) {
         //flush
-        out += hexLine(addr, buffer) + "\r\n";
+        out += hexLine(addr, buffer) + "\n";
         buffer = [];
         inter = 0;
         addr += ilen;
       }
     }
     if (buffer.length) {
-      out += hexLine(addr, buffer) + "\r\n";
+      out += hexLine(addr, buffer) + "\n";
     }
 
     return out;
