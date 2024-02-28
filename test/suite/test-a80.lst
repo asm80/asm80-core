@@ -3,6 +3,7 @@
 0000                  .BINFROM 0 
 0000                  .BINTO 0x8000 
 0000                  .ENT $ 
+0000                   ; 
 0000 03               DB 1+2 
 0001 0E               DB 2+3*4 
 0002           ANYVAL:   EQU 5 
@@ -11,10 +12,15 @@
 0003 01 19 01 00 07 0A 07 03 02 DB anyval / 3,anyval ^ 2,anyval % 2,anyval & 2,anyval | 2,anyval * 2,anyval + 2,anyval - 2,anyval # 3 
 000C 00 01 01 00 01 00 DB anyval =1,anyval != 1,anyval ?>1,anyval ?<1,anyval ?>=1,anyval ?<= 1 
 0012 00               DB 1&2 
+0013                   ; 
 0013 48 65 6C 6C 6F 57 6F 72 6C 64 DB "Hello" || "World" 
+001D                   ; 
 001D 68 65 6C 6C 6F 09 0A 0D 5C 62 61 63 6B 73 6C 61 73 68 5C 0C 08 2F 22 27 DB "hello\t\n\r\\backslash\\\f\b\/\u0022\'" 
+0035                   ; 
 0035 AB 00 00 23 12 0C 16 01 DB 0xab,0b1010,0o1237,$123,12h,12,10110b,%12 
+003D                   ; 
 003D 00 01            DB lsb(label),msb(label) 
+003F                   ; 
 0100                  .ORG $100 
 0100 00        LABEL:   NOP  
 0101 21 01 01         LXI h,label+1 
@@ -23,6 +29,7 @@
 0108 47               MOV b,a 
 0109 80               ADD b 
 010A C3 00 01         JMP label 
+010D                   ; 
 010D                  IF 1 
 010D 00               NOP  
 010E                  ELSE  
@@ -33,14 +40,18 @@
 010E                  ENDIF  
                       DB 1 
 010E                  ENDIF  
+010E                   ; 
 010E                  IFN 0 
 010E 59 45 53         DB "YES" 
 0111                  ENDIF  
+0111                   ; 
 0111 00               NOP  
+0112                   ; 
 0112                  .M16  
 0112                  .M8  
 0112                  .X16  
 0112                  .X8  
+0112                   ; 
 0112                  .PHASE $200 
 0200 @0112 00         NOP  
 0201 @0113            .DEPHASE  
@@ -49,69 +60,84 @@
 0113           VC:    EQU va 
 0113 01 01            FILL 1,2 
 0115 02 02 02         FILL 2,3 
-0118 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02 FILL 2,"A" 
-0159 00        LABEL2:   NOP  
-015A C3 00 01         JMP label 
-015D 79               MOV A,C 
-015E CA 00 01         JZ LABEL 
-0161 3E 0F            MVI a,0x0f 
-0163 79        LABEL3:   MOV a,C ;with remark as a,b,c
-0164           LABEL5:   = 1 
-0164 01               DB 1 
-0165 01               DB 1 
-0166 01               DB 1 
-0167 01 00            DW 1 
-0169 02 00            DW 2 
-016B 03 00            DW 3 
-016D 16 00 00 00      DD 22 
-0171 00 00 40 41 00 00 40 40 DF 12,3 
-0179 00 00 7A 00 00   DFZXS 122 
-017E 00 00 00 00 00 00 28 40 DFF 12 
-0186                  DS 1 
-0187                  DS 1 
-0188                  DS 1 
-0189                  ALIGN 4 
-018C 3B 64 69 7A 69 7A 65 6D 70 74 79 .INCBIN test.bin 
-0197                  IF 1 
-0197 00               NOP  
-0198                  ELSE  
+0118 41 41            FILL "A",2 
+011A 00        LABEL2:   NOP  
+011B C3 00 01         JMP label 
+011E 79               MOV A,C 
+011F CA 00 01         JZ LABEL 
+0122 3E 0F            MVI a,0x0f 
+0124 79        LABEL3:   MOV a,C ;with remark as a,b,c  
+0125                   ; 
+0125           LABEL5:   = 1 
+0125 01               DB 1 
+0126 01               DB 1 
+0127 01               DB 1 
+0128 01 00            DW 1 
+012A 02 00            DW 2 
+012C 03 00            DW 3 
+012E 16 00 00 00      DD 22 
+0132 00 00 40 41 00 00 40 40 DF 12,3 
+013A 87 74 00 00 00   DFZXS 122 
+013F 00 00 00 00 00 00 28 40 DFF 12 
+0147                  DS 1 
+0148                  DS 1 
+0149                  DS 1 
+014A                  ALIGN 4 
+014C 3B 64 69 7A 69 7A 65 6D 70 74 79 .INCBIN test.bin 
+0157                  IF 1 
+0157 00               NOP  
+0158                  ELSE  
                       NOP  
-0198                  ENDIF  
-0198 00               NOP  
-0199 00        AA:    NOP  
-019A                  SETDP 0 
-019A           VAR:   .SET 3 ;test
-019A           VAR:   .SET 4 ;test
-019A                  .BLOCK blk 
-019A 01 00     OMA:   DW 1 
-019C                  .ENDBLOCK  
-019C 00        SOMELABEL:   NOP  
-019D                  .PRAGMA 6309 
-019D                   ; empty line
-019D                   ; with remark
-019D           .macro XYZ,
-019D                   ; 
-019D            loop%%M: inr a
-019D            dcr b
-019D            jnz loop%%M
-019D           .endm
-019D            
-019D                  ;*Macro unroll:  xyz
-019D 3C        LOOPM_98S117:   INR a 
-019E 05               DCR b 
-019F C2 9D 01         JNZ loopM_98S117 
-01A2                  ;*Macro unroll:  xyz
-01A2 3C        LOOPM_99S118:   INR a 
-01A3 05               DCR b 
-01A4 C2 A2 01         JNZ loopM_99S118 
-01A7                  ;*Macro unroll:  xyz
-01A7 3C        LOOPM_100S119:   INR a 
-01A8 05               DCR b 
-01A9 C2 A7 01         JNZ loopM_100S119 
-01AC 54 48 49 53 20 49 53 20 41 4E 20 46 43 43 20 53 54 52 49 4E 47 FX1:   FCC "THIS IS AN FCC STRING" 
-01C1 53 4F 20 49 53 20 54 48 49 53 FX2:   FCC .SO IS THIS. 
-01CB 68               DS 1,"hello" 
+0158                  ENDIF  
+0158                   ; 
+0158 00               NOP  
+0159                   ; 
+0159 00        AA:    NOP  
+015A                   ; 
+015A                   ; 
+015A                  SETDP 0 
+015A                   ; 
+015A           VAR:   .SET 3 ;test
+015A           VAR:   .SET 4 ;test
+015A                   ; 
+015A                  .BLOCK blk 
+015A 01 00     OMA:   DW 1 
+015C                  .ENDBLOCK  
+015C                   ; 
+015C 00        SOMELABEL:   NOP  
+015D                  .PRAGMA 6309 
+015D                   ; 
+015D                   ; empty line   
+015D                   ; with remark
+015D                   ; 
+015D           .macro XYZ,
+015D                   ; 
+015D            loop%%M: inr a
+015D            dcr b
+015D            jnz loop%%M
+015D           .endm
+015D            
+015D                   ; 
+015D                  ;*Macro unroll:  xyz
+015D 3C        LOOPM_120S117:   INR a 
+015E 05               DCR b 
+015F C2 5D 01         JNZ loopM_120S117 
+0162                  ;*Macro unroll:  xyz
+0162 3C        LOOPM_121S118:   INR a 
+0163 05               DCR b 
+0164 C2 62 01         JNZ loopM_121S118 
+0167                  ;*Macro unroll:  xyz
+0167 3C        LOOPM_122S119:   INR a 
+0168 05               DCR b 
+0169 C2 67 01         JNZ loopM_122S119 
+016C                   ; 
+016C 54 48 49 53 20 49 53 20 41 4E 20 46 43 43 20 53 54 52 49 4E 47 FX1:   FCC "THIS IS AN FCC STRING" 
+0181 53 4F 20 49 53 20 54 48 49 53 FX2:   FCC .SO IS THIS. 
+018B                   ; 
+018B 68               DS 1,"hello" 
+018C                   ; 
 0000                  .DSEG  
+0000                   ; 
 0000 00 00 00 00 00 00 F0 3F DFF 1.234 
 0008 48 65 6C 6C EF   .ISTR "Hello" 
 000D 8C               .ISTR 12 
@@ -119,22 +145,25 @@
 0010 53 74 72 69 6E 67 00 .CSTR "String" 
 0017 05 48 45 4C 4C 4F .PSTR "HELLO" 
 001D 01 7B            .PSTR 123 
-001F 00 00 01 00 00   DFZXS 1.23 
-0024 00 FF FF FF 00   DFZXS -1.23 
-0029 00 FF FF FF 00   DFZXS -1 
-002E 00 00 FF 00 00   DFZXS 255 
-0033 00 FF 01 FF 00   DFZXS -255 
-0038 00 00 E8 FD 00   DFZXS 65000 
+001F 81 00 00 00 00   DFZXS 1.23 
+0024 81 80 00 00 00   DFZXS -1.23 
+0029 81 80 00 00 00   DFZXS -1 
+002E 88 7F 00 00 00   DFZXS 255 
+0033 88 FF 00 00 00   DFZXS -255 
+0038 90 7D E8 00 00   DFZXS 65000 
 003D 91 00 E8 00 00   DFZXS 66000 
-0042 00 00 01 00 00   DFZXS 0.0000000000000001 
-0047 00 00 09 00 00   DFZXS 9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 
+0042 81 00 00 00 00   DFZXS 0.0000000000000001 
+0047 84 10 00 00 00   DFZXS 9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 
 004C                   ;.dfzxs 1e3
 0000                  .ESEG  
 0000 01               DB 1 
 0001 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 BSZ 50 
+0033                   ; 
 0033 3B 64 69 7A 69 7A 65 6D 70 74 79 .INCBIN test.bin 
+003E                   ; 
 0000                  .BSSEG  
 0000           BSTEST:   DS 5 
+0005                   ; 
 0005                  .END  
 
 
@@ -164,19 +193,19 @@ VA:                 007B DEFINED AT LINE 58
                     > USED AT LINE 60
 VB:                 0070 DEFINED AT LINE 59
 VC:                 007B DEFINED AT LINE 60
-LABEL2:             0159 DEFINED AT LINE 64
-LABEL3:             0163 DEFINED AT LINE 69
+LABEL2:             011A DEFINED AT LINE 64
+LABEL3:             0124 DEFINED AT LINE 69
 LABEL5:             0001 DEFINED AT LINE 71
-AA:                 0199 DEFINED AT LINE 95
+AA:                 0159 DEFINED AT LINE 95
 VAR:                0004 DEFINED AT LINE 101
-OMA:                019A DEFINED AT LINE 3 IN test2.dummy
-SOMELABEL:          019C DEFINED AT LINE 105
-LOOPM_98S117:       019D DEFINED AT LINE 112
+OMA:                015A DEFINED AT LINE 3 IN test2.dummy
+SOMELABEL:          015C DEFINED AT LINE 105
+LOOPM_120S117:      015D DEFINED AT LINE 112
                     > USED AT LINE 114
-LOOPM_99S118:       01A2 DEFINED AT LINE 112
+LOOPM_121S118:      0162 DEFINED AT LINE 112
                     > USED AT LINE 114
-LOOPM_100S119:      01A7 DEFINED AT LINE 112
+LOOPM_122S119:      0167 DEFINED AT LINE 112
                     > USED AT LINE 114
-FX1:                01AC DEFINED AT LINE 121
-FX2:                01C1 DEFINED AT LINE 122
+FX1:                016C DEFINED AT LINE 121
+FX2:                0181 DEFINED AT LINE 122
 BSTEST:             0000 DEFINED AT LINE 152

@@ -63,8 +63,10 @@ export const compile = (source, fileSystem, opts = {assembler:null}, filename="n
       dump: metacode[0],
       vars: metacode[1],
       xref: opts.xref,
+      opts: opts,
     }
 
+    
     // is it a module?
 
     let vars = metacode[1];

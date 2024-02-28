@@ -47,6 +47,9 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
         if (!ln.opcode) {
             continue
         }
+        if (ln.ifskip)  {
+            continue
+        }
 
         let op = {
             lens: ln.lens,

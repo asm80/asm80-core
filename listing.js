@@ -1,5 +1,8 @@
 import {toHex2, toHex4} from './utils/utils.js';
-export const lst = (V, vars, raw, compact=false, opts) => {
+export const lst = (result, raw, compact=false) => {
+  let V = result.dump;
+  let  vars = result.vars;
+  let opts = result.opts;
     let ln;
     let op;
     let out = "";

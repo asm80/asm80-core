@@ -60,7 +60,7 @@ lxi h, label+1
  vc .equ va
  .fill 1,2
  fill 2,3
- fill 2,"A"
+ fill "A",2
 label2: nop
 jmp label   
 MOV A,C

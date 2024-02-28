@@ -35,7 +35,7 @@ export const fileSystem = {
         return fs.readdirSync("./test/suite/"+name)
     },
     fileChanged: (name) => {
-        return fs.statSync("./test/suite/"+name).mtime
+        return new Date(fs.statSync("./test/suite/"+name).mtime).getTime()
     }
 }
 

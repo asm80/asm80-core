@@ -427,8 +427,8 @@ export const pass2 = (vx, opts) => {
             m = Parser.evaluate(op.params[l], vars);
             if (typeof m === "number") {
               //console.error(m)
-              //let a = fptozx(m, false); //uncomment if you want to use the old fptozx with no ZX int number support
-              let a = fptozx(m);
+              let a = fptozx(m, false); //uncomment if you want to use the old fptozx with no ZX int number support
+              //let a = fptozx(m);
               //console.log(m,a)
               if (opts.endian) {
                 op.lens[bts++] = a[4];

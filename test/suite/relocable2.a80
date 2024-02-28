@@ -17,6 +17,13 @@ print_char:
             call bios_print
             ret
 
+.if 0
+mvi a,3
+.else
+mvi a,4
+.endif
+
+
 .export print
 .export print_char
 

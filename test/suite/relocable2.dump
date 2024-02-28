@@ -1,6 +1,6 @@
 [
   {
-    "line": ".pragma module",
+    "line": ".pragma module\r",
     "numline": 1,
     "addr": 0,
     "bytes": 0,
@@ -15,7 +15,31 @@
     "segment": "CSEG"
   },
   {
-    "line": "print: mov a,M",
+    "line": "\r",
+    "numline": 2,
+    "addr": 0,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "\r",
+    "numline": 3,
+    "addr": 0,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "print: mov a,M\r",
     "numline": 4,
     "addr": 0,
     "bytes": 1,
@@ -37,7 +61,7 @@
     "segment": "CSEG"
   },
   {
-    "line": " ora a",
+    "line": " ora a\r",
     "numline": 5,
     "addr": 1,
     "bytes": 1,
@@ -57,7 +81,7 @@
     "segment": "CSEG"
   },
   {
-    "line": " jz done",
+    "line": " jz done\r",
     "numline": 6,
     "addr": 2,
     "bytes": 3,
@@ -82,7 +106,7 @@
     ]
   },
   {
-    "line": " call print_char",
+    "line": " call print_char\r",
     "numline": 7,
     "addr": 5,
     "bytes": 3,
@@ -107,7 +131,7 @@
     ]
   },
   {
-    "line": " inx H",
+    "line": " inx H\r",
     "numline": 8,
     "addr": 8,
     "bytes": 1,
@@ -127,7 +151,7 @@
     "segment": "CSEG"
   },
   {
-    "line": " jmp print",
+    "line": " jmp print\r",
     "numline": 9,
     "addr": 9,
     "bytes": 3,
@@ -152,7 +176,7 @@
     ]
   },
   {
-    "line": "done:   ret",
+    "line": "done:   ret\r",
     "numline": 10,
     "addr": 12,
     "bytes": 1,
@@ -170,7 +194,19 @@
     "segment": "CSEG"
   },
   {
-    "line": ".extern bios_print",
+    "line": "\r",
+    "numline": 11,
+    "addr": 13,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": ".extern bios_print\r",
     "numline": 12,
     "addr": 13,
     "bytes": 0,
@@ -188,7 +224,7 @@
     ]
   },
   {
-    "line": ".extern not_used",
+    "line": ".extern not_used\r",
     "numline": 13,
     "addr": 13,
     "bytes": 0,
@@ -206,7 +242,19 @@
     ]
   },
   {
-    "line": "print_char:",
+    "line": "\r",
+    "numline": 14,
+    "addr": 13,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "print_char: \r",
     "numline": 15,
     "addr": 13,
     "bytes": 0,
@@ -218,7 +266,7 @@
     "segment": "CSEG"
   },
   {
-    "line": " sta prev_char",
+    "line": " sta prev_char\r",
     "numline": 16,
     "addr": 13,
     "bytes": 3,
@@ -243,7 +291,7 @@
     ]
   },
   {
-    "line": " call bios_print",
+    "line": " call bios_print\r",
     "numline": 17,
     "addr": 16,
     "bytes": 3,
@@ -268,7 +316,7 @@
     ]
   },
   {
-    "line": " ret",
+    "line": " ret\r",
     "numline": 18,
     "addr": 19,
     "bytes": 1,
@@ -285,9 +333,129 @@
     "segment": "CSEG"
   },
   {
-    "line": ".export print",
+    "line": "\r",
+    "numline": 19,
+    "addr": 20,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": ".if 0\r",
     "numline": 20,
     "addr": 20,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [
+      "0"
+    ],
+    "opcode": "IF",
+    "paramstring": "0",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "mvi a,3\r",
+    "numline": 21,
+    "addr": 20,
+    "bytes": 2,
+    "_dp": 0,
+    "params": [
+      "a",
+      "3"
+    ],
+    "opcode": "MVI",
+    "paramstring": "a,3",
+    "notparsed": "",
+    "lens": [
+      62,
+      null
+    ],
+    "wia": 1,
+    "resolve": 1,
+    "pass": 2,
+    "segment": "CSEG",
+    "ifskip": true
+  },
+  {
+    "line": ".else\r",
+    "numline": 22,
+    "addr": 20,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "opcode": "ELSE",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "mvi a,4\r",
+    "numline": 23,
+    "addr": 20,
+    "bytes": 2,
+    "_dp": 0,
+    "params": [
+      "a",
+      "4"
+    ],
+    "opcode": "MVI",
+    "paramstring": "a,4",
+    "notparsed": "",
+    "lens": [
+      62,
+      4
+    ],
+    "wia": 1,
+    "resolve": 1,
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": ".endif\r",
+    "numline": 24,
+    "addr": 22,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "opcode": "ENDIF",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "\r",
+    "numline": 25,
+    "addr": 22,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "\r",
+    "numline": 26,
+    "addr": 22,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": ".export print\r",
+    "numline": 27,
+    "addr": 22,
     "bytes": 0,
     "_dp": 0,
     "params": [
@@ -303,9 +471,9 @@
     ]
   },
   {
-    "line": ".export print_char",
-    "numline": 21,
-    "addr": 20,
+    "line": ".export print_char\r",
+    "numline": 28,
+    "addr": 22,
     "bytes": 0,
     "_dp": 0,
     "params": [
@@ -321,8 +489,20 @@
     ]
   },
   {
-    "line": ".dseg",
-    "numline": 23,
+    "line": "\r",
+    "numline": 29,
+    "addr": 22,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": ".dseg\r",
+    "numline": 30,
     "addr": 0,
     "bytes": 0,
     "_dp": 0,
@@ -333,8 +513,8 @@
     "segment": "DSEG"
   },
   {
-    "line": "dummy: .cstr \"Any data here\"",
-    "numline": 24,
+    "line": "dummy: .cstr \"Any data here\"\r",
+    "numline": 31,
     "addr": 0,
     "bytes": 14,
     "label": "DUMMY",
@@ -365,8 +545,8 @@
     ]
   },
   {
-    "line": ".cstr \"String2\"",
-    "numline": 25,
+    "line": ".cstr \"String2\"\r",
+    "numline": 32,
     "addr": 14,
     "bytes": 8,
     "_dp": 0,
@@ -390,8 +570,8 @@
     ]
   },
   {
-    "line": ".export dummy",
-    "numline": 26,
+    "line": ".export dummy\r",
+    "numline": 33,
     "addr": 22,
     "bytes": 0,
     "_dp": 0,
@@ -408,8 +588,20 @@
     ]
   },
   {
-    "line": ".eseg",
-    "numline": 28,
+    "line": "\r",
+    "numline": 34,
+    "addr": 22,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "DSEG"
+  },
+  {
+    "line": ".eseg\r",
+    "numline": 35,
     "addr": 0,
     "bytes": 0,
     "_dp": 0,
@@ -420,8 +612,8 @@
     "segment": "ESEG"
   },
   {
-    "line": "dummy2: jmp dummy2",
-    "numline": 29,
+    "line": "dummy2: jmp dummy2\r",
+    "numline": 36,
     "addr": 0,
     "bytes": 3,
     "label": "DUMMY2",
@@ -446,8 +638,8 @@
     ]
   },
   {
-    "line": ".export dummy2",
-    "numline": 30,
+    "line": ".export dummy2\r",
+    "numline": 37,
     "addr": 3,
     "bytes": 0,
     "_dp": 0,
@@ -464,8 +656,20 @@
     ]
   },
   {
-    "line": ".BSSEG",
-    "numline": 32,
+    "line": "\r",
+    "numline": 38,
+    "addr": 3,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "ESEG"
+  },
+  {
+    "line": ".BSSEG\r",
+    "numline": 39,
     "addr": 0,
     "bytes": 0,
     "_dp": 0,
@@ -477,7 +681,7 @@
   },
   {
     "line": "LAST_CHAR: ds 1",
-    "numline": 33,
+    "numline": 40,
     "addr": 0,
     "bytes": 1,
     "_dp": 0,
@@ -487,14 +691,14 @@
     "opcode": "DS",
     "paramstring": "1",
     "notparsed": "",
-    "oldline": "last_char ds 1",
+    "oldline": "last_char ds 1\r",
     "label": "LAST_CHAR",
     "pass": 2,
     "segment": "BSSEG"
   },
   {
     "line": "BUFF_CHAR: ds 8",
-    "numline": 34,
+    "numline": 41,
     "addr": 1,
     "bytes": 8,
     "_dp": 0,
@@ -504,14 +708,14 @@
     "opcode": "DS",
     "paramstring": "8",
     "notparsed": "",
-    "oldline": "buff_char ds 8",
+    "oldline": "buff_char ds 8\r",
     "label": "BUFF_CHAR",
     "pass": 2,
     "segment": "BSSEG"
   },
   {
     "line": "PREV_CHAR: ds 1",
-    "numline": 35,
+    "numline": 42,
     "addr": 9,
     "bytes": 1,
     "_dp": 0,
@@ -521,14 +725,14 @@
     "opcode": "DS",
     "paramstring": "1",
     "notparsed": "",
-    "oldline": "prev_char ds 1",
+    "oldline": "prev_char ds 1\r",
     "label": "PREV_CHAR",
     "pass": 2,
     "segment": "BSSEG"
   },
   {
     "line": ".export last_char",
-    "numline": 36,
+    "numline": 43,
     "addr": 10,
     "bytes": 0,
     "_dp": 0,

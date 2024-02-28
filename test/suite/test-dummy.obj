@@ -1,6 +1,6 @@
 [
   {
-    "line": ";.pragma relax",
+    "line": ";.pragma relax\r",
     "numline": 1,
     "addr": 0,
     "bytes": 0,
@@ -13,7 +13,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "label: equ $",
+    "line": "label: equ $\r",
     "numline": 2,
     "addr": 0,
     "bytes": 0,
@@ -40,7 +40,7 @@
     "_dp": 0
   },
   {
-    "line": "p1 10",
+    "line": "p1 10\r",
     "numline": 4,
     "addr": 1,
     "bytes": 2,
@@ -59,7 +59,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "p2 10",
+    "line": "p2 10\r",
     "numline": 5,
     "addr": 3,
     "bytes": 3,
@@ -79,7 +79,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "p1 \"A\"",
+    "line": "p1 \"A\"\r",
     "numline": 6,
     "addr": 6,
     "bytes": 2,
@@ -98,7 +98,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "p2 \"A\"",
+    "line": "p2 \"A\"\r",
     "numline": 7,
     "addr": 8,
     "bytes": 3,
@@ -118,7 +118,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "pa2 10",
+    "line": "pa2 10\r",
     "numline": 8,
     "addr": 11,
     "bytes": 4,
@@ -139,7 +139,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "pa2 \"AB\"",
+    "line": "pa2 \"AB\"\r",
     "numline": 9,
     "addr": 15,
     "bytes": 4,
@@ -160,7 +160,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "pb2 \"AB\"",
+    "line": "pb2 \"AB\"\r",
     "numline": 10,
     "addr": 19,
     "bytes": 5,
@@ -182,7 +182,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "pb2 10",
+    "line": "pb2 10\r",
     "numline": 11,
     "addr": 24,
     "bytes": 5,
@@ -204,6 +204,19 @@
     "segment": "CSEG"
   },
   {
+    "line": "\r",
+    "numline": 12,
+    "addr": 29,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "lens": [],
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
     "bytes": 1,
     "lens": [],
     "pass": 2,
@@ -212,7 +225,7 @@
     "_dp": 0
   },
   {
-    "line": " .block blk",
+    "line": " .block blk\r",
     "numline": 2,
     "addr": 30,
     "bytes": 0,
@@ -229,7 +242,7 @@
     "segment": "CSEG"
   },
   {
-    "line": " oma: dw 1",
+    "line": " oma: dw 1\r",
     "numline": 3,
     "addr": 30,
     "bytes": 2,
@@ -265,7 +278,20 @@
     "segment": "CSEG"
   },
   {
-    "line": "label2: equ $",
+    "line": "\r",
+    "numline": 14,
+    "addr": 32,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "lens": [],
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "label2: equ $\r",
     "numline": 15,
     "addr": 32,
     "bytes": 0,
@@ -284,7 +310,7 @@
     ]
   },
   {
-    "line": "px2 10",
+    "line": "px2 10\r",
     "numline": 16,
     "addr": 32,
     "bytes": 4,
@@ -305,7 +331,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "py2 10",
+    "line": "py2 10\r",
     "numline": 17,
     "addr": 36,
     "bytes": 4,
@@ -327,7 +353,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "p1 +10",
+    "line": "p1 +10\r",
     "numline": 18,
     "addr": 40,
     "bytes": 2,
@@ -346,7 +372,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "p2 lsb(label2)",
+    "line": "p2 lsb(label2)\r",
     "numline": 19,
     "addr": 42,
     "bytes": 3,
@@ -366,7 +392,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "db 3*\"A\"",
+    "line": "db 3*\"A\"\r",
     "numline": 20,
     "addr": 45,
     "bytes": 1,

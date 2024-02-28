@@ -44,12 +44,12 @@ const doPass = (data, showError=false, assembler=I8080, name="") => {
     //console.log("XREF",opts.xref)
 
     if (showError==2) console.log(vx)
-    let l = lst(vx[0],vx[1],false, true,opts)
+    let l = lst({dump:vx[0],vars:vx[1],opts:opts},false, true)
     if (name) fs.writeFileSync("./test/suite/"+name+".lst",l)
     if (name) fs.writeFileSync("./test/suite/"+name+".obj",JSON.stringify(vx[0],null,2))
-    let l2 = lst(vx[0],vx[1], true, false, opts)
-    let www = html(vx[0],vx[1],false, true,opts)
-    let www2 = html(vx[0],vx[1],true, false,opts)
+    //let l2 = lst(vx[0],vx[1], true, false, opts)
+    //let www = html(vx[0],vx[1],false, true,opts)
+    //let www2 = html(vx[0],vx[1],true, false,opts)
     if (showError==3)console.log(l)
     return vx
     } catch (e) {

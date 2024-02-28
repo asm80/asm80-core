@@ -1,5 +1,11 @@
 import { Parser } from "./expression-parser.js";
 
+const notInModule = (opts) => {
+  if (opts.PRAGMAS && opts.PRAGMAS. indexOf("MODULE") > -1){
+    throw {msg:"Not allowed in modules"}
+  }
+}
+
 
 export const pass1 = (V, vxs, opts) => {
     if (!opts.xref) opts.xref = {};
@@ -250,6 +256,7 @@ export const pass1 = (V, vxs, opts) => {
         }
 
         if (op.opcode === ".PHASE") {
+          notInModule(opts);
           if (phase) throw {
             msg: "PHASE cannot be nested"
           };
@@ -260,6 +267,7 @@ export const pass1 = (V, vxs, opts) => {
           continue;
         }
         if (op.opcode === ".DEPHASE") {
+          notInModule(opts);
           op.addr = PC;
           PC = PC - phase;
           phase = 0;
@@ -388,6 +396,7 @@ export const pass1 = (V, vxs, opts) => {
         continue;
       }
       if (op.opcode === "ALIGN") {
+        notInModule(opts);
         //op.bytes = Parser.evaluate(op.params[0]);
         let align = Parser.evaluate(op.params[0], vars);
 
