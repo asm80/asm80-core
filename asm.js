@@ -6,10 +6,23 @@ import {pass2} from "./pass2.js";
 import {objCode, linkModules} from "./objcode.js"
 import * as Parser from "./parser.js";
 
-export const lst=lst, html=html;
+//import all CPUs
+import {I8080} from "./cpu/i8080.js";
+import {M6800} from "./cpu/m6800.js";
+import { C6502 } from "./cpu/c6502.js";
+import { Z80 } from "./cpu/z80.js";
+const cpus = [I8080, M6800, C6502, Z80];
 
 
 export const compile = (source, fileSystem, opts = {assembler:null}, filename="noname") => {
+
+  if (typeof opts.assembler == "string") {
+    opts.assembler = cpus.find(x=>x.cpu.toUpperCase()==opts.assembler.toUpperCase());
+  }
+
+  if (!opts.assembler || typeof opts.assembler != "object") {
+    throw {msg:"No assembler specified", s:"Assembler error"};
+  }
 
     opts = {...opts, fileGet: fileSystem.fileGet, endian:false,
         ENT:null,
@@ -45,7 +58,22 @@ export const compile = (source, fileSystem, opts = {assembler:null}, filename="n
     // It should be all resolved aftrer the 2nd pass
     metacode = pass2(metacode, opts);
 
-    return [null,metacode,opts.xref]
+    //new output, broke backward compatibility
+    let out = {
+      dump: metacode[0],
+      vars: metacode[1],
+      xref: opts.xref,
+    }
+
+    // is it a module?
+
+    let vars = metacode[1];
+    if (vars && typeof vars.__PRAGMAS !== "undefined" && vars.__PRAGMAS.indexOf("MODULE") != -1) {
+      let obj = objCode(metacode[0],metacode[1],opts,filename)
+      out.obj = obj;
+    }
+
+    return out
     } catch (e) {
         // Some error occured
         let s = e.s || "Internal error";
@@ -70,20 +98,74 @@ export const compile = (source, fileSystem, opts = {assembler:null}, filename="n
 
         //no message, so we use the general one
         if (!e.msg) {
-          return [
-            "Cannot evaluate line " +
-            opts.WLINE.numline +
-            ", there is some unspecified error (e.g. reserved world as label etc.)",
-            null,
-          ];
+          return {
+            error:
+            {
+              msg: `Cannot evaluate line ${opts.WLINE.numline}, there is some unspecified error (e.g. reserved world as label etc.)`,
+              wline: opts.WLINE
+            }
+          }
+          
         }
         if (!e.s) e.s = s;
         
-        return [e, null];
+        return {
+          error: {
+            msg: e.msg,
+            s: e.s,
+            wline: opts.WLINE
+          }
+        };
     }
 }
 
-export const asmFromFile = (filename, fileSystem, opts = {assembler:null}) => {
-    let source = fileSystem.fileGet(filename);
-    return compile(source, fileSystem, opts, filename);
+const getfn = (fullpath) => {
+  let parts = fullpath.split("/");
+  return parts[parts.length-1];
+}
+
+export const compileFromFile = (filePath, fileSystem, opts = {assembler:null}) => {
+    let source = fileSystem.fileGet(filePath);
+    return compile(source, fileSystem, opts, getfn(filePath));
+}
+
+//----------------------------------------
+
+// linker
+
+const link = (linkList, fileSystem, name="noname") => {
+  let cpu = null
+  let endian = null
+  let modules = linkList.modules.map(m => {
+      let f = JSON.parse(fileSystem.fileGet(m+".obj"))
+      //checker
+      if (!cpu) cpu = f.cpu;
+      if (cpu != f.cpu) throw {msg:"Different CPU in module "+m, s:"Linker error"};
+      if (!endian) endian = f.endian;
+      if (endian != f.endian) throw {msg:"Different endian in module "+m, s:"Linker error"};
+      return f
+  })
+  let library = linkList.library.map(m => {
+      let f = JSON.parse(fileSystem.fileGet(m+".obj"))
+      if (cpu != f.cpu) throw {msg:"Different CPU in library file "+m, s:"Linker error"};
+      if (endian != f.endian) throw {msg:"Different endian in library file "+m, s:"Linker error"};
+      return f
+  })
+
+  linkList.endian = endian
+
+  let out = linkModules(linkList,modules, library)
+
+  return out
+  //fs.writeFileSync("./test/suite/"+name+".combined",JSON.stringify(out))    
+}
+
+
+export const asm = {
+  lst,
+  html,
+  compile,
+  compileFromFile,
+  link,
+  cpus
 }

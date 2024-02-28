@@ -1,6 +1,6 @@
 [
   {
-    "line": ".pragma module\r",
+    "line": ".pragma module",
     "numline": 1,
     "addr": 0,
     "bytes": 0,
@@ -15,19 +15,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "\r",
-    "numline": 2,
-    "addr": 0,
-    "bytes": 0,
-    "_dp": 0,
-    "params": [],
-    "remark": " ",
-    "notparsed": "",
-    "pass": 2,
-    "segment": "CSEG"
-  },
-  {
-    "line": "keyin: in 0x7a\r",
+    "line": "keyin: in 0x7a",
     "numline": 3,
     "addr": 0,
     "bytes": 2,
@@ -49,7 +37,7 @@
     "segment": "CSEG"
   },
   {
-    "line": " sta buffer_key\r",
+    "line": " sta buffer_key",
     "numline": 4,
     "addr": 2,
     "bytes": 3,
@@ -74,7 +62,7 @@
     ]
   },
   {
-    "line": " cpi 0xff\r",
+    "line": " cpi 0xff",
     "numline": 5,
     "addr": 5,
     "bytes": 2,
@@ -95,7 +83,7 @@
     "segment": "CSEG"
   },
   {
-    "line": " jz keyin\r",
+    "line": " jz keyin",
     "numline": 6,
     "addr": 7,
     "bytes": 3,
@@ -120,7 +108,7 @@
     ]
   },
   {
-    "line": " sta last_key\r",
+    "line": " sta last_key",
     "numline": 7,
     "addr": 10,
     "bytes": 3,
@@ -145,7 +133,7 @@
     ]
   },
   {
-    "line": " ret\r",
+    "line": " ret",
     "numline": 8,
     "addr": 13,
     "bytes": 1,
@@ -162,19 +150,7 @@
     "segment": "CSEG"
   },
   {
-    "line": "\r",
-    "numline": 9,
-    "addr": 14,
-    "bytes": 0,
-    "_dp": 0,
-    "params": [],
-    "remark": " ",
-    "notparsed": "",
-    "pass": 2,
-    "segment": "CSEG"
-  },
-  {
-    "line": ".export keyin \r",
+    "line": ".export keyin",
     "numline": 10,
     "addr": 14,
     "bytes": 0,
@@ -183,7 +159,7 @@
       "keyin"
     ],
     "opcode": ".EXPORT",
-    "paramstring": "keyin ",
+    "paramstring": "keyin",
     "notparsed": "",
     "pass": 2,
     "segment": "CSEG",
@@ -192,19 +168,7 @@
     ]
   },
   {
-    "line": "\r",
-    "numline": 11,
-    "addr": 14,
-    "bytes": 0,
-    "_dp": 0,
-    "params": [],
-    "remark": " ",
-    "notparsed": "",
-    "pass": 2,
-    "segment": "CSEG"
-  },
-  {
-    "line": ".BSSEG\r",
+    "line": ".BSSEG",
     "numline": 12,
     "addr": 0,
     "bytes": 0,
@@ -227,7 +191,7 @@
     "opcode": "DS",
     "paramstring": "1",
     "notparsed": "",
-    "oldline": "last_key ds 1\r",
+    "oldline": "last_key ds 1",
     "label": "LAST_KEY",
     "pass": 2,
     "segment": "BSSEG"
@@ -244,7 +208,7 @@
     "opcode": "DS",
     "paramstring": "8",
     "notparsed": "",
-    "oldline": "past_key ds 8\r",
+    "oldline": "past_key ds 8",
     "label": "PAST_KEY",
     "pass": 2,
     "segment": "BSSEG"

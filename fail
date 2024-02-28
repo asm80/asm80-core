@@ -1260,86 +1260,80 @@ ok 1254 ASM - Z80 > SRL L
 ok 1255 ASM - Z80 > SRL (HL)
 ok 1256 ASM - Z80 > SRL (IX+0x34)
 ok 1257 ASM - Z80 > SRL (IY+0x34)
-ok 1258 beautify > basic beautify
+ok 1258 asm > relocable 8080
+ok 1259 asm > relocable1 8080
+ok 1260 asm > relocable2 8080
+ok 1261 asm > link 8080
+ok 1262 beautify > basic beautify
 [ 2, 3, 4, '*', '+' ]
-ok 1259 expression-parser > vanilla
+ok 1263 expression-parser > vanilla
 [ 2, 5, '*' ]
 [ 2, 'lsb' ]
-ok 1260 expression-parser > 2PI
-ok 1261 parser > vanilla
-ok 1262 parser > Unrecognized instruction
-ok 1263 parser > Unrecognized instruction 
-ok 1264 parser > Unrecognized instruction  
-ok 1265 parser > Unrecognized instruction   
-ok 1266 parser > Macro params
-ok 1267 parser > Macro param string
-ok 1268 parser > Strings
-ok 1269 parser > Macro params OK
-ok 1270 parser > Macro params too few
-ok 1271 parser > ENDM without MACRO at line
-ok 1272 parser > Bad macro name at line
-ok 1273 parser > Macro nest
-ok 1274 parser > macro redefinition
-ok 1275 parser > REPT
-ok 1276 parser > REPT named
-ok 1277 parser > INCLUDE
-ok 1278 parser > INCLUDE BLOCK
-ok 1279 parser > INCLUDE bad block
-ok 1280 parser > INCLUDE no name given
-ok 1281 parser > No repeat count given
-ok 1282 parser > Bad repeat count given
-ok 1283 parser > MACRO *REPT1 has no appropriate ENDM
-ok 1284 pass1 > basic
-ok 1285 pass1 > ENDIF without IF
-ok 1286 pass1 > ELSE without IF
-ok 1287 pass1 > PHASE cannot be nested
-ok 1288 pass1 > Delimiters does not match
-ok 1289 pass1 > DS / RMB needs a numerical parameter
-ok 1290 pass1 > DB in BSS
-ok 1291 pass1 > Redefine label
-ok 1292 pass2 > basic 8080
-ok 1293 pass2 > basic 6800
-ok 1294 pass2 > basic dummy
-ok 1295 pass2 > basic dummy-endian
-ok 1296 pass2 > ORG in module
-ok 1297 pass2 > EQU without label
-ok 1298 pass2 > .ERROR
-ok 1299 pass2 > .IF nonsense
-ok 1300 pass2 > .IFN nonsense
-ok 1301 relocable > relocable 8080
-ok 1302 relocable > relocable1 8080
-ok 1303 relocable > relocable2 8080
-PASS1: Resolves init:  { BIOS_PRINT: { addr: 5, seg: null } }
-PASS1: Resolved:  {
-  BIOS_PRINT: { addr: 5, seg: null },
-  MAIN: { addr: 0, seg: 'CSEG' },
-  KEYIN: { addr: 0, seg: 'CSEG' },
-  PRINT: { addr: 0, seg: 'CSEG' },
-  PRINT_CHAR: { addr: 13, seg: 'CSEG' }
-} []
-PASS1: Modules:  [ 'relocable', 'relocable1', 'relocable2' ]
-PASS1: Seglen:  { CSEG: 44, DSEG: 37, ESEG: 0, BSSEG: 20 }
-PASS2: CSEG 10 DSEG 54 ESEG 91 BSSEG 91
-ok 1304 relocable > link 8080
-1..1304
-# pass 1304
+ok 1264 expression-parser > 2PI
+ok 1265 parser > vanilla
+ok 1266 parser > Unrecognized instruction
+ok 1267 parser > Unrecognized instruction 
+ok 1268 parser > Unrecognized instruction  
+ok 1269 parser > Unrecognized instruction   
+ok 1270 parser > Macro params
+ok 1271 parser > Macro param string
+ok 1272 parser > Strings
+ok 1273 parser > Macro params OK
+ok 1274 parser > Macro params too few
+ok 1275 parser > ENDM without MACRO at line
+ok 1276 parser > Bad macro name at line
+ok 1277 parser > Macro nest
+ok 1278 parser > macro redefinition
+ok 1279 parser > REPT
+ok 1280 parser > REPT named
+ok 1281 parser > INCLUDE
+ok 1282 parser > INCLUDE BLOCK
+ok 1283 parser > INCLUDE bad block
+ok 1284 parser > INCLUDE no name given
+ok 1285 parser > No repeat count given
+ok 1286 parser > Bad repeat count given
+ok 1287 parser > MACRO *REPT1 has no appropriate ENDM
+ok 1288 pass1 > basic
+ok 1289 pass1 > ENDIF without IF
+ok 1290 pass1 > ELSE without IF
+ok 1291 pass1 > PHASE cannot be nested
+ok 1292 pass1 > Delimiters does not match
+ok 1293 pass1 > DS / RMB needs a numerical parameter
+ok 1294 pass1 > DB in BSS
+ok 1295 pass1 > Redefine label
+ok 1296 pass2 > basic 8080
+ok 1297 pass2 > basic 6800
+ok 1298 pass2 > basic dummy
+ok 1299 pass2 > basic dummy-endian
+ok 1300 pass2 > ORG in module
+ok 1301 pass2 > EQU without label
+ok 1302 pass2 > .ERROR
+ok 1303 pass2 > .IF nonsense
+ok 1304 pass2 > .IFN nonsense
+ok 1305 relocable > relocable 8080
+ok 1306 relocable > relocable1 8080
+ok 1307 relocable > relocable2 8080
+ok 1308 relocable > link 8080
+1..1308
+# pass 1308
 # skip 0
 # todo 0
 # fail 0
 -----------------------|---------|----------|---------|---------|-----------------------------------
 File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                 
 -----------------------|---------|----------|---------|---------|-----------------------------------
-All files              |   91.42 |    89.32 |   84.65 |   91.42 |                                   
- asm80-core            |    88.9 |     88.5 |   82.35 |    88.9 |                                   
+All files              |   90.92 |    89.05 |      85 |   90.92 |                                   
+ asm80-core            |   88.29 |    88.11 |   83.14 |   88.29 |                                   
+  asm.js               |   74.26 |    57.14 |     100 |   74.26 | 24-25,78-119                      
   beautify.js          |     100 |      100 |     100 |     100 |                                   
   expression-parser.js |   75.24 |    85.02 |    75.8 |   75.24 | ...-1213,1223,1258-1262,1299-1300 
   listing.js           |   97.61 |    90.12 |     100 |   97.61 | 54-55,57-58                       
-  objcode.js           |   95.89 |    79.26 |     100 |   95.89 | ...98-199,252-253,274-275,346-347 
+  objcode.js           |   95.89 |    79.01 |     100 |   95.89 | ...98-199,252-253,274-275,346-347 
   parseLine.js         |   95.47 |    95.15 |     100 |   95.47 | ...99-100,102-103,371-373,384-386 
   parser.js            |     100 |      100 |     100 |     100 |                                   
   pass1.js             |   94.69 |    90.58 |     100 |   94.69 | ...02-504,509-511,518-519,558-562 
   pass2.js             |   96.02 |    89.93 |     100 |   96.02 | ...74-575,577-581,583-586,588-589 
-  preprocessor.js      |   94.97 |    86.36 |     100 |   94.97 | ...49-151,169-170,280-282,288-290 
+  preprocessor.js      |   94.97 |    86.48 |     100 |   94.97 | ...49-151,169-170,280-282,288-290 
  asm80-core/cpu        |   96.89 |    91.59 |   87.34 |   96.89 |                                   
   c6502.js             |    99.7 |    94.52 |   66.66 |    99.7 | 326                               
   dummy.js             |     100 |      100 |     100 |     100 |                                   

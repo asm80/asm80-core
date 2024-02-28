@@ -1,5 +1,4 @@
-import {I8080} from "../cpu/i8080.js";
-import * as asm from "../asm.js"
+import {asm} from "../asm.js"
 
 import fs from "fs";
 
@@ -77,21 +76,23 @@ const doLink = (data, showError=false, assembler=I8080, name="") => {
 
 
 QUnit.test('relocable 8080', assert => {
-    asm.compile(asmREL, fileSystem, {assembler:I8080})
-    //doPass(asmREL, true, I8080, "relocable")
-    assert.ok(true)
+    let {obj} = asm.compile(asmREL, fileSystem, {assembler:"I8080"})
+    assert.ok(typeof obj == "object")
+    fileSystem.filePut("relocable.obj", JSON.stringify(obj,null,2))
 });
 QUnit.test('relocable1 8080', assert => {
-    doPass(asmREL1, true, I8080, "relocable1")
-    assert.ok(true)
+    let {obj} = asm.compile(asmREL1, fileSystem, {assembler:"I8080"})
+    assert.ok(typeof obj == "object")
+    fileSystem.filePut("relocable1.obj", JSON.stringify(obj,null,2))
 });
 
 QUnit.test('relocable2 8080', assert => {
-    doPass(asmREL2, true, I8080, "relocable2")
-    assert.ok(true)
+    let {obj} = asm.compileFromFile("relocable2.a80", fileSystem, {assembler:"I8080"})
+    assert.ok(typeof obj == "object")
+    fileSystem.filePut("relocable2.obj", JSON.stringify(obj,null,2))
 });
 
 QUnit.test('link 8080', assert => {
-    doLink(asmLNK, true, I8080, "relocable")
+    asm.link(asmLNK, fileSystem, "relocable")
     assert.ok(true)
 });
