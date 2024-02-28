@@ -20,7 +20,7 @@ const doParse = (data) => {
 
     
     let lines = Parser.evaluate(data);
-    console.log(Parser.parse(data).tokens.map(x=>x.toString()))
+    //console.log(Parser.parse(data).tokens.map(x=>x.toString()))
     return lines
     } catch (e) {
         console.log(e)
