@@ -109,7 +109,10 @@ export const lst = (result, raw, compact=false) => {
     return out;
   };
 
-export const html = (V, vars, raw, compact=false) => {
+export const html = (result, raw, compact=false) => {
+  let V = result.dump;
+  let  vars = result.vars;
+  let opts = result.opts;
     let parfix = (par) => {
       par += "";
       for (let k in vars) {

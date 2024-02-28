@@ -4,7 +4,7 @@ import fs from "fs";
 
 import { fileSystem } from "./_filesystem.js";
 import { ihex } from "../utils/ihex.js";
-import { lst } from "../listing.js";
+import { lst, html } from "../listing.js";
 
 
 //QUnit test for parser.js
@@ -158,10 +158,23 @@ QUnit.test('hex', assert => {
     assert.ok(typeof result.dump == "object")
     let listing = lst(result, true, false)
     fileSystem.filePut("test.a80.lst", listing) 
-    let hex = ihex(result.dump)
+    let htmlList = html(result, true, false)
+    fileSystem.filePut("test.a80.html", htmlList) 
+    let hex = ihex(result)
     fileSystem.filePut("test.a80.hex", hex)
     //check
     let hexmaster = fileSystem.fileGet("test.a80.master.hex")
+    assert.equal(hex, hexmaster)
+
+});
+
+QUnit.test('hex2', assert => {
+    let result = asm.compileFromFile("tinybasic.a80", fileSystem, {assembler:"I8080"})
+    assert.ok(typeof result.dump == "object")
+    let hex = ihex(result)
+    fileSystem.filePut("tinybasic.a80.hex", hex)
+    //check
+    let hexmaster = fileSystem.fileGet("tinybasic.a80.master.hex")
     assert.equal(hex, hexmaster)
 
 });

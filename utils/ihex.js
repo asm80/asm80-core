@@ -26,20 +26,21 @@ const makeHex =  (addr, dta, linelen) => {
       buffer.push(dta[i]);
       if (++inter === ilen) {
         //flush
-        out += hexLine(addr, buffer) + "\n";
+        out += hexLine(addr, buffer) + "\r\n";
         buffer = [];
         inter = 0;
         addr += ilen;
       }
     }
     if (buffer.length) {
-      out += hexLine(addr, buffer) + "\n";
+      out += hexLine(addr, buffer) + "\r\n";
     }
 
     return out;
   };
 
-export const ihex =  (V, segment) => {
+export const ihex =  (result, segment) => {
+    let V = result.dump;
     let ln;
     let op;
     let addr = null;
