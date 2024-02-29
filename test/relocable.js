@@ -112,5 +112,7 @@ QUnit.test('link to HEX', async assert => {
     let o = await doLink(asmLNK, true, I8080, "relocable")
     let hex = ihex(o)
     fs.writeFileSync("./test/suite/relocable.combined.hex",hex)
+    hex = ihex(o,"DSEG")
+    fs.writeFileSync("./test/suite/relocable.combined.dseg.hex",hex)
     assert.ok(true)
 });

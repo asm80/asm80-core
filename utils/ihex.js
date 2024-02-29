@@ -63,6 +63,7 @@ export const ihex =  (result, segment) => {
       }
 
       if (op.ifskip) continue;
+      if (typeof op.segment !== "undefined" && typeof segment !== "undefined" && op.segment != segment) continue;
 
       if (segments) {
         if (!segment) segment = "CSEG";
