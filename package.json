@@ -1,5 +1,5 @@
 {
-  "name": "asm80-core",
+  "name": "@asm80/core",
   "version": "1.0.0",
   "description": "Core ASM80 compiler / assembler",
   "main": "asm.js",
