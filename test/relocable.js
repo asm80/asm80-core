@@ -7,6 +7,7 @@ import { pass1 } from "../pass1.js";
 import {pass2} from "../pass2.js";
 import {objCode, linkModules} from "../objcode.js"
 import { ihex } from "../utils/ihex.js";
+import { isrec, isrec28 } from "../utils/srec.js";
 
 //QUnit test for parser.js
 
@@ -110,9 +111,17 @@ QUnit.test('link 8080', async assert => {
 
 QUnit.test('link to HEX', async assert => {
     let o = await doLink(asmLNK, true, I8080, "relocable")
+    o.dump.unshift({opcode:".PRAGMA",params:["SEGMENT"]})
+    o.dump.unshift({opcode:".PRAGMA",params:["HEXLEN","66"]})
+    //console.log("D",JSON.stringify(o,null,2))
     let hex = ihex(o)
     fs.writeFileSync("./test/suite/relocable.combined.hex",hex)
     hex = ihex(o,"DSEG")
     fs.writeFileSync("./test/suite/relocable.combined.dseg.hex",hex)
+    isrec(o)
+    isrec28(o)
+    isrec(o,"DSEG")
+    isrec28(o,"DSEG")
+    isrec28(o,"DSEG")
     assert.ok(true)
 });

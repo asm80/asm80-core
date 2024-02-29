@@ -87,7 +87,7 @@ export const isrec = (result, segment) => {
     if (dta.length) {
       out += makeSrec(addr, dta);
     }
-    let ent = result.opts.ENT || 0;
+    let ent = result.opts?result.opts.ENT: result.entry.address || 0;
     let checksum = 3 + Math.floor(ent / 256) + Math.floor(ent % 256);
     out += "S903" + toHex4(ent) + toHex2(255 - (checksum % 256));
     return out;
@@ -186,7 +186,8 @@ const srecLine28 = (addr, buffer) => {
     if (dta.length) {
       out += makeSrec28(addr, dta);
     }
-    let ent = result.opts.ENT || 0;
+    let ent = result.opts?result.opts.ENT: result.entry.address || 0;
+
     let checksum = 3 + Math.floor(ent / 256) + Math.floor(ent % 256);
     out += "S804" + toHex6(ent) + toHex2(255 - (checksum % 256)) + "\n";
     return out;
