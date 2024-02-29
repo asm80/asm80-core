@@ -65,7 +65,7 @@ const macroParams = (d, params=[], uniq, pars, qnumline) => {
   };  
 
 
-export const prepro = (V, opts={}, fullfile) => {
+export const prepro = async (V, opts={}, fullfile) => {
     if (!opts.includedFiles) opts.includedFiles = {};
     let op, ln, paramstring = null, px, params = null;
     let macros = {};
@@ -144,7 +144,7 @@ export const prepro = (V, opts={}, fullfile) => {
         } else {
           //if (includedFiles[params[0].replace(/\"/g,"")]) throw {"msg":"File "+params[0].replace(/\"/g,"")+" is already included elsewhere - maybe recursion","s":V[i]};
           //console.log("Include "+params[0]);
-          nf = opts.fileGet(params[0].replace(/\"/g, ""));
+          nf = await opts.fileGet(params[0].replace(/\"/g, ""));
           if (!nf) throw {
             msg: "File " + params[0] + " not found",
             s: V[i]
@@ -159,7 +159,7 @@ export const prepro = (V, opts={}, fullfile) => {
         }
 
         //console.log(ni)
-        let preni = prepro(ni, {}, fullni);
+        let preni = await prepro(ni, {}, fullni);
         for (let k = 0; k < preni[0].length; k++) {
           preni[0][k].includedFile = params[0].replace(/\"/g, "");
           preni[0][k].includedFileAtLine = V[i].numline;

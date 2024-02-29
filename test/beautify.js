@@ -84,11 +84,11 @@ const dummyFileGet = (filename) => {
     .endblock`
 }
 
-const doBeautify = (data) => {
+const doBeautify = async (data) => {
     try {
 
     
-    let lines = beautify(data, {assembler:I8080, fileGet:dummyFileGet});
+    let lines = await beautify(data, {assembler:I8080, fileGet:dummyFileGet});
     return lines
     } catch (e) {
         console.log(e)
@@ -109,8 +109,8 @@ const testParse = (data, showError=false) => {
     }
 }
 
-QUnit.test('basic beautify', assert => {
-    let o = doBeautify(data, true)
+QUnit.test('basic beautify', async assert => {
+    let o = await doBeautify(data, true)
     //console.log("BEUA",o)
   assert.ok(o, "beautify returns something");
 });

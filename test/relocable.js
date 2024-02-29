@@ -29,17 +29,17 @@ const fileGet = (filename) => {
     .endblock`
 }
 
-const doPass = (data, showError=false, assembler=I8080, name="") => {
+const doPass = async (data, showError=false, assembler=I8080, name="") => {
     let opts = {assembler, fileGet, PRAGMAS:[], endian:assembler.endian,}
     
     try {
-        let o = Parser.parse(data, opts);
+        let o = await Parser.parse(data, opts);
     //console.log("BEUAbc",o)
-    let vx = pass1(o, null, opts)
-    vx = pass1(vx[0], vx[1], opts);
-    vx = pass1(vx[0], vx[1], opts);
-    vx = pass1(vx[0], vx[1], opts);
-    vx = pass1(vx[0], vx[1], opts);
+    let vx = await pass1(o, null, opts)
+    vx = await pass1(vx[0], vx[1], opts);
+    vx = await pass1(vx[0], vx[1], opts);
+    vx = await pass1(vx[0], vx[1], opts);
+    vx = await pass1(vx[0], vx[1], opts);
 
     vx[1]["__PRAGMAS"] = opts.PRAGMAS;
     //console.log(ASM.PRAGMAS,vx[1])
@@ -86,21 +86,21 @@ const doLink = (data, showError=false, assembler=I8080, name="") => {
 }
 
 
-QUnit.test('relocable 8080', assert => {
-    doPass(asmREL, true, I8080, "relocable")
+QUnit.test('relocable 8080', async assert => {
+    await doPass(asmREL, true, I8080, "relocable")
     assert.ok(true)
 });
-QUnit.test('relocable1 8080', assert => {
-    doPass(asmREL1, true, I8080, "relocable1")
-    assert.ok(true)
-});
-
-QUnit.test('relocable2 8080', assert => {
-    doPass(asmREL2, true, I8080, "relocable2")
+QUnit.test('relocable1 8080', async assert => {
+    await doPass(asmREL1, true, I8080, "relocable1")
     assert.ok(true)
 });
 
-QUnit.test('link 8080', assert => {
+QUnit.test('relocable2 8080', async assert => {
+    await doPass(asmREL2, true, I8080, "relocable2")
+    assert.ok(true)
+});
+
+QUnit.test('link 8080', async assert => {
     doLink(asmLNK, true, I8080, "relocable")
     assert.ok(true)
 });

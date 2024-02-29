@@ -15,12 +15,12 @@ const emptymask = (xs) => xs.map((lx) => {
     return l.length ? lx : lx2;
   });
 
-export const beautify = (s, opts) => {
+export const beautify = async (s, opts) => {
     let i = toInternal(s.split(/\n/));
     i = emptymask(i);
     i = nonempty(i);
     i = norm(i);
-    let prei = prepro(i, {
+    let prei = await prepro(i, {
       noinclude: true,
       ...opts
     });

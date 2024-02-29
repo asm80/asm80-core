@@ -14,6 +14,23 @@ import { fileSystem} from "./_filesystem.js";
 
 import QUnit from "qunit";
 
+const asyncThrows = (assert,fn) => {
+    let done = assert.async();
+    return new Promise((resolve, reject) => {
+        fn().then(()=>{
+            assert.ok(false)
+            resolve()
+            done()
+        })
+        .catch(e=>{
+            assert.ok(true)
+            resolve()
+            done()
+        })
+    })
+
+}
+
 import * as Parser from "../parser.js";
 
 QUnit.module('pass2');
@@ -25,17 +42,17 @@ let asmRELOCABLE = fs.readFileSync("./test/suite/relocable.a80","utf-8");
 
 
 
-const doPass = (data, showError=false, assembler=I8080, name="") => {
+const doPass = async (data, showError=false, assembler=I8080, name="") => {
     let opts = {assembler, fileGet:fileSystem.fileGet , PRAGMAS:[], endian:assembler.endian,}
     
     try {
-        let o = Parser.parse(data, opts);
+        let o = await Parser.parse(data, opts);
     //console.log("BEUAbc",o)
-    let vx = pass1(o, null, opts)
-    vx = pass1(vx[0], vx[1], opts);
-    vx = pass1(vx[0], vx[1], opts);
-    vx = pass1(vx[0], vx[1], opts);
-    vx = pass1(vx[0], vx[1], opts);
+    let vx = await pass1(o, null, opts)
+    vx = await pass1(vx[0], vx[1], opts);
+    vx = await pass1(vx[0], vx[1], opts);
+    vx = await pass1(vx[0], vx[1], opts);
+    vx = await pass1(vx[0], vx[1], opts);
 
     vx[1]["__PRAGMAS"] = opts.PRAGMAS;
     //console.log(ASM.PRAGMAS,vx[1])
@@ -59,69 +76,69 @@ const doPass = (data, showError=false, assembler=I8080, name="") => {
     }
 }
 
-QUnit.test('basic 8080', assert => {
-    doPass(asmI8080, true, I8080, "test-a80")
+QUnit.test('basic 8080', async assert => {
+    await doPass(asmI8080, true, I8080, "test-a80")
     assert.ok(true)
 });
 
-QUnit.test('basic 6800', assert => {
-    doPass(asmM6800, true, M6800, "test-a68")
+QUnit.test('basic 6800', async assert => {
+    await doPass(asmM6800, true, M6800, "test-a68")
     assert.ok(true)
 });
 
 /*
-QUnit.test('IF NaN', assert => {
+QUnit.test('IF NaN', async assert => {
     assert.throws(() => {
-        doPass(`n: equ A+1`, true, DUMMY)
+        await doPass(`n: equ A+1`, true, DUMMY)
     }, (err) => err.msg === "DB is not allowed in BSSEG")
 });
 */
 
 
-QUnit.test('basic dummy', assert => {
-    doPass(asmDUMMY, false, DUMMY, "test-dummy")
+QUnit.test('basic dummy', async assert => {
+    await doPass(asmDUMMY, false, DUMMY, "test-dummy")
     assert.ok(true)
 });
 
-QUnit.test('basic dummy-endian', assert => {
-    doPass(asmDUMMY, false, DUMMYE, "test-dummye")
+QUnit.test('basic dummy-endian', async assert => {
+    await doPass(asmDUMMY, false, DUMMYE, "test-dummye")
     assert.ok(true)
 });
 
 /*
-QUnit.test('relocable 8080', assert => {
+QUnit.test('relocable 8080', async assert => {
     doPass(asmRELOCABLE, true, I8080, "relocable")
     assert.ok(true)
 });
 */
 
-QUnit.test('ORG in module', assert => {
-    assert.throws(() => {
-        doPass(`.pragma module\n.org 100`, false, I8080)
+QUnit.test('ORG in module', async assert => {
+    asyncThrows(assert,() => {
+        return doPass(`.pragma module\n.org 100`, false, I8080)
     },(err) => err.msg == "ORG is not allowed in modules")
 });
 
 
-QUnit.test('EQU without label', assert => {
-    assert.throws(() => {
-        doPass(`equ 123`, false, DUMMY)
+QUnit.test('EQU without label', async assert => {
+    asyncThrows(assert,() => {
+        return doPass(`equ 123`, false, DUMMY)
     },(err) => err.msg === "EQU without label")
 });
 
 
-QUnit.test('.ERROR', assert => {
-    assert.throws(() => {
-        doPass(`.error someError`, false, DUMMY)
+QUnit.test('.ERROR', async assert => {
+    asyncThrows(assert,() => {
+        return doPass(`.error someError`, false, DUMMY)
     },(err) => err.msg === "someError")
 });
 
-QUnit.test('.IF nonsense', assert => {
-    assert.throws(() => {
-        doPass(`.if nnn`, false, DUMMY)
+QUnit.test('.IF nonsense', async assert => {
+    asyncThrows(assert,() => {
+        return doPass(`.if nnn`, false, DUMMY)
     },(err) => err.msg === "IF condition mismatched")
 });
-QUnit.test('.IFN nonsense', assert => {
-    assert.throws(() => {
-        doPass(`.ifn nnn`, false, DUMMY)
+QUnit.test('.IFN nonsense', async assert => {
+    asyncThrows(assert,() => {
+        return doPass(`.ifn nnn`, false, DUMMY)
     },(err) => err.msg === "IF condition mismatched")
 });

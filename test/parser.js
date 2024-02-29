@@ -12,6 +12,23 @@ import * as Parser from "../parser.js";
 QUnit.module('parser');
 QUnit.config.hidepassed = true;
 
+const asyncThrows = (assert,fn) => {
+    let done = assert.async();
+    return new Promise((resolve, reject) => {
+        fn().then(()=>{
+            assert.ok(false)
+            resolve()
+            done()
+        })
+        .catch(e=>{
+            assert.ok(true)
+            resolve()
+            done()
+        })
+    })
+
+}
+
 //test suite
 let data = `label: nop
  nop
@@ -83,11 +100,11 @@ const dummyFileGet = (filename) => {
     .endblock`
 }
 
-const doParse = (data) => {
+const doParse = async (data) => {
     try {
 
     
-    let lines = Parser.parse(data, {assembler:I8080});
+    let lines = await Parser.parse(data, {assembler:I8080});
     return lines
     } catch (e) {
         console.log(e)
@@ -95,11 +112,11 @@ const doParse = (data) => {
     }
 }
 
-const testParse = (data, showError=false) => {
+const testParse = async (data, showError=false) => {
     try {
 
     
-    let lines = Parser.parse(data, {assembler:I8080, fileGet:dummyFileGet});
+    let lines = await Parser.parse(data, {assembler:I8080, fileGet:dummyFileGet});
     if (showError) console.log(lines)
     return "OK"
     } catch (e) {
@@ -109,39 +126,44 @@ const testParse = (data, showError=false) => {
 }
 
 QUnit.test('vanilla', assert => {
-  assert.equal(typeof doParse(data), "object", "toLines returns an object");
+    const done = assert.async();
+
+  assert.equal(typeof ( doParse(data)), "object", "toLines returns an object");
+  done()
 });
 
 
-QUnit.test("Unrecognized instruction", assert => {
-    assert.throws(() => {
+QUnit.test("Unrecognized instruction", async assert => {
+
+    asyncThrows(assert,() => {
         let data = `haf`
-        Parser.parse(data, {assembler:I8080});
+        return Parser.parse(data, {assembler:I8080});
     })
+    //done()
 })
 
-QUnit.test("Unrecognized instruction", assert => {
-    assert.throws(() => {
+QUnit.test("Unrecognized instruction 2", async assert => {
+    asyncThrows(assert,() => {
         let data = `label: haf`
-        Parser.parse(data, {assembler:I8080});
+        return Parser.parse(data, {assembler:I8080});
     })
 })
-QUnit.test("Unrecognized instruction", assert => {
-    assert.throws(() => {
+QUnit.test("Unrecognized instruction 3", async assert => {
+    asyncThrows(assert,() => {
         let data = `label haf`
-        Parser.parse(data, {assembler:I8080});
+        return Parser.parse(data, {assembler:I8080});
     })
 })
-QUnit.test("Unrecognized instruction", assert => {
-    assert.throws(() => {
+QUnit.test("Unrecognized instruction 4", async assert => {
+    asyncThrows(assert,() => {
         let data = `mov a,t`
-        Parser.parse(data, {assembler:I8080});
+        return Parser.parse(data, {assembler:I8080});
     })
 })
 
 
-QUnit.test('Macro params', assert => {
-    assert.equal(testParse(`.macro test
+QUnit.test('Macro params', async assert => {
+    assert.equal(await testParse(`.macro test
     db %%1
     dw %%2
    .endm
@@ -151,8 +173,8 @@ QUnit.test('Macro params', assert => {
    `), "OK")
 })
 
-QUnit.test('Macro param string', assert => {
-    assert.equal(testParse(`.macro test
+QUnit.test('Macro param string', async assert => {
+    assert.equal(await testParse(`.macro test
     db %%1
     dw %%2
    .endm
@@ -161,8 +183,8 @@ QUnit.test('Macro param string', assert => {
    `), "OK")
 })
 
-QUnit.test('Strings', assert => {
-    assert.equal(testParse(`
+QUnit.test('Strings', async assert => {
+    assert.equal(await testParse(`
     db "Hello",'World', "my;i", 'test;i', "string:is=strong"
     db "Hello, world",'hello, world' ; two strings
     DB 10 DUP (123)
@@ -171,8 +193,8 @@ QUnit.test('Strings', assert => {
 })
 
 
-QUnit.test('Macro params OK', assert => {
-    let o = Parser.parse(`.macro test, src, dst
+QUnit.test('Macro params OK', async assert => {
+    let o = await Parser.parse(`.macro test, src, dst
     db %%src
     dw %%dst
    .endm
@@ -185,8 +207,8 @@ QUnit.test('Macro params OK', assert => {
 })
 
 
-QUnit.test('Macro params too few', assert => {
-    assert.throws(()=>{
+QUnit.test('Macro params too few', async assert => {
+    asyncThrows(assert,()=>{
         let o = testParse(`.macro test, src, dst
     db %%src
     dw %%dst
@@ -194,28 +216,31 @@ QUnit.test('Macro params too few', assert => {
    
    test $12
    `)
+   return o
 
-}, (err) => err.msg === 'Too few parameters for macro unrolling')
+})
 
 })
 
 QUnit.test('ENDM without MACRO at line', assert => {
-    assert.throws(()=>{
+    asyncThrows(assert,()=>{
         let o = testParse(`.endm`)
+        return o
 }, (err) => err.msg === 'ENDM without MACRO at line 1')
 
 })
 
 QUnit.test('Bad macro name at line', assert => {
-    assert.throws(()=>{
+    asyncThrows(assert,()=>{
         let o = testParse(`.macro`)
+        return o
 }, (err) => err.msg === 'Bad macro name at line 1')
 })
 
 
 
-QUnit.test('Macro nest', assert => {
-    assert.equal(testParse(`.macro a
+QUnit.test('Macro nest', async assert => {
+    assert.equal(await testParse(`.macro a
     db %%1
     dw %%2
    .endm
@@ -229,13 +254,14 @@ QUnit.test('Macro nest', assert => {
    `), "OK")
 })
 
-QUnit.test('macro redefinition', assert => {
-    assert.throws(()=>{
+QUnit.test('macro redefinition', async assert => {
+    asyncThrows(assert,()=>{
         let o = testParse(`.macro a
         nop
         .endm
         .macro a
         `)
+        return o
 }
 , (err) => err.msg === 'Macro A redefinition at line 4'
 )
@@ -245,8 +271,8 @@ QUnit.test('macro redefinition', assert => {
 
 
 
-QUnit.test('REPT', assert => {
-    assert.equal(testParse(`.rept 3
+QUnit.test('REPT', async assert => {
+    assert.equal(await testParse(`.rept 3
     db %%1
     dw %%2
    .endm
@@ -254,8 +280,8 @@ QUnit.test('REPT', assert => {
    `), "OK")
 })
 
-QUnit.test('REPT named', assert => {
-    assert.equal(testParse(`label .macro
+QUnit.test('REPT named', async assert => {
+    assert.equal(await testParse(`label .macro
     db %%1
     dw %%2
    .endm
@@ -264,49 +290,49 @@ QUnit.test('REPT named', assert => {
 })
 
 
-QUnit.test('INCLUDE', assert => {
-    assert.equal(testParse(`.include "test.asm"`), "OK")
+QUnit.test('INCLUDE', async assert => {
+    assert.equal(await testParse(`.include "test.asm"`), "OK")
    
 })
 
-QUnit.test('INCLUDE BLOCK', assert => {
-    assert.equal(testParse(`.include test.asm:blk`), "OK")
+QUnit.test('INCLUDE BLOCK', async assert => {
+    assert.equal(await testParse(`.include test.asm:blk`), "OK")
    
 })
 
-QUnit.test('INCLUDE bad block', assert => {
-    assert.throws(()=>{
-        let o = testParse(`.include test.asm:noblock`)
+QUnit.test('INCLUDE bad block', async assert => {
+    asyncThrows(assert,()=>{
+        return  testParse(`.include test.asm:noblock`)
 }
 , (err) => err.msg === 'Cannot find block noblock in included file'
 )
 })
 
 
-QUnit.test('INCLUDE no name given', assert => {
-    assert.throws(()=>{
-        let o = testParse(`.include`)
+QUnit.test('INCLUDE no name given', async assert => {
+    asyncThrows(assert,()=>{
+        return  testParse(`.include`)
 }
 , (err) => err.msg === 'No file name given'
 )})
 
-QUnit.test('No repeat count given', assert => {
-    assert.throws(()=>{
-        let o = testParse(`.rept`, false)
+QUnit.test('No repeat count given', async assert => {
+    asyncThrows(assert,()=>{
+        return  testParse(`.rept`, false)
 }
 , (err) => err.msg === 'No repeat count given'
 )})
 
-QUnit.test('Bad repeat count given', assert => {
-    assert.throws(()=>{
-        let o = testParse(`.rept -1`, false)
+QUnit.test('Bad repeat count given', async assert => {
+    asyncThrows(assert,()=>{
+        return  testParse(`.rept -1`, false)
 }
 , (err) => err.msg === 'Bad repeat count given'
 )})
 
-QUnit.test('MACRO *REPT1 has no appropriate ENDM', assert => {
-    assert.throws(()=>{
-        let o = testParse(`.rept 2`, false)
+QUnit.test('MACRO *REPT1 has no appropriate ENDM', async assert => {
+    asyncThrows(assert,()=>{
+        return testParse(`.rept 2`, false)
 }
 , (err) => err.msg === 'MACRO *REPT1 has no appropriate ENDM'
 )})

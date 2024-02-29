@@ -14,7 +14,7 @@ import { Z80 } from "./cpu/z80.js";
 const cpus = [I8080, M6800, C6502, Z80];
 
 
-export const compile = (source, fileSystem, opts = {assembler:null}, filename="noname") => {
+export const compile = async (source, fileSystem, opts = {assembler:null}, filename="noname") => {
 
   if (typeof opts.assembler == "string") {
     opts.assembler = cpus.find(x=>x.cpu.toUpperCase()==opts.assembler.toUpperCase());
@@ -40,16 +40,16 @@ export const compile = (source, fileSystem, opts = {assembler:null}, filename="n
     
 
     // parse source code into internal representation
-    let parsedSource = Parser.parse(source, opts);
+    let parsedSource = await Parser.parse(source, opts);
 
     // pass 1: prepare instruction codes and try to evaluate expressions
-    let metacode = pass1(parsedSource, null, opts)
+    let metacode = await pass1(parsedSource, null, opts)
 
     // metacode is passed again and again until all expressions are evaluated
-    metacode = pass1(metacode[0], metacode[1], opts);
-    metacode = pass1(metacode[0], metacode[1], opts);
-    metacode = pass1(metacode[0], metacode[1], opts);
-    metacode = pass1(metacode[0], metacode[1], opts);
+    metacode = await pass1(metacode[0], metacode[1], opts);
+    metacode = await pass1(metacode[0], metacode[1], opts);
+    metacode = await pass1(metacode[0], metacode[1], opts);
+    metacode = await pass1(metacode[0], metacode[1], opts);
 
     metacode[1]["__PRAGMAS"] = opts.PRAGMAS;
     
@@ -133,8 +133,8 @@ const getfn = (fullpath) => {
   return parts[parts.length-1];
 }
 
-export const compileFromFile = (filePath, fileSystem, opts = {assembler:null}) => {
-    let source = fileSystem.fileGet(filePath);
+export const compileFromFile = async (filePath, fileSystem, opts = {assembler:null}) => {
+    let source = await fileSystem.fileGet(filePath);
     return compile(source, fileSystem, opts, getfn(filePath));
 }
 
@@ -142,24 +142,24 @@ export const compileFromFile = (filePath, fileSystem, opts = {assembler:null}) =
 
 // linker
 
-const link = (linkList, fileSystem, name="noname") => {
+const link = async (linkList, fileSystem, name="noname") => {
   let cpu = null
   let endian = null
-  let modules = linkList.modules.map(m => {
-      let f = JSON.parse(fileSystem.fileGet(m+".obj"))
+  let modules = await Promise.all(linkList.modules.map(async m => {
+      let f = JSON.parse(await fileSystem.fileGet(m+".obj"))
       //checker
       if (!cpu) cpu = f.cpu;
       if (cpu != f.cpu) throw {msg:"Different CPU in module "+m, s:"Linker error"};
       if (!endian) endian = f.endian;
       if (endian != f.endian) throw {msg:"Different endian in module "+m, s:"Linker error"};
       return f
-  })
-  let library = linkList.library.map(m => {
-      let f = JSON.parse(fileSystem.fileGet(m+".obj"))
+  }))
+  let library = await Promise.all(linkList.library.map(async m => {
+      let f = JSON.parse(await fileSystem.fileGet(m+".obj"))
       if (cpu != f.cpu) throw {msg:"Different CPU in library file "+m, s:"Linker error"};
       if (endian != f.endian) throw {msg:"Different endian in library file "+m, s:"Linker error"};
       return f
-  })
+  }))
 
   linkList.endian = endian
 
