@@ -512,7 +512,7 @@ export const pass1 = async (V, vxs, opts) => {
             s: op
           };
         //console.log("Include "+params[0]);
-        let nf = await opts.fileGet(op.params[0], true);
+        let nf = await opts.readFile(op.params[0], true);
         if (!nf)
           throw {
             msg: "Cannot find file " + op.params[0] + " for incbin",

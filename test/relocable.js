@@ -23,7 +23,7 @@ let asmREL = fs.readFileSync("./test/suite/relocable.a80","utf-8");
 let asmREL1 = fs.readFileSync("./test/suite/relocable1.a80","utf-8");
 let asmREL2 = fs.readFileSync("./test/suite/relocable2.a80","utf-8");
 let asmLNK = JSON.parse(fs.readFileSync("./test/suite/relocable.lnk","utf-8"));
-const fileGet = (filename) => {
+const readFile = (filename) => {
     //console.log("INCLUDE", filename)
     return `nop
     .block blk
@@ -32,7 +32,7 @@ const fileGet = (filename) => {
 }
 
 const doPass = async (data, showError=false, assembler=I8080, name="") => {
-    let opts = {assembler, fileGet, PRAGMAS:[], endian:assembler.endian,}
+    let opts = {assembler, readFile, PRAGMAS:[], endian:assembler.endian,}
     
     try {
         let o = await Parser.parse(data, opts);

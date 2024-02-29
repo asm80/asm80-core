@@ -76,7 +76,7 @@ somelabel nop
 
 .end`
 
-const dummyFileGet = (filename) => {
+const dummyreadFile = (filename) => {
     //console.log("INCLUDE", filename)
     return `nop
     .block blk
@@ -88,7 +88,7 @@ const doBeautify = async (data) => {
     try {
 
     
-    let lines = await beautify(data, {assembler:I8080, fileGet:dummyFileGet});
+    let lines = await beautify(data, {assembler:I8080, readFile:dummyreadFile});
     return lines
     } catch (e) {
         console.log(e)
@@ -100,7 +100,7 @@ const testParse = (data, showError=false) => {
     try {
 
     
-    let lines = beautify(data, {assembler:I8080, fileGet:dummyFileGet});
+    let lines = beautify(data, {assembler:I8080, readFile:dummyreadFile});
     if (showError) console.log(lines)
     return "OK"
     } catch (e) {

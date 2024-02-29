@@ -144,7 +144,7 @@ export const prepro = async (V, opts={}, fullfile) => {
         } else {
           //if (includedFiles[params[0].replace(/\"/g,"")]) throw {"msg":"File "+params[0].replace(/\"/g,"")+" is already included elsewhere - maybe recursion","s":V[i]};
           //console.log("Include "+params[0]);
-          nf = await opts.fileGet(params[0].replace(/\"/g, ""));
+          nf = await opts.readFile(params[0].replace(/\"/g, ""));
           if (!nf) throw {
             msg: "File " + params[0] + " not found",
             s: V[i]

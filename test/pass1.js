@@ -16,7 +16,7 @@ QUnit.module('pass1');
 
 
 let data = fs.readFileSync("./test/suite/test.a80","utf-8");
-const fileGet = (filename) => {
+const readFile = (filename) => {
     //console.log("INCLUDE", filename)
     return `nop
     .block blk
@@ -25,7 +25,7 @@ const fileGet = (filename) => {
 }
 
 const doPass = async (data, showError=false) => {
-    let opts = {assembler:I8080, fileGet}
+    let opts = {assembler:I8080, readFile}
     try {
         
         let o = await Parser.parse(data, opts);

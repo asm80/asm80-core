@@ -717,7 +717,7 @@ export const prepro = (V, opts, fullfile) =&gt; {
 <span class="cstat-no" title="statement not covered" >        } else {</span>
 <span class="cstat-no" title="statement not covered" >          //if (includedFiles[params[0].replace(/\"/g,"")]) throw {"msg":"File "+params[0].replace(/\"/g,"")+" is already included elsewhere - maybe recursion","s":V[i]};</span>
 <span class="cstat-no" title="statement not covered" >          //console.log("Include "+params[0]);</span>
-<span class="cstat-no" title="statement not covered" >          var nf = fileGet(params[0].replace(/\"/g, ""));</span>
+<span class="cstat-no" title="statement not covered" >          var nf = readFile(params[0].replace(/\"/g, ""));</span>
 <span class="cstat-no" title="statement not covered" >          if (!nf) throw {</span>
 <span class="cstat-no" title="statement not covered" >            msg: "File " + params[0] + " not found",</span>
 <span class="cstat-no" title="statement not covered" >            s: V[i]</span>

@@ -24,7 +24,7 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
     throw {msg:"No assembler specified", s:"Assembler error"};
   }
 
-    opts = {...opts, fileGet: fileSystem.fileGet, endian:false,
+    opts = {...opts, readFile: fileSystem.readFile, endian:false,
         ENT:null,
         BINFROM:null,
         BINTO:null, 
@@ -134,7 +134,7 @@ const getfn = (fullpath) => {
 }
 
 export const compileFromFile = async (filePath, fileSystem, opts = {assembler:null}) => {
-    let source = await fileSystem.fileGet(filePath);
+    let source = await fileSystem.readFile(filePath);
     return compile(source, fileSystem, opts, getfn(filePath));
 }
 
@@ -146,7 +146,7 @@ const link = async (linkList, fileSystem, name="noname") => {
   let cpu = null
   let endian = null
   let modules = await Promise.all(linkList.modules.map(async m => {
-      let f = JSON.parse(await fileSystem.fileGet(m+".obj"))
+      let f = JSON.parse(await fileSystem.readFile(m+".obj"))
       //checker
       if (!cpu) cpu = f.cpu;
       if (cpu != f.cpu) throw {msg:"Different CPU in module "+m, s:"Linker error"};
@@ -155,7 +155,7 @@ const link = async (linkList, fileSystem, name="noname") => {
       return f
   }))
   let library = await Promise.all(linkList.library.map(async m => {
-      let f = JSON.parse(await fileSystem.fileGet(m+".obj"))
+      let f = JSON.parse(await fileSystem.readFile(m+".obj"))
       if (cpu != f.cpu) throw {msg:"Different CPU in library file "+m, s:"Linker error"};
       if (endian != f.endian) throw {msg:"Different endian in library file "+m, s:"Linker error"};
       return f

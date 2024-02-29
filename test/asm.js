@@ -68,26 +68,26 @@ QUnit.test('undefined var', async assert => {
 QUnit.test('relocable 8080', async assert => {
     let {obj} = await asm.compile(asmREL, fileSystem, {assembler:"I8080"})
     assert.ok(typeof obj == "object")
-    await fileSystem.filePut("relocable.obj", JSON.stringify(obj,null,2))
-    console.log("DT",await fileSystem.fileChanged("relocable.obj"))
+    await fileSystem.writeFile("relocable.obj", JSON.stringify(obj,null,2))
+    console.log("DT",await fileSystem.mtime("relocable.obj"))
 });
 QUnit.test('relocable1 8080', async assert => {
     let {obj} = await asm.compile(asmREL1, fileSystem, {assembler:"I8080"})
     assert.ok(typeof obj == "object")
-    await fileSystem.filePut("relocable1.obj", JSON.stringify(obj,null,2))
+    await fileSystem.writeFile("relocable1.obj", JSON.stringify(obj,null,2))
 });
 
 QUnit.test('relocable2 8080', async assert => {
     let {obj} = await asm.compileFromFile("relocable2.a80", fileSystem, {assembler:"I8080"})
     assert.ok(typeof obj == "object")
-    await fileSystem.filePut("relocable2.obj", JSON.stringify(obj,null,2))
+    await fileSystem.writeFile("relocable2.obj", JSON.stringify(obj,null,2))
 });
 
 QUnit.test('relocable2 Z80', async assert => {
     try {
     let {obj} = await asm.compileFromFile("relocable2z.z80", fileSystem, {assembler:"Z80"})
     assert.ok(typeof obj == "object")
-    await fileSystem.filePut("relocable2z.obj", JSON.stringify(obj,null,2))
+    await fileSystem.writeFile("relocable2z.obj", JSON.stringify(obj,null,2))
     } catch (e) {
         console.log(e)
     }
@@ -180,27 +180,27 @@ QUnit.test('hex', async assert => {
     let result = await asm.compileFromFile("test.a80", fileSystem, {assembler:"I8080"})
     assert.ok(typeof result.dump == "object")
     let listing = lst(result, true, false)
-    await fileSystem.filePut("test.a80.lst", listing) 
+    await fileSystem.writeFile("test.a80.lst", listing) 
     let htmlList = html(result, true, false)
-    await fileSystem.filePut("test.a80.html", htmlList) 
+    await fileSystem.writeFile("test.a80.html", htmlList) 
     let hex = ihex(result)
-    await fileSystem.filePut("test.a80.hex", hex)
+    await fileSystem.writeFile("test.a80.hex", hex)
     //check
-    let hexmaster = await fileSystem.fileGet("test.a80.master.hex")
+    let hexmaster = await fileSystem.readFile("test.a80.master.hex")
     assert.equal(hex, hexmaster)
 
 });
 
 QUnit.test('hex2', async assert => {
     let result = await asm.compileFromFile("tinybasic.a80", fileSystem, {assembler:"I8080"})
-    //fileSystem.filePut("tinybasic.a80.obj", JSON.stringify(result,null,2))
+    //fileSystem.writeFile("tinybasic.a80.obj", JSON.stringify(result,null,2))
     assert.ok(typeof result.dump == "object")
     let hex = ihex(result)
     let srec = isrec(result)
     let srec28 = isrec28(result)
-    await fileSystem.filePut("tinybasic.a80.hex", hex)
+    await fileSystem.writeFile("tinybasic.a80.hex", hex)
     //check
-    let hexmaster = await fileSystem.fileGet("tinybasic.a80.master.hex")
+    let hexmaster = await fileSystem.readFile("tinybasic.a80.master.hex")
     assert.equal(hex, hexmaster)
 
 });

@@ -77,7 +77,7 @@ somelabel nop
 
 .end`
 
-const dummyFileGet = (filename) => {
+const dummyreadFile = (filename) => {
     //console.log("INCLUDE", filename)
     return `nop
     .block blk
@@ -101,7 +101,7 @@ const testParse = async (data, showError=false) => {
     try {
 
     
-    let lines = await Parser.parse(data, {assembler:I8080, fileGet:dummyFileGet});
+    let lines = await Parser.parse(data, {assembler:I8080, readFile:dummyreadFile});
     if (showError) console.log(lines)
     return "OK"
     } catch (e) {

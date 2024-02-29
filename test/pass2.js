@@ -8,7 +8,7 @@ import fs from "fs";
 import { pass1 } from "../pass1.js";
 import {pass2} from "../pass2.js";
 import { fileSystem} from "./_asyncFilesystem.js";
-//console.log("FILE",fileSystem.fileGet)
+//console.log("FILE",fileSystem.readFile)
 
 //QUnit test for parser.js
 
@@ -28,7 +28,7 @@ let asmRELOCABLE = fs.readFileSync("./test/suite/relocable.a80","utf-8");
 
 
 const doPass = async (data, showError=false, assembler=I8080, name="") => {
-    let opts = {assembler, fileGet:fileSystem.fileGet , PRAGMAS:[], endian:assembler.endian,}
+    let opts = {assembler, readFile:fileSystem.readFile , PRAGMAS:[], endian:assembler.endian,}
     
     try {
         let o = await Parser.parse(data, opts);
