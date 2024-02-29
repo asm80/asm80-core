@@ -7,7 +7,7 @@ import fs from "fs";
 
 import { pass1 } from "../pass1.js";
 import {pass2} from "../pass2.js";
-import { fileSystem} from "./_filesystem.js";
+import { fileSystem} from "./_asyncFilesystem.js";
 //console.log("FILE",fileSystem.fileGet)
 
 //QUnit test for parser.js
