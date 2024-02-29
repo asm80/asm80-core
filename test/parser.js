@@ -12,22 +12,7 @@ import * as Parser from "../parser.js";
 QUnit.module('parser');
 QUnit.config.hidepassed = true;
 
-const asyncThrows = (assert,fn) => {
-    let done = assert.async();
-    return new Promise((resolve, reject) => {
-        fn().then(()=>{
-            assert.ok(false)
-            resolve()
-            done()
-        })
-        .catch(e=>{
-            assert.ok(true)
-            resolve()
-            done()
-        })
-    })
-
-}
+import { asyncThrows } from "./_asyncThrows.js";
 
 //test suite
 let data = `label: nop

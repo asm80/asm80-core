@@ -10,24 +10,10 @@ import QUnit from "qunit";
 
 import * as Parser from "../parser.js";
 
+import { asyncThrows } from "./_asyncThrows.js";
+
 QUnit.module('pass1');
 
-const asyncThrows = (assert,fn) => {
-    let done = assert.async();
-    return new Promise((resolve, reject) => {
-        fn().then(()=>{
-            assert.ok(false)
-            resolve()
-            done()
-        })
-        .catch(e=>{
-            assert.ok(true)
-            resolve()
-            done()
-        })
-    })
-
-}
 
 let data = fs.readFileSync("./test/suite/test.a80","utf-8");
 const fileGet = (filename) => {

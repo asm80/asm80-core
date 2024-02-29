@@ -394,7 +394,7 @@ export const linkModules = (data, modules, library) => {
         BSSEG,
         seglen,
         entry:resolves[entrypoint],
-        code:out, 
+        dump:out, 
 
     }
 

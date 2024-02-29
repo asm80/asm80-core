@@ -6,6 +6,7 @@ import fs from "fs";
 import { pass1 } from "../pass1.js";
 import {pass2} from "../pass2.js";
 import {objCode, linkModules} from "../objcode.js"
+import { ihex } from "../utils/ihex.js";
 
 //QUnit test for parser.js
 
@@ -68,7 +69,7 @@ const doPass = async (data, showError=false, assembler=I8080, name="") => {
 
 
 
-const doLink = (data, showError=false, assembler=I8080, name="") => {
+const doLink = async (data, showError=false, assembler=I8080, name="") => {
     let modules = data.modules.map(m => {
         let f = JSON.parse(fs.readFileSync("./test/suite/"+m+".obj","utf-8"))
         return f
@@ -83,6 +84,8 @@ const doLink = (data, showError=false, assembler=I8080, name="") => {
     let out = linkModules(data,modules, library)
 
     fs.writeFileSync("./test/suite/"+name+".combined",JSON.stringify(out))    
+
+    return out
 }
 
 
@@ -101,6 +104,13 @@ QUnit.test('relocable2 8080', async assert => {
 });
 
 QUnit.test('link 8080', async assert => {
-    doLink(asmLNK, true, I8080, "relocable")
+    await doLink(asmLNK, true, I8080, "relocable")
+    assert.ok(true)
+});
+
+QUnit.test('link to HEX', async assert => {
+    let o = await doLink(asmLNK, true, I8080, "relocable")
+    let hex = ihex(o)
+    fs.writeFileSync("./test/suite/relocable.combined.hex",hex)
     assert.ok(true)
 });

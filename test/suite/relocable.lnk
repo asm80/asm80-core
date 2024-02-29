@@ -1,6 +1,7 @@
 {
     "segments": {
-        "CSEG":"10"
+        "CSEG":"0",
+        "DSEG":"0x100"
     },
     "vars": {
         "BIOS_PRINT":"0x5"

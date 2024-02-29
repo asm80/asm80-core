@@ -26,22 +26,7 @@ const test_async = async (ok) => {
     throw "Not OK"
 }
 */
-const asyncThrows = (assert,fn) => {
-    let done = assert.async();
-    return new Promise((resolve, reject) => {
-        fn().then(()=>{
-            assert.ok(false)
-            resolve()
-            done()
-        })
-        .catch(e=>{
-            assert.ok(true)
-            resolve()
-            done()
-        })
-    })
-
-}
+import { asyncThrows } from "./_asyncThrows.js";
 /*
 QUnit.test('simple async OK', async assert => {
     //const done = assert.async();
