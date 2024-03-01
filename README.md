@@ -20,7 +20,7 @@ Your contributions will go towards:
 - Increased collaboration: Opening our platform as open-source will enable a wealth of like-minded developers to contribute their expertise and innovations.
 - Time: Your generous contributions will allow me to allocate the necessary time and energy required to oversee and direct this major undertaking, ensuring top quality and efficiency every step of the way.
 
-<img src="https://asm80.github.io/asm80-core/docs/qr_7sI8yU7jCbzp4wMeUX.png">
+<img src="https://asm80.github.io/asm80-core/docs/qr_7sI8yU7jCbzp4wMeUX.png" width="300px">
 
 
 ## Alpha stage
