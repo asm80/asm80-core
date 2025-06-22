@@ -421,12 +421,15 @@ set2: {
               return s;
 
             }
+          } else if (reg<0) {
+            throw "Invalid CALL COND code: "+reg;
           }
           return null;
         }
         if (s.opcode == 'JP') {
           ax = Z80.set2.JP2;
           reg = COND(par1);
+          
           if (reg >= 0 && ax[5]>0){
             op = ax[5];
             if (op>0) {
@@ -439,6 +442,8 @@ set2: {
               return s;
 
             }
+          } else if (reg<0) {
+            throw "Invalid JP COND code: "+reg;
           }
           return null;
         }
@@ -464,6 +469,8 @@ set2: {
               return s;
 
             }
+          } else if (reg<0) {
+            throw "Invalid JR COND code: "+reg;
           }
           return null;
         }

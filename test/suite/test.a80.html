@@ -3,6 +3,7 @@
 <tr id="ln3"><td><a name="ADDR0000">0000</a></td><td></td><td></td><td></td><td>.BINFROM</td><td>0</td><td></td></tr>
 <tr id="ln4"><td><a name="ADDR0000">0000</a></td><td></td><td></td><td></td><td>.BINTO</td><td>0x8000</td><td></td></tr>
 <tr id="ln5"><td><a name="ADDR0000">0000</a></td><td></td><td></td><td></td><td>.ENT</td><td>$</td><td></td></tr>
+<tr id="ln6"><td><a name="ADDR0000">0000</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln7"><td><a name="ADDR0000">0000</a></td><td></td><td>03 </td><td></td><td>DB</td><td>1+2</td><td></td></tr>
 <tr id="ln8"><td><a name="ADDR0001">0001</a></td><td></td><td>0E </td><td></td><td>DB</td><td>2+3*4</td><td></td></tr>
 <tr id="ln9"><td><a name="ADDR0002">0002</a></td><td></td><td></td><td><a name="LBLANYVAL">ANYVAL</a></td><td>EQU</td><td>5</td><td></td></tr>
@@ -11,10 +12,15 @@
 <tr id="ln12"><td><a name="ADDR0003">0003</a></td><td></td><td>01 19 01 00 07 0A 07 03 02 </td><td></td><td>DB</td><td>anyval / 3,anyval ^ 2,anyval % 2,anyval & 2,anyval | 2,anyval * 2,anyval + 2,anyval - 2,anyval # 3</td><td></td></tr>
 <tr id="ln13"><td><a name="ADDR000C">000C</a></td><td></td><td>00 01 01 00 01 00 </td><td></td><td>DB</td><td>anyval =1,anyval != 1,anyval ?>1,anyval ?<1,anyval ?>=1,anyval ?<= 1</td><td></td></tr>
 <tr id="ln14"><td><a name="ADDR0012">0012</a></td><td></td><td>00 </td><td></td><td>DB</td><td>1&2</td><td></td></tr>
+<tr id="ln15"><td><a name="ADDR0013">0013</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln16"><td><a name="ADDR0013">0013</a></td><td></td><td>48 65 6C 6C 6F 57 6F 72 6C 64 </td><td></td><td>DB</td><td>"Hello" || "World"</td><td></td></tr>
+<tr id="ln17"><td><a name="ADDR001D">001D</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln18"><td><a name="ADDR001D">001D</a></td><td></td><td>68 65 6C 6C 6F 09 0A 0D 5C 62 61 63 6B 73 6C 61 73 68 5C 0C 08 2F 22 27 </td><td></td><td>DB</td><td>"hello\t\n\r\\backslash\\\f\b\/\u0022\'"</td><td></td></tr>
+<tr id="ln19"><td><a name="ADDR0035">0035</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln20"><td><a name="ADDR0035">0035</a></td><td></td><td>AB 00 00 23 12 0C 16 01 </td><td></td><td>DB</td><td>0xab,0b1010,0o1237,$123,12h,12,10110b,%12</td><td></td></tr>
+<tr id="ln21"><td><a name="ADDR003D">003D</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln22"><td><a name="ADDR003D">003D</a></td><td></td><td>00 01 </td><td></td><td>DB</td><td>lsb(label),msb(label)</td><td></td></tr>
+<tr id="ln23"><td><a name="ADDR003F">003F</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln24"><td><a name="ADDR0100">0100</a></td><td></td><td></td><td></td><td>.ORG</td><td>$100</td><td></td></tr>
 <tr id="ln25"><td><a name="ADDR0100">0100</a></td><td></td><td>00 </td><td><a name="LBLLABEL">LABEL</a></td><td>NOP</td><td></td><td></td></tr>
 <tr id="ln26"><td><a name="ADDR0101">0101</a></td><td></td><td>21 01 01 </td><td></td><td>LXI</td><td>h,label+1</td><td></td></tr>
@@ -23,6 +29,7 @@
 <tr id="ln29"><td><a name="ADDR0108">0108</a></td><td></td><td>47 </td><td></td><td>MOV</td><td>b,a</td><td></td></tr>
 <tr id="ln30"><td><a name="ADDR0109">0109</a></td><td></td><td>80 </td><td></td><td>ADD</td><td>b</td><td></td></tr>
 <tr id="ln31"><td><a name="ADDR010A">010A</a></td><td></td><td>C3 00 01 </td><td></td><td>JMP</td><td><a href="#LBLLABEL">label</a></td><td></td></tr>
+<tr id="ln32"><td><a name="ADDR010D">010D</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln33"><td><a name="ADDR010D">010D</a></td><td></td><td></td><td></td><td>IF</td><td>1</td><td></td></tr>
 <tr id="ln34"><td><a name="ADDR010D">010D</a></td><td></td><td>00 </td><td></td><td>NOP</td><td></td><td></td></tr>
 <tr id="ln35"><td><a name="ADDR010E">010E</a></td><td></td><td></td><td></td><td>ELSE</td><td></td><td></td></tr>
@@ -33,14 +40,18 @@
 <tr id="ln40"><td><a name="ADDR010E">010E</a></td><td></td><td></td><td></td><td>ENDIF</td><td></td><td></td></tr>
 <tr id="ln41"><td><a name="ADDR010E">010E</a></td><td></td><td>01 </td><td></td><td>DB</td><td>1</td><td></td></tr>
 <tr id="ln42"><td><a name="ADDR010E">010E</a></td><td></td><td></td><td></td><td>ENDIF</td><td></td><td></td></tr>
+<tr id="ln43"><td><a name="ADDR010E">010E</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln44"><td><a name="ADDR010E">010E</a></td><td></td><td></td><td></td><td>IFN</td><td>0</td><td></td></tr>
 <tr id="ln45"><td><a name="ADDR010E">010E</a></td><td></td><td>59 45 53 </td><td></td><td>DB</td><td>"YES"</td><td></td></tr>
 <tr id="ln46"><td><a name="ADDR0111">0111</a></td><td></td><td></td><td></td><td>ENDIF</td><td></td><td></td></tr>
+<tr id="ln47"><td><a name="ADDR0111">0111</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln48"><td><a name="ADDR0111">0111</a></td><td></td><td>00 </td><td></td><td>NOP</td><td></td><td></td></tr>
+<tr id="ln49"><td><a name="ADDR0112">0112</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln50"><td><a name="ADDR0112">0112</a></td><td></td><td></td><td></td><td>.M16</td><td></td><td></td></tr>
 <tr id="ln51"><td><a name="ADDR0112">0112</a></td><td></td><td></td><td></td><td>.M8</td><td></td><td></td></tr>
 <tr id="ln52"><td><a name="ADDR0112">0112</a></td><td></td><td></td><td></td><td>.X16</td><td></td><td></td></tr>
 <tr id="ln53"><td><a name="ADDR0112">0112</a></td><td></td><td></td><td></td><td>.X8</td><td></td><td></td></tr>
+<tr id="ln54"><td><a name="ADDR0112">0112</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln55"><td><a name="ADDR0112">0112</a></td><td></td><td></td><td></td><td>.PHASE</td><td>$200</td><td></td></tr>
 <tr id="ln56"><td><a name="ADDR0200">0200</a></td><td>0112</td><td>00 </td><td></td><td>NOP</td><td></td><td></td></tr>
 <tr id="ln57"><td><a name="ADDR0201">0201</a></td><td>0113</td><td></td><td></td><td>.DEPHASE</td><td></td><td></td></tr>
@@ -55,7 +66,8 @@
 <tr id="ln66"><td><a name="ADDR011E">011E</a></td><td></td><td>79 </td><td></td><td>MOV</td><td>A,C</td><td></td></tr>
 <tr id="ln67"><td><a name="ADDR011F">011F</a></td><td></td><td>CA 00 01 </td><td></td><td>JZ</td><td><a href="#LBLLABEL">LABEL</a></td><td></td></tr>
 <tr id="ln68"><td><a name="ADDR0122">0122</a></td><td></td><td>3E 0F </td><td></td><td>MVI</td><td>a,0x0f</td><td></td></tr>
-<tr id="ln69"><td><a name="ADDR0124">0124</a></td><td></td><td>79 </td><td><a name="LBLLABEL3">LABEL3</a></td><td>MOV</td><td>a,C</td><td>;with remark as a,b,c</td></tr>
+<tr id="ln69"><td><a name="ADDR0124">0124</a></td><td></td><td>79 </td><td><a name="LBLLABEL3">LABEL3</a></td><td>MOV</td><td>a,C</td><td>;with remark as a,b,c  </td></tr>
+<tr id="ln70"><td><a name="ADDR0125">0125</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln71"><td><a name="ADDR0125">0125</a></td><td></td><td></td><td><a name="LBLLABEL5">LABEL5</a></td><td>=</td><td>1</td><td></td></tr>
 <tr id="ln72"><td><a name="ADDR0125">0125</a></td><td></td><td>01 </td><td></td><td>DB</td><td>1</td><td></td></tr>
 <tr id="ln73"><td><a name="ADDR0126">0126</a></td><td></td><td>01 </td><td></td><td>DB</td><td>1</td><td></td></tr>
@@ -77,18 +89,27 @@
 <tr id="ln89"><td><a name="ADDR0158">0158</a></td><td></td><td></td><td></td><td>ELSE</td><td></td><td></td></tr>
 <tr id="ln90"><td><a name="ADDR0158">0158</a></td><td></td><td>00 </td><td></td><td>NOP</td><td></td><td></td></tr>
 <tr id="ln91"><td><a name="ADDR0158">0158</a></td><td></td><td></td><td></td><td>ENDIF</td><td></td><td></td></tr>
+<tr id="ln92"><td><a name="ADDR0158">0158</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln93"><td><a name="ADDR0158">0158</a></td><td></td><td>00 </td><td></td><td>NOP</td><td></td><td></td></tr>
+<tr id="ln94"><td><a name="ADDR0159">0159</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln95"><td><a name="ADDR0159">0159</a></td><td></td><td>00 </td><td><a name="LBLAA">AA</a></td><td>NOP</td><td></td><td></td></tr>
+<tr id="ln96"><td><a name="ADDR015A">015A</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
+<tr id="ln97"><td><a name="ADDR015A">015A</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln98"><td><a name="ADDR015A">015A</a></td><td></td><td></td><td></td><td>SETDP</td><td>0</td><td></td></tr>
+<tr id="ln99"><td><a name="ADDR015A">015A</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln100"><td><a name="ADDR015A">015A</a></td><td></td><td></td><td><a name="LBLVAR">VAR</a></td><td>.SET</td><td>3</td><td>;test</td></tr>
 <tr id="ln101"><td><a name="ADDR015A">015A</a></td><td></td><td></td><td><a name="LBLVAR">VAR</a></td><td>.SET</td><td>4</td><td>;test</td></tr>
+<tr id="ln102"><td><a name="ADDR015A">015A</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln2"><td><a name="ADDR015A">015A</a></td><td></td><td></td><td></td><td>.BLOCK</td><td>blk</td><td></td></tr>
 <tr id="ln3"><td><a name="ADDR015A">015A</a></td><td></td><td>01 00 </td><td><a name="LBLOMA">OMA</a></td><td>DW</td><td>1</td><td></td></tr>
 <tr id="ln4"><td><a name="ADDR015C">015C</a></td><td></td><td></td><td></td><td>.ENDBLOCK</td><td></td><td></td></tr>
+<tr id="ln104"><td><a name="ADDR015C">015C</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln105"><td><a name="ADDR015C">015C</a></td><td></td><td>00 </td><td><a name="LBLSOMELABEL">SOMELABEL</a></td><td>NOP</td><td></td><td></td></tr>
 <tr id="ln106"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td>.PRAGMA</td><td>6309</td><td></td></tr>
-<tr id="ln108"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>; empty line</td></tr>
+<tr id="ln107"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
+<tr id="ln108"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>; empty line   </td></tr>
 <tr id="ln109"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>; with remark</td></tr>
+<tr id="ln110"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln115"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>;Macro define XYZ</td></tr>
 <tr id="lnundefined"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="lnundefined"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
@@ -96,22 +117,27 @@
 <tr id="lnundefined"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="lnundefined"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="lnundefined"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
-<tr id="lnundefined"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>;*Macro unroll:  xyz</td></tr>
-<tr id="ln112"><td><a name="ADDR015D">015D</a></td><td></td><td>3C </td><td><a name="LBLLOOPM_98S117">LOOPM_98S117</a></td><td>INR</td><td>a</td><td></td></tr>
+<tr id="ln116"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
+<tr id="lnundefined"><td><a name="ADDR015D">015D</a></td><td></td><td></td><td></td><td></td><td></td><td>;*Macro unroll:  xyz</td></tr>
+<tr id="ln112"><td><a name="ADDR015D">015D</a></td><td></td><td>3C </td><td><a name="LBLLOOPM_120S117">LOOPM_120S117</a></td><td>INR</td><td>a</td><td></td></tr>
 <tr id="ln113"><td><a name="ADDR015E">015E</a></td><td></td><td>05 </td><td></td><td>DCR</td><td>b</td><td></td></tr>
-<tr id="ln114"><td><a name="ADDR015F">015F</a></td><td></td><td>C2 5D 01 </td><td></td><td>JNZ</td><td><a href="#LBLLOOPM_98S117">loopM_98S117</a></td><td></td></tr>
-<tr id="lnundefined"><td><a name="ADDR0162">0162</a></td><td></td><td></td><td></td><td></td><td></td><td>;*Macro unroll:  xyz</td></tr>
-<tr id="ln112"><td><a name="ADDR0162">0162</a></td><td></td><td>3C </td><td><a name="LBLLOOPM_99S118">LOOPM_99S118</a></td><td>INR</td><td>a</td><td></td></tr>
+<tr id="ln114"><td><a name="ADDR015F">015F</a></td><td></td><td>C2 5D 01 </td><td></td><td>JNZ</td><td><a href="#LBLLOOPM_120S117">loopM_120S117</a></td><td></td></tr>
+<tr id="lnundefined"><td><a name="ADDR0162">0162</a></td><td></td><td></td><td></td><td></td><td></td><td>;*Macro unroll:  xyz</td></tr>
+<tr id="ln112"><td><a name="ADDR0162">0162</a></td><td></td><td>3C </td><td><a name="LBLLOOPM_121S118">LOOPM_121S118</a></td><td>INR</td><td>a</td><td></td></tr>
 <tr id="ln113"><td><a name="ADDR0163">0163</a></td><td></td><td>05 </td><td></td><td>DCR</td><td>b</td><td></td></tr>
-<tr id="ln114"><td><a name="ADDR0164">0164</a></td><td></td><td>C2 62 01 </td><td></td><td>JNZ</td><td><a href="#LBLLOOPM_99S118">loopM_99S118</a></td><td></td></tr>
-<tr id="lnundefined"><td><a name="ADDR0167">0167</a></td><td></td><td></td><td></td><td></td><td></td><td>;*Macro unroll:  xyz</td></tr>
-<tr id="ln112"><td><a name="ADDR0167">0167</a></td><td></td><td>3C </td><td><a name="LBLLOOPM_100S119">LOOPM_100S119</a></td><td>INR</td><td>a</td><td></td></tr>
+<tr id="ln114"><td><a name="ADDR0164">0164</a></td><td></td><td>C2 62 01 </td><td></td><td>JNZ</td><td><a href="#LBLLOOPM_121S118">loopM_121S118</a></td><td></td></tr>
+<tr id="lnundefined"><td><a name="ADDR0167">0167</a></td><td></td><td></td><td></td><td></td><td></td><td>;*Macro unroll:  xyz</td></tr>
+<tr id="ln112"><td><a name="ADDR0167">0167</a></td><td></td><td>3C </td><td><a name="LBLLOOPM_122S119">LOOPM_122S119</a></td><td>INR</td><td>a</td><td></td></tr>
 <tr id="ln113"><td><a name="ADDR0168">0168</a></td><td></td><td>05 </td><td></td><td>DCR</td><td>b</td><td></td></tr>
-<tr id="ln114"><td><a name="ADDR0169">0169</a></td><td></td><td>C2 67 01 </td><td></td><td>JNZ</td><td><a href="#LBLLOOPM_100S119">loopM_100S119</a></td><td></td></tr>
+<tr id="ln114"><td><a name="ADDR0169">0169</a></td><td></td><td>C2 67 01 </td><td></td><td>JNZ</td><td><a href="#LBLLOOPM_122S119">loopM_122S119</a></td><td></td></tr>
+<tr id="ln120"><td><a name="ADDR016C">016C</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln121"><td><a name="ADDR016C">016C</a></td><td></td><td>54 48 49 53 20 49 53 20 41 4E 20 46 43 43 20 53 54 52 49 4E 47 </td><td><a name="LBLFX1">FX1</a></td><td>FCC</td><td>"THIS IS AN FCC STRING"</td><td></td></tr>
 <tr id="ln122"><td><a name="ADDR0181">0181</a></td><td></td><td>53 4F 20 49 53 20 54 48 49 53 </td><td><a name="LBLFX2">FX2</a></td><td>FCC</td><td>.SO IS THIS.</td><td></td></tr>
+<tr id="ln123"><td><a name="ADDR018B">018B</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln124"><td><a name="ADDR018B">018B</a></td><td></td><td>68 </td><td></td><td>DS</td><td>1,"hello"</td><td></td></tr>
+<tr id="ln125"><td><a name="ADDR018C">018C</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln126"><td><a name="ADDR0000">0000</a></td><td></td><td></td><td></td><td>.DSEG</td><td></td><td></td></tr>
+<tr id="ln127"><td><a name="ADDR0000">0000</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln128"><td><a name="ADDR0000">0000</a></td><td></td><td>00 00 00 00 00 00 F0 3F </td><td></td><td>DFF</td><td>1.234</td><td></td></tr>
 <tr id="ln129"><td><a name="ADDR0008">0008</a></td><td></td><td>48 65 6C 6C EF </td><td></td><td>.ISTR</td><td>"Hello"</td><td></td></tr>
 <tr id="ln130"><td><a name="ADDR000D">000D</a></td><td></td><td>8C </td><td></td><td>.ISTR</td><td>12</td><td></td></tr>
@@ -132,8 +158,11 @@
 <tr id="ln145"><td><a name="ADDR0000">0000</a></td><td></td><td></td><td></td><td>.ESEG</td><td></td><td></td></tr>
 <tr id="ln146"><td><a name="ADDR0000">0000</a></td><td></td><td>01 </td><td></td><td>DB</td><td>1</td><td></td></tr>
 <tr id="ln147"><td><a name="ADDR0001">0001</a></td><td></td><td>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 </td><td></td><td>BSZ</td><td>50</td><td></td></tr>
+<tr id="ln148"><td><a name="ADDR0033">0033</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln149"><td><a name="ADDR0033">0033</a></td><td></td><td>3B 64 69 7A 69 7A 65 6D 70 74 79 </td><td></td><td>.INCBIN</td><td>test.bin</td><td></td></tr>
+<tr id="ln150"><td><a name="ADDR003E">003E</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln151"><td><a name="ADDR0000">0000</a></td><td></td><td></td><td></td><td>.BSSEG</td><td></td><td></td></tr>
 <tr id="ln152"><td><a name="ADDR0000">0000</a></td><td></td><td></td><td><a name="LBLBSTEST">BSTEST</a></td><td>DS</td><td>5</td><td></td></tr>
+<tr id="ln153"><td><a name="ADDR0005">0005</a></td><td></td><td></td><td></td><td></td><td></td><td>; </td></tr>
 <tr id="ln154"><td><a name="ADDR0005">0005</a></td><td></td><td></td><td></td><td>.END</td><td></td><td></td></tr>
 </table>

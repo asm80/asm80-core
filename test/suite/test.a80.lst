@@ -3,6 +3,7 @@
 0000                          .BINFROM   0   
 0000                          .BINTO   0x8000   
 0000                          .ENT   $   
+0000                             ; 
 0000   03                     DB   1+2   
 0001   0E                     DB   2+3*4   
 0002                ANYVAL:   EQU   5   
@@ -11,10 +12,15 @@
 0003   01 19 01 00 07 0A 07 03 02 DB   anyval / 3,anyval ^ 2,anyval % 2,anyval & 2,anyval | 2,anyval * 2,anyval + 2,anyval - 2,anyval # 3   
 000C   00 01 01 00 01 00      DB   anyval =1,anyval != 1,anyval ?>1,anyval ?<1,anyval ?>=1,anyval ?<= 1   
 0012   00                     DB   1&2   
+0013                             ; 
 0013   48 65 6C 6C 6F 57 6F 72 6C 64 DB   "Hello" || "World"   
+001D                             ; 
 001D   68 65 6C 6C 6F 09 0A 0D 5C 62 61 63 6B 73 6C 61 73 68 5C 0C 08 2F 22 27 DB   "hello\t\n\r\\backslash\\\f\b\/\u0022\'"   
+0035                             ; 
 0035   AB 00 00 23 12 0C 16 01 DB   0xab,0b1010,0o1237,$123,12h,12,10110b,%12   
+003D                             ; 
 003D   00 01                  DB   lsb(label),msb(label)   
+003F                             ; 
 0100                          .ORG   $100   
 0100   00           LABEL:    NOP      
 0101   21 01 01               LXI   h,label+1   
@@ -23,6 +29,7 @@
 0108   47                     MOV   b,a   
 0109   80                     ADD   b   
 010A   C3 00 01               JMP   label   
+010D                             ; 
 010D                          IF   1   
 010D   00                     NOP      
 010E                          ELSE      
@@ -33,14 +40,18 @@
 010E                          ENDIF      
                               DB   1   
 010E                          ENDIF      
+010E                             ; 
 010E                          IFN   0   
 010E   59 45 53               DB   "YES"   
 0111                          ENDIF      
+0111                             ; 
 0111   00                     NOP      
+0112                             ; 
 0112                          .M16      
 0112                          .M8      
 0112                          .X16      
 0112                          .X8      
+0112                             ; 
 0112                          .PHASE   $200   
 0200 @0112   00               NOP      
 0201 @0113                    .DEPHASE      
@@ -55,7 +66,8 @@
 011E   79                     MOV   A,C   
 011F   CA 00 01               JZ   LABEL   
 0122   3E 0F                  MVI   a,0x0f   
-0124   79           LABEL3:   MOV   a,C   ;with remark as a,b,c
+0124   79           LABEL3:   MOV   a,C   ;with remark as a,b,c  
+0125                             ; 
 0125                LABEL5:   =   1   
 0125   01                     DB   1   
 0126   01                     DB   1   
@@ -77,18 +89,27 @@
 0158                          ELSE      
                               NOP      
 0158                          ENDIF      
+0158                             ; 
 0158   00                     NOP      
+0159                             ; 
 0159   00           AA:       NOP      
+015A                             ; 
+015A                             ; 
 015A                          SETDP   0   
+015A                             ; 
 015A                VAR:      .SET   3   ;test
 015A                VAR:      .SET   4   ;test
+015A                             ; 
 015A                          .BLOCK   blk   
 015A   01 00        OMA:      DW   1   
 015C                          .ENDBLOCK      
+015C                             ; 
 015C   00           SOMELABEL:   NOP      
 015D                          .PRAGMA   6309   
-015D                             ; empty line
+015D                             ; 
+015D                             ; empty line   
 015D                             ; with remark
+015D                             ; 
 015D                .macro XYZ,
 015D                             ; 
 015D                 loop%%M: inr a
@@ -96,22 +117,27 @@
 015D                 jnz loop%%M
 015D                .endm
 015D                 
+015D                             ; 
 015D                          ;*Macro unroll:  xyz
-015D   3C           LOOPM_98S117:   INR   a   
+015D   3C           LOOPM_120S117:   INR   a   
 015E   05                     DCR   b   
-015F   C2 5D 01               JNZ   loopM_98S117   
+015F   C2 5D 01               JNZ   loopM_120S117   
 0162                          ;*Macro unroll:  xyz
-0162   3C           LOOPM_99S118:   INR   a   
+0162   3C           LOOPM_121S118:   INR   a   
 0163   05                     DCR   b   
-0164   C2 62 01               JNZ   loopM_99S118   
+0164   C2 62 01               JNZ   loopM_121S118   
 0167                          ;*Macro unroll:  xyz
-0167   3C           LOOPM_100S119:   INR   a   
+0167   3C           LOOPM_122S119:   INR   a   
 0168   05                     DCR   b   
-0169   C2 67 01               JNZ   loopM_100S119   
+0169   C2 67 01               JNZ   loopM_122S119   
+016C                             ; 
 016C   54 48 49 53 20 49 53 20 41 4E 20 46 43 43 20 53 54 52 49 4E 47 FX1:   FCC   "THIS IS AN FCC STRING"   
 0181   53 4F 20 49 53 20 54 48 49 53 FX2:   FCC   .SO IS THIS.   
+018B                             ; 
 018B   68                     DS   1,"hello"   
+018C                             ; 
 0000                          .DSEG      
+0000                             ; 
 0000   00 00 00 00 00 00 F0 3F DFF   1.234   
 0008   48 65 6C 6C EF         .ISTR   "Hello"   
 000D   8C                     .ISTR   12   
@@ -132,7 +158,10 @@
 0000                          .ESEG      
 0000   01                     DB   1   
 0001   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 BSZ   50   
+0033                             ; 
 0033   3B 64 69 7A 69 7A 65 6D 70 74 79 .INCBIN   test.bin   
+003E                             ; 
 0000                          .BSSEG      
 0000                BSTEST:   DS   5   
+0005                             ; 
 0005                          .END      

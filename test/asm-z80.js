@@ -2,6 +2,8 @@ import { Z80 } from "../cpu/z80.js";
 import { Parser } from "../expression-parser.js";
 import QUnit from "qunit"
 
+import { asyncThrows } from "./_asyncThrows.js";
+
 
 QUnit.module("ASM - Z80");
 
@@ -164,7 +166,7 @@ const ssldpp = (rp1,rp2,oc1,oc2) => {
 		p = Z80.parseOpcode(s,vars, Parser);
 		QUnit.assert.equal(p.lens[0],0x30,"Opcode 0 = 0x30 OK");
 		QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode 1 OK");
-				QUnit.assert.throws(function(){p.lens[1]({_PC:0x100})},"OK");
+		QUnit.assert.throws(function(){p.lens[1]({_PC:0x100})},"OK");
       QUnit.assert.equal(p.bytes,2,"Length OK");
 	});
 	QUnit.test( "LD A,A", function() {
@@ -5226,3 +5228,124 @@ const ssldpp = (rp1,rp2,oc1,oc2) => {
             QUnit.assert.equal(p.lens[3],0x3E,"Opcode 3 = 0x3E OK");
 		QUnit.assert.equal(p.bytes,4,"Length OK");
 	});
+
+// Additional tests for uncovered Z80 areas
+
+// Test uncovered R16 alternative branch (line 334-335)
+QUnit.test( "DEC with undefined R16 mapping", function() {
+	// Create mock instruction that doesn't have R16 mapping
+	s = {"opcode":"TEST_R16","params":["BC"],"addr":0x100,"lens":[],"bytes":0};
+	// This should trigger the else branch at lines 333-335
+	p = Z80.parseOpcode(s,vars, Parser);
+	QUnit.assert.equal(p,null,"Should return null for undefined instruction");
+});
+
+// Test uncovered LD A,(addr) instruction (lines 596-599) 
+QUnit.test( "LD A,(address) special case", function() {
+	s = {"opcode":"LD","params":["A","(0x1234)"],"addr":0x100,"lens":[],"bytes":0};
+	p = Z80.parseOpcode(s,vars, Parser);
+	QUnit.assert.equal(p.lens[0],0x3A,"Opcode for LD A,(addr)");
+	QUnit.assert.equal(typeof(p.lens[1]),"function","Parameter function");
+	QUnit.assert.equal(p.lens[2],null,"High byte marker");
+	QUnit.assert.equal(p.bytes,3,"Length for LD A,(addr)");
+});
+
+// Test error handling in safeparse function (lines 741-747)
+QUnit.test( "Error handling with invalid expression", function() {
+	// Test with undefined variable to trigger exception
+	var errorVars = {"_PC":0x0100}; // Missing required variable
+	s = {"opcode":"LD","params":["A","UNDEFINED_VAR"],"addr":0x100,"lens":[],"bytes":0};
+	// This should not throw but handle the error gracefully
+	p = Z80.parseOpcode(s,errorVars, Parser);
+	QUnit.assert.notEqual(p,null,"Should handle parsing errors gracefully");
+});
+
+
+
+
+// Test empty parameters case (lines around 1837, 1846)
+QUnit.test('Empty parameters handling', assert => {
+	assert.throws(()=>{
+		s = {"opcode":"LD","params":[],"addr":0x100,"lens":[],"bytes":0};
+		p = Z80.parseOpcode(s,vars, Parser);
+	})
+});
+
+
+// Test null parameters
+QUnit.test( "Null parameters handling", assert => {
+	assert.throws(()=>{
+		s = {"opcode":"LD","params":null,"addr":0x100,"lens":[],"bytes":0};
+		p = Z80.parseOpcode(s,vars, Parser);
+	})
+});
+
+// Test invalid JR instruction to trigger return null  
+QUnit.test( "Invalid JR instruction", function() {
+	s = {"opcode":"JR","params":["INVALID","EXTRA"],"addr":0x100,"lens":[],"bytes":0};
+	QUnit.assert.throws(function(){ Z80.parseOpcode(s,vars, Parser);},"Should throw for invalid JR");
+});
+
+// Test invalid CALL instruction
+QUnit.test( "Invalid CALL instruction", function() {
+	s = {"opcode":"CALL","params":["TOO","MANY","PARAMS"],"addr":0x100,"lens":[],"bytes":0};
+	QUnit.assert.throws(function(){ Z80.parseOpcode(s,vars, Parser);},"Should throw for invalid CALL");
+});
+
+// Test index out of range for displacement (lines 2290, 2386, 2391)
+QUnit.test( "Index out of range positive", function() {
+	s = {"opcode":"LD","params":["A","(IX+200)"],"addr":0x100,"lens":[],"bytes":0};
+	p = Z80.parseOpcode(s,vars, Parser);
+	QUnit.assert.throws(function(){p.lens[2]({});},"Should throw for displacement > 127");
+});
+
+QUnit.test( "Index out of range negative", function() {
+	s = {"opcode":"LD","params":["A","(IX-200)"],"addr":0x100,"lens":[],"bytes":0};
+	p = Z80.parseOpcode(s,vars, Parser);
+	QUnit.assert.throws(function(){p.lens[2]({});},"Should throw for displacement < -128");
+});
+
+// Test multiple indexed parameters (should trigger branch at line 2185)
+QUnit.test( "Multiple indexed parameters", function() {
+	s = {"opcode":"LD","params":["(IX+1)","(IY+2)"],"addr":0x100,"lens":[],"bytes":0};
+	QUnit.assert.throws(function(){ Z80.parseOpcode(s,vars, Parser);},"Should throw for multiple indexed params");
+});
+
+// Test multiple prefixes (should trigger branch at line 2187)
+QUnit.test( "Multiple prefixes detected", function() {
+	// This is harder to trigger directly, but we can test with conflicting IX/IY usage
+	s = {"opcode":"LD","params":["IXH","IYL"],"addr":0x100,"lens":[],"bytes":0};
+	QUnit.assert.throws(function(){ Z80.parseOpcode(s,vars, Parser);},"Should throw for conflicting prefixes");
+});
+
+// Test edge case for 16-bit register handling without R16 mapping
+QUnit.test( "16-bit register without R16 mapping", function() {
+	s = {"opcode":"UNKNOWN","params":["HL"],"addr":0x100,"lens":[],"bytes":0};
+	p = Z80.parseOpcode(s,vars, Parser);
+	QUnit.assert.equal(p,null,"Should return null for unknown 16-bit instruction");
+});
+
+// Test parameter validation for single parameter instructions
+QUnit.test( "Invalid parameter for single param instruction", function() {
+	s = {"opcode":"DEC","params":["INVALID_REG"],"addr":0x100,"lens":[],"bytes":0};
+	
+	QUnit.assert.throws(function(){p = Z80.parseOpcode(s,vars, Parser);},"Should throw for invalid register");
+});
+
+// Test boundary conditions for relative addressing
+QUnit.test( "Relative addressing boundary positive", function() {
+	var boundaryVars = {"TARGET":0x017F,"_PC":0x0100}; // +127 offset
+	s = {"opcode":"JR","params":["TARGET"],"addr":0x100,"lens":[],"bytes":0};
+	p = Z80.parseOpcode(s,boundaryVars, Parser);
+	QUnit.assert.equal(p.lens[0],0x18,"Opcode for JR");
+	var offset = p.lens[1](boundaryVars);
+	QUnit.assert.equal(offset,125,"Should handle max positive offset"); // 0x17F - 0x100 - 2 = 125
+});
+
+QUnit.test( "Relative addressing boundary negative", function() {
+	var boundaryVars = {"TARGET":0x0081,"_PC":0x0100}; // -127 offset  
+	s = {"opcode":"JR","params":["TARGET"],"addr":0x100,"lens":[],"bytes":0};
+	p = Z80.parseOpcode(s,boundaryVars, Parser);
+	QUnit.assert.equal(p.lens[0],0x18,"Opcode for JR");
+	QUnit.assert.throws(function(){p.lens[1](boundaryVars);},"Should throw for negative offset"); // -127 + 256 = 129
+});

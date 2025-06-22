@@ -1,6 +1,6 @@
 [
   {
-    "line": ".pragma module",
+    "line": ".pragma module\r",
     "numline": 1,
     "addr": 0,
     "bytes": 0,
@@ -15,7 +15,31 @@
     "segment": "CSEG"
   },
   {
-    "line": ".extern print",
+    "line": "\r",
+    "numline": 2,
+    "addr": 0,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "\r",
+    "numline": 3,
+    "addr": 0,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": ".extern print\r",
     "numline": 4,
     "addr": 0,
     "bytes": 0,
@@ -33,7 +57,7 @@
     ]
   },
   {
-    "line": "keyin: .extern",
+    "line": "keyin: .extern\r",
     "numline": 5,
     "addr": 0,
     "bytes": 0,
@@ -46,7 +70,19 @@
     "segment": "CSEG"
   },
   {
-    "line": "main: lxi h,hello",
+    "line": "\r",
+    "numline": 6,
+    "addr": 0,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": "main: lxi h,hello\r",
     "numline": 7,
     "addr": 0,
     "bytes": 3,
@@ -73,7 +109,7 @@
     ]
   },
   {
-    "line": " call print",
+    "line": " call print\r",
     "numline": 8,
     "addr": 3,
     "bytes": 3,
@@ -98,7 +134,19 @@
     ]
   },
   {
-    "line": " call keyin",
+    "line": "\r",
+    "numline": 9,
+    "addr": 6,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": " call keyin\r",
     "numline": 10,
     "addr": 6,
     "bytes": 3,
@@ -123,7 +171,7 @@
     ]
   },
   {
-    "line": " hlt",
+    "line": " hlt\r",
     "numline": 11,
     "addr": 9,
     "bytes": 1,
@@ -140,7 +188,19 @@
     "segment": "CSEG"
   },
   {
-    "line": ".export main",
+    "line": "\r",
+    "numline": 12,
+    "addr": 10,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": ".export main      \r",
     "numline": 13,
     "addr": 10,
     "bytes": 0,
@@ -149,7 +209,7 @@
       "main"
     ],
     "opcode": ".EXPORT",
-    "paramstring": "main",
+    "paramstring": "main      ",
     "notparsed": "",
     "pass": 2,
     "segment": "CSEG",
@@ -158,7 +218,19 @@
     ]
   },
   {
-    "line": ".dseg",
+    "line": "\r",
+    "numline": 14,
+    "addr": 10,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "CSEG"
+  },
+  {
+    "line": ".dseg\r",
     "numline": 15,
     "addr": 0,
     "bytes": 0,
@@ -170,7 +242,7 @@
     "segment": "DSEG"
   },
   {
-    "line": "hello: .cstr \"Hello, World!\\n\"",
+    "line": "hello: .cstr \"Hello, World!\\n\"\r",
     "numline": 16,
     "addr": 0,
     "bytes": 15,
@@ -201,5 +273,17 @@
       10,
       0
     ]
+  },
+  {
+    "line": "\r",
+    "numline": 17,
+    "addr": 15,
+    "bytes": 0,
+    "_dp": 0,
+    "params": [],
+    "remark": " ",
+    "notparsed": "",
+    "pass": 2,
+    "segment": "DSEG"
   }
 ]

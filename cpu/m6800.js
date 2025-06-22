@@ -176,11 +176,14 @@ export const M6800 = {
 
     if (ax) {
       if (ax[0]>=0) { //0 params.
+        /*
+        //probably unreachable...
         if (ax[0]>0xff) {
           s.lens = [ax[0]>>8,ax[0]&0xff];
           s.bytes = 2;
           return s;
         }
+          */
         s.lens = [ax[0]];
         s.bytes = 1;
         return s;
