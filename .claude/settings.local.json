@@ -3,7 +3,11 @@
     "allow": [
       "Bash(npm test:*)",
       "Bash(grep:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(mv:*)",
+      "Bash(awk:*)",
+      "Bash(sed:*)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }
