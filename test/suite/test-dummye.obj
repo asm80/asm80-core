@@ -33,7 +33,9 @@
   },
   {
     "bytes": 1,
-    "lens": [],
+    "lens": [
+      0
+    ],
     "pass": 2,
     "segment": "CSEG",
     "addr": 0,
@@ -42,7 +44,7 @@
   {
     "line": "p1 10\r",
     "numline": 4,
-    "addr": 1,
+    "addr": 0,
     "bytes": 2,
     "_dp": 0,
     "params": [
@@ -61,7 +63,7 @@
   {
     "line": "p2 10\r",
     "numline": 5,
-    "addr": 3,
+    "addr": 0,
     "bytes": 3,
     "_dp": 0,
     "params": [
@@ -81,7 +83,7 @@
   {
     "line": "p1 \"A\"\r",
     "numline": 6,
-    "addr": 6,
+    "addr": 0,
     "bytes": 2,
     "_dp": 0,
     "params": [
@@ -100,7 +102,7 @@
   {
     "line": "p2 \"A\"\r",
     "numline": 7,
-    "addr": 8,
+    "addr": 0,
     "bytes": 3,
     "_dp": 0,
     "params": [
@@ -120,7 +122,7 @@
   {
     "line": "pa2 10\r",
     "numline": 8,
-    "addr": 11,
+    "addr": 0,
     "bytes": 4,
     "_dp": 0,
     "params": [
@@ -141,7 +143,7 @@
   {
     "line": "pa2 \"AB\"\r",
     "numline": 9,
-    "addr": 15,
+    "addr": 0,
     "bytes": 4,
     "_dp": 0,
     "params": [
@@ -162,7 +164,7 @@
   {
     "line": "pb2 \"AB\"\r",
     "numline": 10,
-    "addr": 19,
+    "addr": 0,
     "bytes": 5,
     "_dp": 0,
     "params": [
@@ -184,7 +186,7 @@
   {
     "line": "pb2 10\r",
     "numline": 11,
-    "addr": 24,
+    "addr": 0,
     "bytes": 5,
     "_dp": 0,
     "params": [
@@ -206,7 +208,7 @@
   {
     "line": "\r",
     "numline": 12,
-    "addr": 29,
+    "addr": 0,
     "bytes": 0,
     "_dp": 0,
     "params": [],
@@ -218,16 +220,18 @@
   },
   {
     "bytes": 1,
-    "lens": [],
+    "lens": [
+      0
+    ],
     "pass": 2,
     "segment": "CSEG",
-    "addr": 29,
+    "addr": 0,
     "_dp": 0
   },
   {
     "line": " .block blk\r",
     "numline": 2,
-    "addr": 30,
+    "addr": 0,
     "bytes": 0,
     "includedFile": "test2.dummy",
     "includedFileAtLine": 13,
@@ -244,7 +248,7 @@
   {
     "line": " oma: dw 1\r",
     "numline": 3,
-    "addr": 30,
+    "addr": 0,
     "bytes": 2,
     "includedFile": "test2.dummy",
     "includedFileAtLine": 13,
@@ -266,7 +270,7 @@
   {
     "line": " .endblock",
     "numline": 4,
-    "addr": 32,
+    "addr": 0,
     "bytes": 0,
     "includedFile": "test2.dummy",
     "includedFileAtLine": 13,
@@ -280,7 +284,7 @@
   {
     "line": "\r",
     "numline": 14,
-    "addr": 32,
+    "addr": 0,
     "bytes": 0,
     "_dp": 0,
     "params": [],
@@ -293,7 +297,7 @@
   {
     "line": "label2: equ $\r",
     "numline": 15,
-    "addr": 32,
+    "addr": 0,
     "bytes": 0,
     "label": "LABEL2",
     "_dp": 0,
@@ -312,7 +316,7 @@
   {
     "line": "px2 10\r",
     "numline": 16,
-    "addr": 32,
+    "addr": 0,
     "bytes": 4,
     "_dp": 0,
     "params": [
@@ -333,7 +337,7 @@
   {
     "line": "py2 10\r",
     "numline": 17,
-    "addr": 36,
+    "addr": 0,
     "bytes": 4,
     "_dp": 0,
     "params": [
@@ -355,7 +359,7 @@
   {
     "line": "p1 +10\r",
     "numline": 18,
-    "addr": 40,
+    "addr": 0,
     "bytes": 2,
     "_dp": 0,
     "params": [
@@ -374,7 +378,7 @@
   {
     "line": "p2 lsb(label2)\r",
     "numline": 19,
-    "addr": 42,
+    "addr": 0,
     "bytes": 3,
     "_dp": 0,
     "params": [
@@ -386,7 +390,7 @@
     "lens": [
       1,
       0,
-      32
+      0
     ],
     "pass": 2,
     "segment": "CSEG"
@@ -394,7 +398,7 @@
   {
     "line": "db 3*\"A\"\r",
     "numline": 20,
-    "addr": 45,
+    "addr": 0,
     "bytes": 1,
     "_dp": 0,
     "params": [
@@ -412,7 +416,7 @@
   {
     "line": "db /*test*/ \"Hel\"+\"lo\" /* \"Hello\" */",
     "numline": 21,
-    "addr": 46,
+    "addr": 0,
     "bytes": 1,
     "_dp": 0,
     "params": [

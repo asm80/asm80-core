@@ -1,29 +1,29 @@
 0000                   ;.pragma relax
 0000           LABEL:   EQU $ 
-0000                  
-0001 01 0A            P1 10 
-0003 01 0A 00         P2 10 
-0006 01 41            P1 "A" 
-0008 01 00 41         P2 "A" 
-000B 01 02 0A 00      PA2 10 
-000F 01 02 42 41      PA2 "AB" 
-0013 01 02 03 42 41   PB2 "AB" 
-0018 01 02 03 0A 00   PB2 10 
-001D                   ; 
-001D                  
-001E                  .BLOCK blk 
-001E 01 00     OMA:   DW 1 
-0020                  .ENDBLOCK  
-0020                   ; 
-0020           LABEL2:   EQU $ 
-0020 01 0A 00 00      PX2 10 
-0024 01 0A 00 00 00   PY2 10 
-0028 01 0A            P1 +10 
-002A 01 20 00         P2 lsb(label2) 
-002D 00               DB 3*"A" 
-002E DB               DB /*test*/ "Hel"+"lo" /* "Hello" */ 
+0000 00               
+0000 01 0A            P1 10 
+0000 01 0A 00         P2 10 
+0000 01 41            P1 "A" 
+0000 01 00 41         P2 "A" 
+0000 01 02 0A 00      PA2 10 
+0000 01 02 42 41      PA2 "AB" 
+0000 01 02 03 42 41   PB2 "AB" 
+0000 01 02 03 0A 00   PB2 10 
+0000                   ; 
+0000 00               
+0000                  .BLOCK blk 
+0000 01 00     OMA:   DW 1 
+0000                  .ENDBLOCK  
+0000                   ; 
+0000           LABEL2:   EQU $ 
+0000 01 0A 00 00      PX2 10 
+0000 01 0A 00 00 00   PY2 10 
+0000 01 0A            P1 +10 
+0000 01 00 00         P2 lsb(label2) 
+0000 00               DB 3*"A" 
+0000 DB               DB /*test*/ "Hel"+"lo" /* "Hello" */ 
 
 
 LABEL:              0000 DEFINED AT LINE 2
-OMA:                001E DEFINED AT LINE 3 IN test2.dummy
-LABEL2:             0020 DEFINED AT LINE 15
+OMA:                0000 DEFINED AT LINE 3 IN test2.dummy
+LABEL2:             0000 DEFINED AT LINE 15

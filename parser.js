@@ -6,6 +6,12 @@ import { parseLine } from "./parseLine.js";
 
 import { toInternal, nonempty, norm } from "./utils/utils.js";
 
+/**
+ * Parsuje assemblerový zdrojový kód do pole tokenizovaných řádků (včetně makroexpanze)
+ * @param {string} s - Zdrojový kód jako text
+ * @param {Object} opts - Možnosti assembleru (včetně readFile, assembler, atd.)
+ * @returns {Promise<Array>} Pole tokenizovaných a expandovaných řádků
+ */
 export const parse = async (s, opts) => {
   // split and convert to internal lines
   let i = toInternal(s.split(/\n/));

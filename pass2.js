@@ -1,7 +1,13 @@
 import { Parser } from "./expression-parser.js";
 import { fptozx } from "./utils/fp.js";
 
-
+/**
+ * Druhý průchod assembleru: generuje výstupní bajty, vyhodnocuje hodnoty a sekce, řeší direktivy a instrukce
+ * @param {[Array, Object]} vx - Výsledek z pass1: [pole řádků, symbolická tabulka]
+ * @param {Object} opts - Možnosti assembleru (včetně endian, PRAGMAS, xref, atd.)
+ * @returns {[Array, Object]} Upravené pole řádků s bajty a symbolická tabulka
+ * @throws {Object} Pokud dojde k chybě v syntaxi nebo logice
+ */
 export const pass2 = (vx, opts) => {
 
     const charVar8 = (dta) => {
@@ -113,12 +119,16 @@ export const pass2 = (vx, opts) => {
         //try to count symbols usage
         // usage in param 1
 
-        for (let parIdx=0;parIdx<(op.params?op.params.length:0);parIdx++) {
+        //for (let parIdx=0;parIdx<(op.params?op.params.length:0);parIdx++) {
+        for (const param of op.params || []) {
+          //const param = op.params[parIdx];
+
           try {
-            let usage = Parser.usage(op.params[parIdx].toUpperCase(), vars);
+            let usage = Parser.usage(param.toUpperCase(), vars);
             if(usage.length>0) op.usage=usage;
-            for (let u = 0; u < usage.length; u++) {
-              let varname = usage[u];
+            //for (let u = 0; u < usage.length; u++) {
+            for (let varname of usage) {
+              //let varname = usage[u];
               if (!opts.xref[varname].usage) opts.xref[varname].usage = [];
               opts.xref[varname].usage.push({
                 line: op.numline,
@@ -147,18 +157,24 @@ export const pass2 = (vx, opts) => {
           if (!op.includedFileAtLine) blocks.push(op.numline);
           else blocks.push(op.numline + "@" + op.includedFileAtLine);
           let redef = vars["__" + blocks.join("/")];
-          for (let nn = 0; nn < redef.length; nn++) {
-            vars[blocks.join("/") + "/" + redef[nn]] = vars[redef[nn]];
-            vars[redef[nn]] = vars[blocks.join("/") + "/" + redef[nn] + "$"];
+          //for (let nn = 0; nn < redef.length; nn++) {
+          for (let varname of redef) {
+            //vars[blocks.join("/") + "/" + redef[nn]] = vars[redef[nn]];
+            vars[blocks.join("/") + "/" + varname] = vars[varname];
+            //vars[redef[nn]] = vars[blocks.join("/") + "/" + redef[nn] + "$"];
+            vars[varname] = vars[blocks.join("/") + "/" + varname + "$"];
           }
           continue;
         }
         if (op.opcode === ".ENDBLOCK") {
           let redef = vars["__" + blocks.join("/")];
-          for (let nn = 0; nn < redef.length; nn++) {
-            vars[redef[nn]] = vars[blocks.join("/") + "/" + redef[nn]];
-            if (vars[redef[nn]] === undefined) delete vars[redef[nn]];
-            vars[blocks.join("/") + "/" + redef[nn]] = null;
+          //for (let nn = 0; nn < redef.length; nn++) {
+          for (let varname of redef) {
+            //vars[redef[nn]] = vars[blocks.join("/") + "/" + redef[nn]];
+            vars[varname] = vars[blocks.join("/") + "/" + varname];
+            if (vars[varname] === undefined) delete vars[varname];
+            //vars[blocks.join("/") + "/" + redef[nn]] = null;
+            vars[blocks.join("/") + "/" + varname] = null;
           }
           blocks.pop();
           //console.log(vars);
@@ -217,8 +233,9 @@ export const pass2 = (vx, opts) => {
         if (op.opcode === "DB" || op.opcode === "FCB") {
           bts = 0;
           op.lens = [];
-          for (l = 0; l < op.params.length; l++) {
-            m = Parser.evaluate(op.params[l], vars);
+          //for (l = 0; l < op.params.length; l++) {
+          for (let param of op.params) {
+            m = Parser.evaluate(param, vars);
             if (typeof m === "number") {
               op.lens[bts++] = Math.floor(m % 256);
               continue;
@@ -235,8 +252,9 @@ export const pass2 = (vx, opts) => {
         if (op.opcode === "FCC") {
           bts = 0;
           op.lens = [];
-          for (l = 0; l < op.params.length; l++) {
-            let mystring = op.params[l].trim();
+          //for (l = 0; l < op.params.length; l++) {
+          for (let param of op.params) {
+            let mystring = param.trim();
             let delim = mystring[0];
             let m = mystring.substr(1, mystring.length - 2);
             for (let mm = 0; mm < m.length; mm++) {
@@ -249,8 +267,9 @@ export const pass2 = (vx, opts) => {
         if (op.opcode === ".CSTR") {
           bts = 0;
           op.lens = [];
-          for (l = 0; l < op.params.length; l++) {
-            m = Parser.evaluate(op.params[l], vars);
+          //for (l = 0; l < op.params.length; l++) {
+          for (let param of op.params) {
+            m = Parser.evaluate(param, vars);
             if (typeof m === "number") {
               op.lens[bts++] = Math.floor(m % 256);
               continue;
@@ -269,8 +288,9 @@ export const pass2 = (vx, opts) => {
         if (op.opcode === ".PSTR") {
           bts = 1;
           op.lens = [];
-          for (l = 0; l < op.params.length; l++) {
-            m = Parser.evaluate(op.params[l], vars);
+          //for (l = 0; l < op.params.length; l++) {
+          for (let param of op.params) {
+            m = Parser.evaluate(param, vars);
             if (typeof m === "number") {
               op.lens[bts++] = Math.floor(m % 256);
               continue;
@@ -289,8 +309,9 @@ export const pass2 = (vx, opts) => {
         if (op.opcode === ".ISTR") {
           bts = 0;
           op.lens = [];
-          for (l = 0; l < op.params.length; l++) {
-            m = Parser.evaluate(op.params[l], vars);
+          //for (l = 0; l < op.params.length; l++) {
+          for (let param of op.params) {
+            m = Parser.evaluate(param, vars);
             if (typeof m === "number") {
               op.lens[bts++] = Math.floor(m % 128);
               continue;
@@ -309,8 +330,9 @@ export const pass2 = (vx, opts) => {
         if (op.opcode === "DW" || op.opcode === "FDB") {
           bts = 0;
           op.lens = [];
-          for (l = 0; l < op.params.length; l++) {
-            m = Parser.evaluate(op.params[l], vars);
+          //for (l = 0; l < op.params.length; l++) {
+          for (let param of op.params) {
+            m = Parser.evaluate(param, vars);
             if (typeof m === "number") {
               if (opts.endian) {
                 op.lens[bts++] = Math.floor(m / 256);
@@ -329,8 +351,9 @@ export const pass2 = (vx, opts) => {
           //console.error("DD")
           bts = 0;
           op.lens = [];
-          for (l = 0; l < op.params.length; l++) {
-            m = Parser.evaluate(op.params[l], vars);
+          //for (l = 0; l < op.params.length; l++) {
+          for (let param of op.params) {
+            m = Parser.evaluate(param, vars);
             if (typeof m === "number") {
               //console.error(m)
               let b = new ArrayBuffer(4);
@@ -358,8 +381,9 @@ export const pass2 = (vx, opts) => {
           //console.error("DD")
           bts = 0;
           op.lens = [];
-          for (l = 0; l < op.params.length; l++) {
-            m = Parser.evaluate(op.params[l], vars);
+          //for (l = 0; l < op.params.length; l++) {
+          for (let param of op.params) {
+            m = Parser.evaluate(param, vars);
             if (typeof m === "number") {
               //console.error(m)
               let b = new ArrayBuffer(4);
@@ -386,8 +410,9 @@ export const pass2 = (vx, opts) => {
           //console.error("DD")
           bts = 0;
           op.lens = [];
-          for (l = 0; l < op.params.length; l++) {
-            m = Parser.evaluate(op.params[l], vars);
+          //for (l = 0; l < op.params.length; l++) {
+          for (let param of op.params) {
+            m = Parser.evaluate(param, vars);
             if (typeof m === "number") {
               //console.error(m)
               let b = new ArrayBuffer(8);
@@ -423,8 +448,9 @@ export const pass2 = (vx, opts) => {
           //console.error("DD")
           bts = 0;
           op.lens = [];
-          for (l = 0; l < op.params.length; l++) {
-            m = Parser.evaluate(op.params[l], vars);
+          //for (l = 0; l < op.params.length; l++) {
+          for (let param of op.params) {
+            m = Parser.evaluate(param, vars);
             if (typeof m === "number") {
               //console.error(m)
               let a = fptozx(m, false); //uncomment if you want to use the old fptozx with no ZX int number support

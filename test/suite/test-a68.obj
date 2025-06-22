@@ -27,9 +27,7 @@
     "paramstring": "relax",
     "notparsed": "",
     "pass": 2,
-    "segment": "CSEG",
-    "lens": [],
-    "wia": 1
+    "segment": "CSEG"
   },
   {
     "line": "loop:\r",
@@ -181,8 +179,7 @@
     "segment": "CSEG",
     "lens": [
       1
-    ],
-    "wia": 1
+    ]
   },
   {
     "line": ".byte 1\r",
@@ -200,8 +197,7 @@
     "segment": "CSEG",
     "lens": [
       1
-    ],
-    "wia": 1
+    ]
   },
   {
     "line": ".db 1\r",
@@ -219,8 +215,7 @@
     "segment": "CSEG",
     "lens": [
       1
-    ],
-    "wia": 1
+    ]
   },
   {
     "line": ".word 1\r",
@@ -239,8 +234,7 @@
     "lens": [
       0,
       1
-    ],
-    "wia": 1
+    ]
   },
   {
     "line": ".dw 2\r",
@@ -259,8 +253,7 @@
     "lens": [
       0,
       2
-    ],
-    "wia": 1
+    ]
   },
   {
     "line": "defw 3\r",
@@ -279,8 +272,7 @@
     "lens": [
       0,
       3
-    ],
-    "wia": 1
+    ]
   },
   {
     "line": ".dd 22\r",
@@ -301,8 +293,7 @@
       0,
       0,
       22
-    ],
-    "wia": 1
+    ]
   },
   {
     "line": ".df 12,3\r",
@@ -328,8 +319,7 @@
       64,
       0,
       0
-    ],
-    "wia": 1
+    ]
   },
   {
     "line": ".dfzxs 122\r",
@@ -351,8 +341,7 @@
       0,
       116,
       135
-    ],
-    "wia": 1
+    ]
   },
   {
     "line": ".dff 12\r",
@@ -377,8 +366,7 @@
       0,
       0,
       0
-    ],
-    "wia": 1
+    ]
   },
   {
     "line": "defs 1\r",

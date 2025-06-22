@@ -29,9 +29,12 @@ export const pass1 = async (V, vxs, opts) => {
     //let anon = []
 
     //main loop - for each line
-    for (let i = 0, j = V.length; i < j; i++) {
-      op = V[i];
-      opts.WLINE = V[i];
+    //for (let i = 0, j = V.length; i < j; i++) {
+    for (let op of V) {
+
+      const origin = {...op.origin}; //original line clone
+
+      opts.WLINE = origin;
       op.pass = 1;
       op.segment = segment;
       op.addr = PC;
@@ -553,7 +556,7 @@ export const pass1 = async (V, vxs, opts) => {
       }
 
       //je to instrukce? Jde optimalizovat?
-      let opa = opts.assembler.parseOpcode(V[i], vars, Parser);
+      let opa = opts.assembler.parseOpcode(origin, vars, Parser);
       if (opa) {
         segallow();
         //console.log(op,opa);

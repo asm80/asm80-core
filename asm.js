@@ -13,7 +13,16 @@ import { C6502 } from "./cpu/c6502.js";
 import { Z80 } from "./cpu/z80.js";
 const cpus = [I8080, M6800, C6502, Z80];
 
-
+/**
+ * Compiles assembly source code into machine code
+ * @param {string} source - Assembly source code
+ * @param {Object} fileSystem - File system interface with readFile method
+ * @param {Object} opts - Compilation options
+ * @param {string} opts.assembler - Assembler name or object
+ * @param {string} filename - Source filename for error reporting
+ * @returns {Object} Compilation result with dump, vars, xref, and opts
+ * @throws {Object} Error object with compilation details
+ */
 export const compile = async (source, fileSystem, opts = {assembler:null}, filename="noname") => {
 
   if (typeof opts.assembler == "string") {
@@ -82,30 +91,9 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
         let s = e.s || "Internal error";
 
 
-        // Handle different kinds of errors
-        //error with "throw {e}" - hope it will never happen
-        /*
-        if (e.e) {
-          if (typeof e.e == "object") {
-            e = e.e;
-          } else {
-            e = {
-              msg: e.e,
-              s: e.s
-            };
-          }
-        }
-        console.log("E2",e)
-        */
-        
-        //fix format msg vs message - hope not occur
-        /*
-        if (!e.msg && e.message) {
-          e.msg = e.message;
-        }
-        */
 
         //no message, so we use the general one
+        //FALLBACK - should be removed in future version
         if (!e.msg) {
           throw {
             error:
@@ -128,11 +116,23 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
     }
 }
 
+/**
+ * Extracts filename from full path
+ * @param {string} fullpath - Full file path
+ * @returns {string} Filename without path
+ */
 const getfn = (fullpath) => {
   let parts = fullpath.split("/");
   return parts[parts.length-1];
 }
 
+/**
+ * Compiles assembly code from a file
+ * @param {string} filePath - Path to assembly source file
+ * @param {Object} fileSystem - File system interface with readFile method
+ * @param {Object} opts - Compilation options
+ * @returns {Object} Compilation result
+ */
 export const compileFromFile = async (filePath, fileSystem, opts = {assembler:null}) => {
     let source = await fileSystem.readFile(filePath);
     return compile(source, fileSystem, opts, getfn(filePath));
@@ -142,6 +142,16 @@ export const compileFromFile = async (filePath, fileSystem, opts = {assembler:nu
 
 // linker
 
+/**
+ * Links multiple object modules into a single executable
+ * @param {Object} linkList - Link list configuration
+ * @param {Array} linkList.modules - Array of module names to link
+ * @param {Array} linkList.library - Array of library names to link
+ * @param {Object} fileSystem - File system interface with readFile method
+ * @param {string} name - Output name for the linked executable
+ * @returns {Object} Linked executable data
+ * @throws {Object} Error if modules have incompatible CPU or endian settings
+ */
 const link = async (linkList, fileSystem, name="noname") => {
   let cpu = null
   let endian = null
@@ -170,6 +180,9 @@ const link = async (linkList, fileSystem, name="noname") => {
 }
 
 
+/**
+ * Main assembler interface object
+ */
 export const asm = {
   lst,
   html,

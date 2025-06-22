@@ -1,11 +1,24 @@
 import { btoax, atobx } from "./utils/base64escaped.js";
 import { Parser } from "./expression-parser.js";
 
+/**
+ * Vrátí číslo řádku včetně informace o includovaném souboru
+ * @param {Object} s - Řádek s případnými atributy includedFile a numline
+ * @returns {string|number} Číslo řádku nebo kombinace soubor/řádek
+ */
 const includedLineNumber = (s) => {
     if (!s.includedFile) return s.numline;
     return s.includedFileAtLine + "__" + s.numline;
   }
 
+/**
+ * Parsuje jeden řádek assemblerového zdrojového kódu do tokenizované struktury
+ * @param {Object} s - Objekt s atributem line (řetězec řádku) a dalšími metadaty
+ * @param {Object} macros - Objekt s definovanými makry
+ * @param {Object} opts - Možnosti assembleru (stopFlag, olds, assembler, ...)
+ * @returns {Object} Tokenizovaný řádek s rozpoznanými poli (label, opcode, params, ...)
+ * @throws {Object} Pokud dojde k chybě v syntaxi nebo neznámé instrukci
+ */
 export const parseLine = (s, macros, opts = {stopFlag:null, olds:null, assembler:null}) => {
     let t = s.line;
     let ll;
