@@ -1,6 +1,6 @@
 {
   "name": "@asm80/core",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Core ASM80 compiler / assembler",
   "main": "asm.js",
   "type": "module",
