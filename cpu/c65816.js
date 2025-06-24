@@ -1,8 +1,7 @@
-/*
-
-*/
-
-var C65816 = {
+export const C65816 = {
+  endian: false,
+  cpu: "c65816",
+  ext: "65816",
   "set": {
     //illegal opcodes - http://www.oxyron.de/html/opcodes02.html
     //
@@ -126,7 +125,7 @@ var C65816 = {
   "steptab": [1, 1, 2, 3, 3, 3, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 4, 4, 3, 3, 3, 3, 2],
 
 
-  parseOpcode: function (s, vars) {
+  parseOpcode: function (s, vars, Parser) {
 
     if (s.opcode === ".m16") {
       console.log("M16");
@@ -433,7 +432,6 @@ var C65816 = {
 
       //M16
       if (vars && addr === 2) {
-        console.log(vars);
         if (s.opcode === "LDX" || s.opcode === "LDY") {
           if (vars.__MX && vars.__MX === 16) {
             s.bytes++;
@@ -453,11 +451,3 @@ var C65816 = {
     return null;
   }
 };
-
-//types
-/*
-IW - 3 bytes (opcode, LO, HI), format: INSTR num16
-RPW - 3 bytes, (opcode, LO, HI), format: INSTR regpair, num16
-0 - 1 byte, just instruction
-RB - 2  bytes, (opcode, NN), format INSTR reg, NN
-*/
