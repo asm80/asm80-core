@@ -309,6 +309,7 @@ export const M6809 = {
             if (ax[4] >= 0) amode = 4; //rel8
             if (ax[7] >= 0) amode = 7; //rel16
 
+
             if (dptest(p1, vars, s) && ax[1] >= 0) amode = 1;
             /*
           try {
@@ -504,19 +505,25 @@ export const M6809 = {
         }
         if (p1.toUpperCase() === "D") {
           //INS A,R
+          //console.log("INS D,R",p1,p2,ixreg(p2),indir);
           s.lens[postbyte] = ixreg(p2) | 0x8b | indir;
           return s;
         }
 
+        let originalZptest=null;
+
         try {
           zptest = Parser.evaluate(p1, vars);
+          originalZptest = zptest;
           if (p2.toUpperCase() == "PC") {
             zptest -= vars._PC;
           }
-          //console.log(s,zptest,vars._PC-zptest-3);
+          //console.log("ZPTEST",s,zptest,vars._PC-zptest-3);
         } catch (e) {
           zptest = null;
         }
+
+
         /*
         console.log(
           "AZP",
@@ -541,6 +548,10 @@ export const M6809 = {
           //direct
           s.lens[postbyte] = ixreg(p2) | indir | (zptest & 0x1f);
           return s;
+        }
+
+        if (p2.toUpperCase() == "PC" && originalZptest !== null) {
+          zptest = originalZptest;
         }
 
         if (zptest < 128 && zptest > -129 && zptest !== null) {
@@ -597,6 +608,7 @@ export const M6809 = {
                 return Parser.evaluate(p1x, vars);
               };
         }
+
         //			s.lens[postbyte+1] = function(vars){return Parser.evaluate(p1x,vars);};
         s.lens[postbyte + 2] = null;
 

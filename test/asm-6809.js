@@ -148,6 +148,99 @@ QUnit.test("SETDP + out of bounds", function () {
   QUnit.assert.equal(p.lens[1](vars), 0x21, "Value");
 });
 
+QUnit.module("Coverage tests for M6809");
+
+QUnit.test("Extended opcode > 256 with indirect", function () {
+  // Test lines 416-419: Extended opcode handling for opcodes > 256
+  s = { opcode: "LDD", params: ["[$1234]"], addr: 0x100, lens: [], bytes: 0 };
+  p = M6809.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[0], 0xec, "Extended opcode high byte");
+  QUnit.assert.equal(p.lens[1], 0x9f, "Extended opcode low byte");
+  QUnit.assert.equal(typeof p.lens[2], "function", "Indirect postbyte");
+  const outval1 = p.lens[2](vars);
+  QUnit.assert.equal(outval1, 0x1234, "Expected value $1234");
+  QUnit.assert.equal(p.bytes, 4, "Length with extended opcode");
+});
+
+QUnit.test("Predecrement addressing --R", function () {
+  // Test lines 472-479: Predecrement addressing modes
+  s = { opcode: "LDA", params: ["","--X"], addr: 0x100, lens: [], bytes: 0 };
+  p = M6809.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[0], 0xA6, "Opcode OK");
+  QUnit.assert.equal(p.lens[1], 0x83, "Double predecrement postbyte");
+  QUnit.assert.equal(p.bytes, 2, "Length OK");
+});
+
+QUnit.test("Single predecrement addressing -R", function () {
+  // Test lines 472-479: Single predecrement
+  s = { opcode: "LDA", params: ["","-X"], addr: 0x100, lens: [], bytes: 0 };
+  p = M6809.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[0], 0xA6, "Opcode OK");
+  QUnit.assert.equal(p.lens[1], 0x82, "Single predecrement postbyte");
+  QUnit.assert.equal(p.bytes, 2, "Length OK");
+});
+
+QUnit.test("Single predecrement with indirect error", function () {
+  // Test line 477: Error for single predecrement with indirect
+  QUnit.assert.throws(function() {
+    s = { opcode: "LDA", params: ["[","-X]"], addr: 0x100, lens: [], bytes: 0 };
+    p = M6809.parseOpcode(s, vars, Parser);
+  }, "Cannot use predecrement with 1");
+});
+
+QUnit.test("Register A addressing mode", function () {
+  // Test lines 495-498: A,R addressing mode
+  s = { opcode: "LDA", params: ["A","X"], addr: 0x100, lens: [], bytes: 0 };
+  p = M6809.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[0], 0xA6, "Opcode OK");
+  QUnit.assert.equal(p.lens[1], 0x86, "A,X postbyte");
+  QUnit.assert.equal(p.bytes, 2, "Length OK");
+});
+
+QUnit.test("Register B addressing mode", function () {
+  // Test lines 500-503: B,R addressing mode
+  s = { opcode: "LDA", params: ["B","Y"], addr: 0x100, lens: [], bytes: 0 };
+  p = M6809.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[0], 0xA6, "Opcode OK");
+  QUnit.assert.equal(p.lens[1], 0xa5, "B,Y postbyte");
+  QUnit.assert.equal(p.bytes, 2, "Length OK");
+});
+
+QUnit.test("Register D addressing mode", function () {
+  // Test lines 505-508: D,R addressing mode
+  s = { opcode: "LDA", params: ["D","S"], addr: 0x100, lens: [], bytes: 0 };
+  p = M6809.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[0], 0xA6, "Opcode OK");
+  QUnit.assert.equal(p.lens[1], 0xeb, "D,S postbyte");
+  QUnit.assert.equal(p.bytes, 2, "Length OK");
+});
+
+QUnit.test("PC relative 8-bit with indirect", function () {
+  // Test lines 552-563: PC relative 8-bit with indirect
+  s = { opcode: "LDA", params: ["[5","PC]"], addr: 0x100, lens: [], bytes: 0 };
+  p = M6809.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[0], 0xA6, "Opcode OK");
+  QUnit.assert.equal(p.lens[1], 0x9c, "PC relative indirect postbyte");
+  QUnit.assert.equal(typeof p.lens[2], "function", "PC relative function");
+  QUnit.assert.equal(p.bytes, 3, "Length OK");
+  // Test the function execution for indirect PC relative
+  const result = p.lens[2](vars);
+  QUnit.assert.ok(typeof result === "number", "Function returns number");
+});
+
+QUnit.test("PC relative 16-bit with indirect", function () {
+  // Test lines 580-589: PC relative 16-bit with indirect
+  s = { opcode: "LDA", params: ["[LOOP","PC]"], addr: 0x100, lens: [], bytes: 0 };
+  p = M6809.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[0], 0xA6, "Opcode OK");
+  QUnit.assert.equal(p.lens[1], 0x9d, "PC relative 16-bit indirect postbyte");
+  QUnit.assert.equal(typeof p.lens[2], "function", "PC relative 16-bit function");
+  QUnit.assert.equal(p.bytes, 4, "Length OK");
+  // Test the function execution for indirect PC relative 16-bit
+  const result = p.lens[2](vars);
+  QUnit.assert.ok(typeof result === "number", "Function returns number");
+});
+
 QUnit.test("SETDP + undef", function () {
   s = {
     opcode: "LDA",
