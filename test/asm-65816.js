@@ -15,6 +15,12 @@ var varsm16 = {"__MX":16,"_PC":0x0100};
 var varsa16 = {"__AX":16,"_PC":0x0100};
 var s = [], p;
 
+QUnit.test( "Invalid instruction", function() {
+	s = {"opcode":"INVALID","params":["A","B"],"addr":0x100,"lens":[],"bytes":0};
+	p = C65816.parseOpcode(s, vars, Parser);
+	QUnit.assert.equal(p,null,"Error detected");
+});
+
 QUnit.QUnit.test( "NOP test", function() {
 	s = {"opcode":"NOP","addr":0x100,"lens":[],"bytes":0};
 	p = C65816.parseOpcode(s, vars, Parser);
@@ -27,13 +33,16 @@ QUnit.QUnit.test( "LDA zp", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xa5,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
-	QUnit.assert.equal(p.bytes,2,"Length");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1,0x23,"Expected value $23");
 });
 QUnit.QUnit.test( "LDA zp2", function() {
 	s = {"opcode":"LDA","params":["short"],addr:"0x100",lens:[],"bytes":0};
 	p = C65816.parseOpcode(s,vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xa5,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1,0x21,"Expected value SHORT");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 QUnit.QUnit.test( "LDA imm", function() {
@@ -41,6 +50,8 @@ QUnit.QUnit.test( "LDA imm", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xa9,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1,0x23,"Expected immediate value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -49,6 +60,8 @@ QUnit.QUnit.test( "LDA imm, 16bit acc", function() {
 	p = C65816.parseOpcode(s,varsa16, Parser);
 	QUnit.assert.equal(p.lens[0],0xa9,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected immediate value $23");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 
@@ -57,6 +70,8 @@ QUnit.test( "LDX imm", function() {
 	p = C65816.parseOpcode(s,varsa16, Parser);
 	QUnit.assert.equal(p.lens[0],0xa2,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected immediate value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -65,6 +80,8 @@ QUnit.test( "LDX imm, 16bit acc", function() {
 	p = C65816.parseOpcode(s,varsm16, Parser);
 	QUnit.assert.equal(p.lens[0],0xa2,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected immediate value $23");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 
@@ -74,6 +91,8 @@ QUnit.test( "LDA xx,S", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xa3,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 QUnit.test( "STA xx,S", function() {
@@ -81,6 +100,8 @@ QUnit.test( "STA xx,S", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x83,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -90,6 +111,10 @@ QUnit.test( "MVP", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x44,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x12, "Expected combined value $34,$12");
+	const outval2 = p.lens[2](vars);
+	QUnit.assert.equal(outval2, 0x34, "Expected combined value $34,$12");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 QUnit.test( "MVN", function() {
@@ -97,6 +122,10 @@ QUnit.test( "MVN", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x54,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x12, "Expected combined value $34,$12");
+	const outval2 = p.lens[2](vars);
+	QUnit.assert.equal(outval2, 0x34, "Expected combined value $34,$12");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 QUnit.test( "PEA", function() {
@@ -104,6 +133,8 @@ QUnit.test( "PEA", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xF4,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x1234, "Expected value $1234");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 QUnit.test( "PEI", function() {
@@ -111,6 +142,8 @@ QUnit.test( "PEI", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xD4,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x12, "Expected value $12");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -119,6 +152,8 @@ QUnit.test( "PER", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x62,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x1132, "Expected relative offset to $1131");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 
@@ -186,6 +221,8 @@ QUnit.test( "REP #$12 - imm", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xC2,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected immediate value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -199,6 +236,8 @@ QUnit.test( "ADC (12,X)", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x61,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 QUnit.test( "ADC 12,S", function() {
@@ -206,6 +245,8 @@ QUnit.test( "ADC 12,S", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x63,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 QUnit.test( "ADC $12 - dp", function() {
@@ -213,6 +254,8 @@ QUnit.test( "ADC $12 - dp", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x65,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 QUnit.test( "ADC [$12] - idl", function() {
@@ -220,6 +263,8 @@ QUnit.test( "ADC [$12] - idl", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x67,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -228,6 +273,8 @@ QUnit.test( "ADC #$12 - imm", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x69,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected immediate value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -236,6 +283,8 @@ QUnit.test( "ADC #$12 - imm, acc16", function() {
 	p = C65816.parseOpcode(s,varsa16, Parser);
 	QUnit.assert.equal(p.lens[0],0x69,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected immediate value $23");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 
@@ -245,6 +294,8 @@ QUnit.test( "ADC $1234 - abs", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x6D,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x1234, "Expected value $1234");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 QUnit.test( "ADC $123456 - long", function() {
@@ -252,6 +303,8 @@ QUnit.test( "ADC $123456 - long", function() {
 	p = C65816.parseOpcode(s,vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x6F,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x123456, "Expected long value $123456");
 	QUnit.assert.equal(p.bytes,4,"Length");
 });
 QUnit.test( "ADC ($12),Y - dp", function() {
@@ -259,6 +312,8 @@ QUnit.test( "ADC ($12),Y - dp", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x71,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 QUnit.test( "ADC $12,X - dpidx", function() {
@@ -266,6 +321,8 @@ QUnit.test( "ADC $12,X - dpidx", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x75,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -274,6 +331,8 @@ QUnit.test( "ADC $1234,X - abx", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x7D,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x1234, "Expected value $1234");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 QUnit.test( "ADC $1234,Y - aby", function() {
@@ -281,6 +340,8 @@ QUnit.test( "ADC $1234,Y - aby", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x79,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x1234, "Expected value $1234");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 
@@ -292,6 +353,8 @@ QUnit.test( "ADC ($12) - dpind", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x72,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x22, "Expected value $22");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 QUnit.test( "ADC [$12],Y - idl", function() {
@@ -299,6 +362,8 @@ QUnit.test( "ADC [$12],Y - idl", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x77,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -307,6 +372,8 @@ QUnit.test( "ADC ($12,S),Y - dp", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x73,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x23, "Expected value $23");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -315,6 +382,8 @@ QUnit.test( "ADC $123456,X - abx", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x7F,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x123456, "Expected long value $123456");
 	QUnit.assert.equal(p.bytes,4,"Length");
 });
 QUnit.module("JMP modes test");
@@ -323,6 +392,8 @@ QUnit.test( "JMP", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x4c,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x1234, "Expected address $1234");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 
@@ -331,6 +402,8 @@ QUnit.test( "JMP (abs)", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x6c,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x1234, "Expected address $1234");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 
@@ -339,6 +412,8 @@ QUnit.test( "JMP (abs,X)", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x7c,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x1234, "Expected address $1234");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 
@@ -347,6 +422,8 @@ QUnit.test( "JMP long", function() {
 	p = C65816.parseOpcode(s,vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x5c,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x123457, "Expected long address $123457");
 	QUnit.assert.equal(p.bytes,4,"Length");
 });
 
@@ -355,6 +432,8 @@ QUnit.test( "JMP [abs]", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xDC,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x1234, "Expected address $1234");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 
@@ -376,6 +455,8 @@ QUnit.test( "JSR", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x20,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x1234, "Expected address $1234");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 
@@ -384,6 +465,8 @@ QUnit.test( "JSR (abs,X)", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xFc,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x1234, "Expected address $1234");
 	QUnit.assert.equal(p.bytes,3,"Length");
 });
 
@@ -392,6 +475,8 @@ QUnit.test( "JSR long", function() {
 	p = C65816.parseOpcode(s,vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x22,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x123457, "Expected long address $123457");
 	QUnit.assert.equal(p.bytes,4,"Length");
 });
 
@@ -409,6 +494,8 @@ QUnit.test( "LDA *$12 - force zero page", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xa5,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x12, "Expected forced zero page value $12");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -417,6 +504,8 @@ QUnit.test( "BRA $0102 - relative jump", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0x80,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x00, "Expected relative offset (0x0102 - 0x0102 = 0x00)");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -425,6 +514,8 @@ QUnit.test( "LDA *$12,X - force zero page indexed", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xb5,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x12, "Expected forced zero page value $12");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -433,6 +524,8 @@ QUnit.test( "LDX *$12,Y - force zero page indexed Y", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xb6,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x12, "Expected forced zero page value $12");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -441,6 +534,8 @@ QUnit.test( "LDA SHORT,X - auto zero page X", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xb5,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x21, "Expected SHORT variable value 0x21");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
@@ -449,6 +544,8 @@ QUnit.test( "LDX SHORT,Y - auto zero page Y", function() {
 	p = C65816.parseOpcode(s, vars, Parser);
 	QUnit.assert.equal(p.lens[0],0xb6,"Opcode");
 	QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode");
+	const outval1 = p.lens[1](vars);
+	QUnit.assert.equal(outval1, 0x21, "Expected SHORT variable value 0x21");
 	QUnit.assert.equal(p.bytes,2,"Length");
 });
 
