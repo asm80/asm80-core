@@ -550,9 +550,11 @@ export const M6809 = {
           return s;
         }
 
+        /*
         if (p2.toUpperCase() == "PC" && originalZptest !== null) {
           zptest = originalZptest;
         }
+          */
 
         if (zptest < 128 && zptest > -129 && zptest !== null) {
           //direct

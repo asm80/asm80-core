@@ -217,7 +217,7 @@ QUnit.test("Register D addressing mode", function () {
 
 QUnit.test("PC relative 8-bit with indirect", function () {
   // Test lines 552-563: PC relative 8-bit with indirect
-  s = { opcode: "LDA", params: ["[5","PC]"], addr: 0x100, lens: [], bytes: 0 };
+  s = { opcode: "LDA", params: ["[$105","PC]"], addr: 0x100, lens: [], bytes: 0 };
   p = M6809.parseOpcode(s, vars, Parser);
   QUnit.assert.equal(p.lens[0], 0xA6, "Opcode OK");
   QUnit.assert.equal(p.lens[1], 0x9c, "PC relative indirect postbyte");
