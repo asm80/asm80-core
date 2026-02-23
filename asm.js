@@ -113,7 +113,7 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
           error: {
             msg: e.msg,
             s: e.s,
-            //wline: opts.WLINE
+            wline: opts.WLINE
           }
         };
     }

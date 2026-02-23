@@ -1,0 +1,194 @@
+[
+  {
+    "name": "DB",
+    "function": "Define Byte - stores 8-bit values (numbers or strings) at the current location."
+  },
+  {
+    "name": "FCB",
+    "function": "Form Constant Byte - same as DB, stores 8-bit values (common in 6800/6809 assemblers)."
+  },
+  {
+    "name": "DW",
+    "function": "Define Word - stores 16-bit values (2 bytes) at the current location."
+  },
+  {
+    "name": "FDB",
+    "function": "Form Double Byte - same as DW, stores 16-bit values (common in 6800/6809 assemblers)."
+  },
+  {
+    "name": "DD",
+    "function": "Define Doubleword - stores 32-bit values (4 bytes) at the current location."
+  },
+  {
+    "name": "DF",
+    "function": "Define Float - stores 32-bit floating point values at the current location."
+  },
+  {
+    "name": "DFF",
+    "function": "Define Float F - stores 64-bit floating point values at the current location."
+  },
+  {
+    "name": "DFZXS",
+    "function": "Define ZX Spectrum Float - stores numbers in ZX Spectrum 5-byte float format."
+  },
+  {
+    "name": "ORG",
+    "function": "Origin - sets the program counter (PC) to the specified address."
+  },
+  {
+    "name": "EQU",
+    "function": "Equate - assigns a value to a label. The label becomes a constant that cannot be redefined."
+  },
+  {
+    "name": ".SET",
+    "function": "Assign - assigns a value to a variable. Unlike EQU, the value can be reassigned later."
+  },
+  {
+    "name": "=",
+    "function": "Assign - assigns a value to a variable (alias for .SET)."
+  },
+  {
+    "name": ":=",
+    "function": "Assign - assigns a value to a variable (alias for .SET)."
+  },
+  {
+    "name": "DS",
+    "function": "Define Storage - reserves the specified number of bytes without initializing them."
+  },
+  {
+    "name": "RMB",
+    "function": "Reserve Memory Byte - same as DS, reserves memory bytes (common in 6800/6809 assemblers)."
+  },
+  {
+    "name": "FCC",
+    "function": "Form Constant Character - stores a string constant at the current location."
+  },
+  {
+    "name": ".CSTR",
+    "function": "Counted String - stores a string with a leading length byte."
+  },
+  {
+    "name": ".PSTR",
+    "function": "Pascal String - stores a string with a leading length byte (alias for .CSTR)."
+  },
+  {
+    "name": ".ISTR",
+    "function": "Inverted String - stores a string with the high bit set on the last character."
+  },
+  {
+    "name": "IF",
+    "function": "Conditional Assembly - assembles the following code only if the condition is true (non-zero)."
+  },
+  {
+    "name": "IFN",
+    "function": "If Not - assembles the following code only if the condition is false (zero)."
+  },
+  {
+    "name": "ELSE",
+    "function": "Conditional Alternative - provides alternative code path for IF/IFN directives."
+  },
+  {
+    "name": "ENDIF",
+    "function": "End Conditional - ends a conditional assembly block (IF/IFN/ELSE)."
+  },
+  {
+    "name": ".CSEG",
+    "function": "Code Segment - switches to the code segment where executable code is placed."
+  },
+  {
+    "name": ".DSEG",
+    "function": "Data Segment - switches to the data segment for variable storage."
+  },
+  {
+    "name": ".ESEG",
+    "function": "Extended Segment - switches to the extended segment for 32-bit data."
+  },
+  {
+    "name": ".BSSEG",
+    "function": "Bit Segment - switches to the bit-segment for bit-addressable data (8051)."
+  },
+  {
+    "name": ".PHASE",
+    "function": "Phase - relocates code to a different address while assembling, used for code that runs at a different location than where it's loaded."
+  },
+  {
+    "name": ".DEPHASE",
+    "function": "Dephase - ends phase-relative assembly, returns to normal address mode."
+  },
+  {
+    "name": ".BLOCK",
+    "function": "Block Start - begins a block scope that limits label visibility to the block."
+  },
+  {
+    "name": ".ENDBLOCK",
+    "function": "Block End - ends a block scope defined by .BLOCK."
+  },
+  {
+    "name": ".EXPORT",
+    "function": "Export Symbol - marks a symbol as exported from a module for external use."
+  },
+  {
+    "name": ".EXTERN",
+    "function": "External Symbol - declares a symbol that is defined in another module."
+  },
+  {
+    "name": "ALIGN",
+    "function": "Align - pads the current location to the specified alignment boundary."
+  },
+  {
+    "name": "SETDP",
+    "function": "Set Direct Page - sets the direct page register for 6809/65816 processors."
+  },
+  {
+    "name": "FILL",
+    "function": "Fill - fills a region of memory with a specific byte value."
+  },
+  {
+    "name": "BSZ",
+    "function": "Block Size Zero - reserves a block of bytes initialized to zero."
+  },
+  {
+    "name": "ZMB",
+    "function": "Zero Memory Byte - same as BSZ, reserves zero-initialized memory."
+  },
+  {
+    "name": ".INCBIN",
+    "function": "Include Binary - includes raw binary file contents at the current location."
+  },
+  {
+    "name": ".ERROR",
+    "function": "Error - generates an assembler error with the specified message."
+  },
+  {
+    "name": ".ENT",
+    "function": "Entry Point - defines the program entry point address."
+  },
+  {
+    "name": ".BINFROM",
+    "function": "Binary From - sets the start address for binary output."
+  },
+  {
+    "name": ".BINTO",
+    "function": "Binary To - sets the end address for binary output."
+  },
+  {
+    "name": ".ENGINE",
+    "function": "Engine - specifies which CPU engine to use for assembly."
+  },
+  {
+    "name": ".M16",
+    "function": "Mode 16 - sets 65816 to 16-bit accumulator mode."
+  },
+  {
+    "name": ".M8",
+    "function": "Mode 8 - sets 65816 to 8-bit accumulator mode."
+  },
+  {
+    "name": ".X16",
+    "function": "X Index 16 - sets 65816 index registers to 16-bit mode."
+  },
+  {
+    "name": ".X8",
+    "function": "X Index 8 - sets 65816 index registers to 8-bit mode."
+  }
+]
