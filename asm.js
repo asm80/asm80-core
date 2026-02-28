@@ -37,14 +37,14 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
     throw {msg:"No assembler specified", s:"Assembler error"};
   }
 
-    opts = {...opts, readFile: fileSystem.readFile, endian:false,
+    opts = {...opts, readFile: fileSystem.readFile,
         ENT:null,
         BINFROM:null,
         BINTO:null, 
         ENGINE:null,
         PRAGMAS:[],
         includedFiles:{},
-        endian:opts.assembler.endian,
+        endian:opts.assembler.endian || false,
         xfre: {},
         xref: {},
     
@@ -99,6 +99,7 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
         //no message, so we use the general one
         //FALLBACK - should be removed in future version
         if (!e.msg) {
+			console.error(e);
           throw {
             error:
             {

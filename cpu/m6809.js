@@ -362,8 +362,8 @@ export const M6809 = {
             ) {
               var n = Parser.evaluate(p1, vars) - vars._PC - 2;
               //console.log(n)
-              if (n > 127) throw "Target out of range";
-              if (n < -128) throw "Target out of range";
+              if (n > 127) throw {msg:"Target out of range, diff is "+n, s:s};
+              if (n < -128) throw {msg:"Target out of range, diff is "+n, s:s};
               if (n < 0) {
                 n = 256 + n;
               }
