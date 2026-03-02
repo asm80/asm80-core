@@ -550,6 +550,10 @@ export function Token(type_, index_, prio_, number_) {
       //"lsb": function(x){Math.floor(x%256);},
       lsb: lsb,
       msb: msb,
+      low: lsb,
+      LOW: lsb,
+      high: msb,
+      HIGH: msb,
       sin: Math.sin,
       cos: Math.cos,
       tan: Math.tan,
@@ -627,6 +631,10 @@ export function Token(type_, index_, prio_, number_) {
     msb: function (x) {
       Math.floor(x / 256);
     },
+    low: lsb,
+    LOW: lsb,
+    high: msb,
+    HIGH: msb,
     sin: Math.sin,
     cos: Math.cos,
     tan: Math.tan,

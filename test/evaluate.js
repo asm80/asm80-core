@@ -91,3 +91,27 @@ QUnit.test("(2+3*4))", assert => {
         Parser.parse(data);
     })
 })
+
+QUnit.test('HIGH and LOW functions', assert => {
+    // Základní funkčnost - uppercase
+    assert.equal(doParse(`HIGH(0x1234)`), 0x12, "HIGH(0x1234) = 0x12");
+    assert.equal(doParse(`LOW(0x1234)`),  0x34, "LOW(0x1234) = 0x34");
+
+    // Lowercase varianta
+    assert.equal(doParse(`high(0x1234)`), 0x12, "high(0x1234) = 0x12");
+    assert.equal(doParse(`low(0x1234)`),  0x34, "low(0x1234) = 0x34");
+
+    // Hranice hodnot
+    assert.equal(doParse(`HIGH(0xFF)`),   0x00, "HIGH(0xFF) = 0");
+    assert.equal(doParse(`LOW(0xFF)`),    0xFF, "LOW(0xFF) = 0xFF");
+    assert.equal(doParse(`HIGH(0x100)`),  0x01, "HIGH(0x100) = 1");
+    assert.equal(doParse(`LOW(0x100)`),   0x00, "LOW(0x100) = 0");
+    assert.equal(doParse(`HIGH(0)`),      0x00, "HIGH(0) = 0");
+    assert.equal(doParse(`LOW(0)`),       0x00, "LOW(0) = 0");
+    assert.equal(doParse(`HIGH(0xFFFF)`), 0xFF, "HIGH(0xFFFF) = 0xFF");
+    assert.equal(doParse(`LOW(0xFFFF)`),  0xFF, "LOW(0xFFFF) = 0xFF");
+
+    // V kombinaci s výrazy
+    assert.equal(doParse(`HIGH(256*3 + 5)`), 3, "HIGH(256*3+5) = 3");
+    assert.equal(doParse(`LOW(256*3 + 5)`),  5, "LOW(256*3+5) = 5");
+});
