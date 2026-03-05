@@ -5,6 +5,8 @@ import { pass1 } from "./pass1.js";
 import {pass2} from "./pass2.js";
 import {objCode, linkModules} from "./objcode.js"
 import * as Parser from "./parser.js";
+import { buildLibrary } from "./libcode.js";
+import { resolveLibrary } from "./semver-resolve.js";
 
 //import all CPUs
 import {I8080} from "./cpu/i8080.js";
@@ -37,7 +39,7 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
     throw {msg:"No assembler specified", s:"Assembler error"};
   }
 
-    opts = {...opts, readFile: fileSystem.readFile, childOpts: fileSystem.childOpts,
+    opts = {...opts, readFile: fileSystem.readFile, childOpts: fileSystem.childOpts, resolvePath: fileSystem.resolvePath,
         ENT:null,
         BINFROM:null,
         BINTO:null, 
@@ -194,5 +196,7 @@ export const asm = {
   compile,
   compileFromFile,
   link,
-  cpus
+  cpus,
+  buildLibrary,
+  resolveLibrary,
 }

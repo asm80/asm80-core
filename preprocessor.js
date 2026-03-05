@@ -178,11 +178,15 @@ export const prepro = async (V, opts = {}, fullfile) => {
       }
 
       //console.log(ni)
-      const childOpts = opts.childOpts ? opts.childOpts(params[0].replace(/\"/g, "")) : opts;
+      const cleanIncludePath = params[0].replace(/\"/g, "");
+      const childOpts = opts.childOpts ? opts.childOpts(cleanIncludePath) : opts;
+      const resolvedIncludePath = opts.resolvePath ? opts.resolvePath(cleanIncludePath) : cleanIncludePath;
       const preni = await prepro(ni, childOpts, fullni);
       for (const preniItem of preni[0]) {
-        preniItem.includedFile = params[0].replace(/\"/g, "");
-        preniItem.includedFileAtLine = item.numline;
+        if (!preniItem.includedFile) {
+          preniItem.includedFile = resolvedIncludePath;
+          preniItem.includedFileAtLine = item.numline;
+        }
         out.push(preniItem);
       }
       for (const k of Object.keys(preni[1])) {

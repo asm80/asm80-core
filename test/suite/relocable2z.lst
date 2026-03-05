@@ -1,0 +1,55 @@
+0000                          .PRAGMA   module   
+0000                             ; 
+0000                             ; 
+0000   7E           PRINT:    LD   a,(hl)   
+0001   B7                     OR   a   
+0002   28 06                  JR   z,done   
+0004   CD 0B 00               CALL   print_char   
+0007   23                     INC   HL   
+0008   18 F6                  JR   print   
+000A   C9           DONE:     RET      
+000B                             ; 
+000B                          .EXTERN   bios_print   
+000B                          .EXTERN   not_used   
+000B                             ; 
+000B                PRINT_CHAR:      
+000B   32 09 00               LD   (prev_char),a   
+000E   CD 00 00               CALL   bios_print   
+0011   C9                     RET      
+0012                             ; 
+0012                          .EXPORT   print   
+0012                          .EXPORT   print_char   
+0012                             ; 
+0000                          .DSEG      
+0000   41 6E 79 20 64 61 74 61 20 68 65 72 65 00 DUMMY:   .CSTR   "Any data here"   
+000E   53 74 72 69 6E 67 32 00 .CSTR   "String2"   
+0016                          .EXPORT   dummy   
+0016                             ; 
+0000                          .ESEG      
+0000   C3 00 00     DUMMY2:   JP   dummy2   
+0003                          .EXPORT   dummy2   
+0003                             ; 
+0000                          .BSSEG      
+0000                LAST_CHAR:   DS   1   
+0001                BUFF_CHAR:   DS   8   
+0009                PREV_CHAR:   DS   1   
+000A                             ; .export last_char
+
+
+PRINT:              0000 DEFINED AT LINE 4
+                    > USED AT LINE 9
+                    > USED AT LINE 20
+DONE:               000A DEFINED AT LINE 10
+                    > USED AT LINE 6
+PRINT_CHAR:         000B DEFINED AT LINE 15
+                    > USED AT LINE 7
+                    > USED AT LINE 21
+DUMMY:              0000 DEFINED AT LINE 24
+                    > USED AT LINE 26
+DUMMY2:             0000 DEFINED AT LINE 29
+                    > USED AT LINE 29
+                    > USED AT LINE 30
+LAST_CHAR:          0000 DEFINED AT LINE 33
+BUFF_CHAR:          0001 DEFINED AT LINE 34
+PREV_CHAR:          0009 DEFINED AT LINE 35
+                    > USED AT LINE 16
