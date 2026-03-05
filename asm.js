@@ -37,7 +37,7 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
     throw {msg:"No assembler specified", s:"Assembler error"};
   }
 
-    opts = {...opts, readFile: fileSystem.readFile,
+    opts = {...opts, readFile: fileSystem.readFile, childOpts: fileSystem.childOpts,
         ENT:null,
         BINFROM:null,
         BINTO:null, 

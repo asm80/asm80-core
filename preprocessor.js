@@ -178,7 +178,8 @@ export const prepro = async (V, opts = {}, fullfile) => {
       }
 
       //console.log(ni)
-      const preni = await prepro(ni, {}, fullni);
+      const childOpts = opts.childOpts ? opts.childOpts(params[0].replace(/\"/g, "")) : opts;
+      const preni = await prepro(ni, childOpts, fullni);
       for (const preniItem of preni[0]) {
         preniItem.includedFile = params[0].replace(/\"/g, "");
         preniItem.includedFileAtLine = item.numline;
