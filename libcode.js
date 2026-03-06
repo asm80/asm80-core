@@ -39,6 +39,7 @@ const OBJ_EXT_TO_LIB_EXT = {
 
 const joinPath = (...parts) =>
   parts
+    .filter(p => p !== "")
     .join("/")
     .replace(/\/+/g, "/");
 

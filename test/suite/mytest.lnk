@@ -1,0 +1,11 @@
+segments:
+  CSEG: '0x8000'
+  DSEG: '0x8100'
+vars:
+  BIOS_PRINT: '0x5'
+modules:
+  - relocable.obj80
+library:
+  - mylib-0.1.0.lib80
+entrypoint: main
+output: auto

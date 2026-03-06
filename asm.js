@@ -7,6 +7,7 @@ import {objCode, linkModules} from "./objcode.js"
 import * as Parser from "./parser.js";
 import { buildLibrary } from "./libcode.js";
 import { resolveLibrary } from "./semver-resolve.js";
+import { parseLnk } from "./parseLnk.js";
 
 //import all CPUs
 import {I8080} from "./cpu/i8080.js";
@@ -159,31 +160,53 @@ export const compileFromFile = async (filePath, fileSystem, opts = {assembler:nu
  * @returns {Object} Linked executable data
  * @throws {Object} Error if modules have incompatible CPU or endian settings
  */
+/**
+ * Resolve the filesystem path for a module entry from a .lnk recipe.
+ * New-style entries include the file extension (e.g. "main.obj80");
+ * legacy entries are bare names (e.g. "main") and get ".obj" appended.
+ * @param {string} entry - Module name from the recipe
+ * @returns {string} Filename to pass to fileSystem.readFile
+ */
+const moduleFilename = (entry) => entry.includes(".") ? entry : entry + ".obj";
+
 const link = async (linkList, fileSystem, name="noname") => {
   let cpu = null
   let endian = null
-  let modules = await Promise.all(linkList.modules.map(async m => {
-      let f = JSON.parse(await fileSystem.readFile(m+".obj"))
-      //checker
+
+  const checkModule = (f, label) => {
       if (!cpu) cpu = f.cpu;
-      if (cpu != f.cpu) throw {msg:"Different CPU in module "+m, s:"Linker error"};
-      if (!endian) endian = f.endian;
-      if (endian != f.endian) throw {msg:"Different endian in module "+m, s:"Linker error"};
-      return f
-  }))
-  let library = await Promise.all(linkList.library.map(async m => {
-      let f = JSON.parse(await fileSystem.readFile(m+".obj"))
-      if (cpu != f.cpu) throw {msg:"Different CPU in library file "+m, s:"Linker error"};
-      if (endian != f.endian) throw {msg:"Different endian in library file "+m, s:"Linker error"};
-      return f
-  }))
+      if (cpu !== f.cpu) throw {msg:"Different CPU in " + label, s:"Linker error"};
+      if (endian === null) endian = f.endian;
+      if (endian !== f.endian) throw {msg:"Different endian in " + label, s:"Linker error"};
+  };
 
-  linkList.endian = endian
+  const modules = await Promise.all(linkList.modules.map(async m => {
+      const f = JSON.parse(await fileSystem.readFile(moduleFilename(m)));
+      checkModule(f, "module " + m);
+      return f;
+  }));
 
-  let out = linkModules(linkList,modules, library)
+  // Library entries: new-style ".lib80" bundles or legacy bare names (".obj" files).
+  const library = (await Promise.all(linkList.library.map(async m => {
+      const filename = moduleFilename(m);
+      const raw = JSON.parse(await fileSystem.readFile(filename));
 
-  return out
-  //fs.writeFileSync("./test/suite/"+name+".combined",JSON.stringify(out))    
+      // .lib80 bundle: { modules: [{name, obj}, ...], symbolIndex, ... }
+      if (Array.isArray(raw.modules)) {
+          return raw.modules.map(entry => {
+              checkModule(entry.obj, "library " + m + " / " + entry.name);
+              return entry.obj;
+          });
+      }
+
+      // Legacy single-obj file
+      checkModule(raw, "library file " + m);
+      return [raw];
+  }))).flat();
+
+  linkList.endian = endian;
+
+  return linkModules(linkList, modules, library);
 }
 
 
@@ -199,4 +222,5 @@ export const asm = {
   cpus,
   buildLibrary,
   resolveLibrary,
+  parseLnk,
 }

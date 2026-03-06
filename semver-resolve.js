@@ -79,7 +79,7 @@ const semverSatisfies = (version, range) => {
 // ─── Path helper (mirrors libcode.js) ────────────────────────────────────────
 
 const joinPath = (...parts) =>
-  parts.join("/").replace(/\/+/g, "/");
+  parts.filter(p => p !== "").join("/").replace(/\/+/g, "/");
 
 // ─── Public API ───────────────────────────────────────────────────────────────
 
