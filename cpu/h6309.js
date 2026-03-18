@@ -522,5 +522,5 @@ export const H6309 = {
   parseOpcode,
   endian: true,
   cpu: "h6309",
-  ext: "a09",
+  ext: "h09",
 };
