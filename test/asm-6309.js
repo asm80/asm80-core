@@ -553,3 +553,414 @@ QUnit.test("parnibble with invalid register name throws", function () {
     H6309.parseOpcode(s, vars, Parser);
   }, "parnibble with unrecognized register should throw");
 });
+
+QUnit.module("H6309 PSHS/PULS/PSHU/PULU with D register");
+
+QUnit.test("PSHS D — pshsbyte D returns 6", function () {
+  var s = { opcode: "PSHS", params: ["D"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[0], 0x34, "PSHS opcode");
+  QUnit.assert.equal(p.lens[1], 6, "D register mask = 6");
+});
+
+QUnit.test("PSHU D — pshubyte D returns 6", function () {
+  var s = { opcode: "PSHU", params: ["D"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[0], 0x36, "PSHU opcode");
+  QUnit.assert.equal(p.lens[1], 6, "D register mask = 6");
+});
+
+QUnit.test("PULS A — pull A from S stack", function () {
+  var s = { opcode: "PULS", params: ["A"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[0], 0x35, "PULS opcode");
+  QUnit.assert.equal(p.lens[1], 2, "A register mask = 1<<1 = 2");
+});
+
+QUnit.test("PULU A — pull A from U stack", function () {
+  var s = { opcode: "PULU", params: ["A"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[0], 0x37, "PULU opcode");
+  QUnit.assert.equal(p.lens[1], 2, "A register mask = 1<<1 = 2");
+});
+
+QUnit.test("PULS D — pshsbyte D returns 6", function () {
+  var s = { opcode: "PULS", params: ["D"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[0], 0x35, "PULS opcode");
+  QUnit.assert.equal(p.lens[1], 6, "D register mask = 6");
+});
+
+QUnit.test("PULU D — pshubyte D returns 6", function () {
+  var s = { opcode: "PULU", params: ["D"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[0], 0x37, "PULU opcode");
+  QUnit.assert.equal(p.lens[1], 6, "D register mask = 6");
+});
+
+QUnit.module("H6309 return null path");
+
+QUnit.test("Unknown opcode not in H6309.set returns null", function () {
+  var s = { opcode: "FAKEOP_XYZ", params: [], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p, null, "unknown opcode returns null");
+});
+
+QUnit.module("H6309 auto-increment/decrement indexed (p1 === empty)");
+
+QUnit.test("LDA ,X+ — single post-increment", function () {
+  // p1="", p2="X+": p2[1]='+', p2[2] is undefined (not '+') → single-inc path.
+  // postbyte = ixreg("X")|0x80 = 0x00|0x80 = 0x80
+  var s = { opcode: "LDA", params: ["", "X+"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[1], 0x80, "postbyte ,X+");
+});
+
+QUnit.test("LDA ,X++ — double post-increment", function () {
+  // p1="", p2="X++": p2[1]='+', p2[2]='+' → double-inc path.
+  // p2[0]="X" != "W" → ixreg("X")|0x81 = 0x00|0x81 = 0x81
+  var s = { opcode: "LDA", params: ["", "X++"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[1], 0x81, "postbyte ,X++");
+});
+
+QUnit.test("LDA ,W++ — double post-increment W register", function () {
+  // p1="", p2="W++": p2[1]='+', p2[2]='+', p2[0]="W" → 0xcf|0 = 0xcf
+  var s = { opcode: "LDA", params: ["", "W++"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[1], 0xcf, "postbyte ,W++");
+});
+
+QUnit.test("LDA ,-X — single pre-decrement", function () {
+  // p1="", p2="-X": p2[0]='-', p2[1]='X' (not '-') → single-dec path.
+  // (no indir) postbyte = ixreg("X")|0x82 = 0x00|0x82 = 0x82
+  var s = { opcode: "LDA", params: ["", "-X"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[1], 0x82, "postbyte ,-X");
+});
+
+QUnit.test("LDA ,--X — double pre-decrement", function () {
+  // p1="", p2="--X": p2[0]='-', p2[1]='-' → double-dec path.
+  // p2[2]="X" != "W" → ixreg("X")|0x83 = 0x00|0x83 = 0x03 (indir=0)
+  var s = { opcode: "LDA", params: ["", "--X"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[1], 0x83, "postbyte ,--X");
+});
+
+QUnit.test("LDA ,--W — double pre-decrement W register", function () {
+  // p1="", p2="--W": p2[0]='-', p2[1]='-', p2[2]="W" → 0xef|0 = 0xef
+  var s = { opcode: "LDA", params: ["", "--W"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[1], 0xef, "postbyte ,--W");
+});
+
+QUnit.test("LDA [,X++] — indirect double post-increment", function () {
+  // p1="[", p2="X++]": indir=0x10. p2[1]='+', p2[2]='+' → ixreg("X")|0x81|0x10 = 0x91
+  var s = { opcode: "LDA", params: ["[", "X++]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[1], 0x91, "postbyte [,X++] indirect");
+});
+
+QUnit.test("LDA [,--X] — indirect double pre-decrement", function () {
+  // p1="[", p2="--X]": indir=0x10. p2[0]='-', p2[1]='-' → ixreg("X")|0x83|0x10 = 0x13
+  var s = { opcode: "LDA", params: ["[", "--X]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[1], 0x93, "postbyte [,--X] indirect");
+});
+
+QUnit.test("LDA [,W] — indirect zero-offset W", function () {
+  // p1="[", p2="W]": p2 does not start with '-' and p2[1] is not '+'.
+  // W guard: p2[0]="W" → 0x8f|0x10 = 0x9f
+  var s = { opcode: "LDA", params: ["[", "W]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[1], 0x9f, "postbyte [,W] indirect");
+});
+
+QUnit.test(",-X indirect throws (cannot use predecrement with 1)", function () {
+  QUnit.assert.throws(function () {
+    var s = { opcode: "LDA", params: ["[", "-X]"], addr: 0x100, lens: [], bytes: 0 };
+    H6309.parseOpcode(s, vars, Parser);
+  }, "indirect single-decrement should throw");
+});
+
+QUnit.test(",X+ indirect throws (cannot use postincrement with 1)", function () {
+  QUnit.assert.throws(function () {
+    var s = { opcode: "LDA", params: ["[", "X+]"], addr: 0x100, lens: [], bytes: 0 };
+    H6309.parseOpcode(s, vars, Parser);
+  }, "indirect single-increment should throw");
+});
+
+QUnit.module("H6309 rel16 (amode===7) branch instructions");
+
+QUnit.test("LBRA $0200 — rel16 long branch", function () {
+  // LBRA is in M6809.set (ax[7] = rel16 opcode). vars._PC=0x100.
+  // amode=7: bytes = 1(opcode) + 1(???) + 2(rel16) + 1(null) ...
+  // opcode=0x16 (1-byte). amode=7: bytes += 2+1 = code(1byte)+rel16(2byte)+null.
+  // parserfunc: n = 0x200 - vars._PC - s.bytes. s.bytes = 1+2+1=4? Let's just check it works.
+  var s = { opcode: "LBRA", params: ["$0200"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.ok(p.bytes >= 3, "LBRA bytes >= 3");
+  QUnit.assert.equal(typeof p.lens[1], "function", "offset function");
+});
+
+QUnit.module("H6309 indexed D/W accumulator offset");
+
+QUnit.test("LDA D,X — D accumulator offset indexed", function () {
+  // p1="D" → ixreg("X")|0x8b = 0x00|0x8b = 0x8b
+  var s = { opcode: "LDA", params: ["D", "X"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x8b, "postbyte D,X");
+});
+
+QUnit.test("LDA W,X — W accumulator offset indexed", function () {
+  // p1="W" → ixreg("X")|0x8e = 0x00|0x8e = 0x8e
+  var s = { opcode: "LDA", params: ["W", "X"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x8e, "postbyte W,X");
+});
+
+QUnit.test("LDA [D,X] — D accumulator indirect indexed", function () {
+  // indir=0x10, p1="D" → ixreg("X")|0x8b|0x10 = 0x9b
+  var s = { opcode: "LDA", params: ["[D", "X]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x9b, "postbyte [D,X] indirect");
+});
+
+QUnit.test("LDA [W,X] — W accumulator indirect indexed", function () {
+  // indir=0x10, p1="W" → ixreg("X")|0x8e|0x10 = 0x9e
+  var s = { opcode: "LDA", params: ["[W", "X]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x9e, "postbyte [W,X] indirect");
+});
+
+QUnit.test("LDA 8-bit indirect PC-relative", function () {
+  // indir=0x10, 8-bit range, PC: postbyte=0x04|0x10|0x88=0x9c
+  // zptest=300-256=44 (8-bit). lens[postbyte+1] must be function using p1x.substr(1)
+  var s = { opcode: "LDA", params: ["[300", "PC]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 3, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x9c, "postbyte [8-bit PC] indirect");
+  QUnit.assert.equal(typeof p.lens[2], "function", "offset function");
+});
+
+QUnit.test("LDA 16-bit indirect PC-relative", function () {
+  // indir=0x10, 16-bit, PC: postbyte=0x04|0x10|0x89=0x9d
+  var s = { opcode: "LDA", params: ["[1000", "PC]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 4, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x9d, "postbyte [16-bit PC] indirect");
+  QUnit.assert.equal(typeof p.lens[2], "function", "offset function");
+});
+
+QUnit.module("H6309 A,B accumulator indirect indexed");
+
+QUnit.test("LDA [A,X] — A accumulator indirect indexed", function () {
+  // indir=0x10, p1="A" → ixreg("X")|0x86|0x10 = 0x96
+  var s = { opcode: "LDA", params: ["[A", "X]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x96, "postbyte [A,X] indirect");
+});
+
+QUnit.test("LDA [B,X] — B accumulator indirect indexed", function () {
+  // indir=0x10, p1="B" → ixreg("X")|0x85|0x10 = 0x95
+  var s = { opcode: "LDA", params: ["[B", "X]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x95, "postbyte [B,X] indirect");
+});
+
+QUnit.test("LDA [E,X] — E accumulator indirect indexed", function () {
+  // indir=0x10, p1="E" → ixreg("X")|0x87|0x10 = 0x97
+  var s = { opcode: "LDA", params: ["[E", "X]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x97, "postbyte [E,X] indirect");
+});
+
+QUnit.test("LDA [F,X] — F accumulator indirect indexed", function () {
+  // indir=0x10, p1="F" → ixreg("X")|0x8a|0x10 = 0x9a
+  var s = { opcode: "LDA", params: ["[F", "X]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x9a, "postbyte [F,X] indirect");
+});
+
+QUnit.module("H6309 direct mode with non-zero DP");
+
+QUnit.test("LDA <$0210 with _dp=2 — DP-offset calculation", function () {
+  // _dp=2: dptest passes when (v >> 8) === 2. ldp = 2*256 = 0x200.
+  // parserfunc(vars) = 0x210 - 0x200 = 0x10
+  var varsDP = { _PC: 0x100 };
+  var s = { opcode: "LDA", params: ["<$0210"], addr: 0x100, lens: [], bytes: 0, _dp: 2 };
+  var p = H6309.parseOpcode(s, varsDP, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(typeof p.lens[1], "function", "offset function");
+  QUnit.assert.equal(p.lens[1](varsDP), 0x10, "DP-relative offset");
+});
+
+QUnit.module("H6309 rel8 branch instructions");
+
+QUnit.test("BRA $0120 — rel8 forward branch", function () {
+  // BRA is in M6809 set with ax[4] = 0x20 (rel8). vars._PC=0x100.
+  // n = 0x120 - 0x100 - 2 = 0x1e = 30. Positive → return 30.
+  var s = { opcode: "BRA", params: ["$0120"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[0], 0x20, "BRA opcode");
+  QUnit.assert.equal(typeof p.lens[1], "function", "offset function");
+  QUnit.assert.equal(p.lens[1](vars), 30, "forward offset 0x1e");
+});
+
+QUnit.test("BRA $00F0 — rel8 backward branch (negative offset)", function () {
+  // n = 0xF0 - 0x100 - 2 = -18. Negative → 256 + (-18) = 238 = 0xEE
+  var s = { opcode: "BRA", params: ["$00F0"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(typeof p.lens[1], "function", "offset function");
+  QUnit.assert.equal(p.lens[1](vars), 238, "backward offset 256-18=238");
+});
+
+QUnit.test("BRA out-of-range throws", function () {
+  QUnit.assert.throws(function () {
+    // n = 0x300 - 0x100 - 2 = 510 > 127
+    var s = { opcode: "BRA", params: ["$0300"], addr: 0x100, lens: [], bytes: 0 };
+    var p = H6309.parseOpcode(s, vars, Parser);
+    p.lens[1](vars); // must call to trigger the range check
+  }, "BRA out of range throws");
+});
+
+QUnit.module("H6309 zero-offset indexed (,X — no accumulator, no offset)");
+
+QUnit.test("LDA ,X — zero offset X (non-W register)", function () {
+  // p1="", p2="X": not '-', p2[1] is undefined (not '+').
+  // W guard: p2[0]="X" != "W" → ixreg("X")|0x84 = 0x84
+  var s = { opcode: "LDA", params: ["", "X"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[1], 0x84, "postbyte ,X zero offset");
+});
+
+QUnit.test("LDA ,Y — zero offset Y", function () {
+  // ixreg("Y")=0x20 → 0x20|0x84 = 0xa4
+  var s = { opcode: "LDA", params: ["", "Y"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[1], 0xa4, "postbyte ,Y zero offset");
+});
+
+QUnit.module("H6309 explicit extended (>) addressing mode");
+
+QUnit.test("LDA >$10 — forced extended mode", function () {
+  // p1[0]='>', prefixed=1, amode=3 (extended). code = ax[3].
+  // bytes = 1(opcode) + 2(ext addr) + null → 3+null = amode 3 adds 2+null.
+  var s = { opcode: "LDA", params: [">$10"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 3, "bytes");
+  QUnit.assert.equal(typeof p.lens[1], "function", "address function");
+  QUnit.assert.equal(p.lens[1](vars), 0x10, "address value");
+});
+
+QUnit.module("H6309 TFM invalid combination");
+
+QUnit.test("TFM X,Y — invalid combination (no +/-) throws", function () {
+  QUnit.assert.throws(function () {
+    // sg0=undefined (X[1] is undefined), sg1=undefined (Y[1] is undefined)
+    // none of the 4 valid combinations match → throw "Invalid TFM..."
+    var s = { opcode: "TFM", params: ["X", "Y"], addr: 0x100, lens: [], bytes: 0 };
+    H6309.parseOpcode(s, vars, Parser);
+  }, "TFM X,Y with no mode specifiers should throw");
+});
+
+QUnit.module("H6309 rel16 backward branch");
+
+QUnit.test("LBRA backward — rel16 negative offset wraps to 65536+n", function () {
+  // LBRA ax[7]=0x16. vars._PC=0x100. Target=$0050 (before PC).
+  // s.bytes = 3 (1 opcode + 2 rel16). n = 0x50 - 0x100 - 3 = 80 - 256 - 3 = -179. < 0 → 65536 + (-179) = 65357
+  var s = { opcode: "LBRA", params: ["$0050"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 3, "bytes");
+  QUnit.assert.equal(typeof p.lens[1], "function", "offset function");
+  QUnit.assert.equal(p.lens[1](vars), 65357, "negative rel16 wrapped to 65536-179=65357");
+});
+
+QUnit.module("H6309 coverage gap: uncovered closure branches");
+
+QUnit.test("LDA $0210 direct with _dp=2, no prefix — non-prefixed DP offset closure", function () {
+  // amode=1, _dp=2 (not 0), prefixed=0 → line 328 branch.
+  // parserfunc(vars) = 0x210 - 0x200 = 0x10
+  var varsDP = { _PC: 0x100 };
+  var s = { opcode: "LDA", params: ["$0210"], addr: 0x100, lens: [], bytes: 0, _dp: 2 };
+  var p = H6309.parseOpcode(s, varsDP, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(typeof p.lens[1], "function", "offset function");
+  QUnit.assert.equal(p.lens[1](varsDP), 0x10, "DP-relative non-prefixed: 0x210-0x200=0x10");
+});
+
+QUnit.test("BRA too-negative throws (n < -128)", function () {
+  QUnit.assert.throws(function () {
+    // n = 0x00 - 0x100 - 2 = -258 < -128
+    var s = { opcode: "BRA", params: ["$0000"], addr: 0x100, lens: [], bytes: 0 };
+    var p = H6309.parseOpcode(s, vars, Parser);
+    p.lens[1](vars);
+  }, "BRA too negative should throw");
+});
+
+QUnit.test("AIM #$(-1) direct — negative imm byte wraps to 256+n (line 360)", function () {
+  // Use #$FF = 255 for positive; to hit line 360 (n<0) we need a negative immediate.
+  // Parser.evaluate("-1") = -1. n=-1 < 0 → n = 256 + (-1) = 255.
+  var s = { opcode: "AIM", params: ["#-1", "<$10"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[1], 255, "negative imm -1 wraps to 255");
+});
+
+QUnit.test("AIM indexed with negative imm — line 384 (n<0 in indexed aim block)", function () {
+  // AIM indexed: 2-param after shift. aim block at top (line 381-388).
+  // n = -1 → 255 (lens[1]).
+  var s = { opcode: "AIM", params: ["#-1", "0", "X"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.lens[1], 255, "negative indexed aim imm wraps to 255");
+});
+
+QUnit.test("LDA indexed bad mode throws (ax[2]<=0) — line 406", function () {
+  QUnit.assert.throws(function () {
+    // LDMD has ax[2]=-1 (no indexed mode). Force 2-param to trigger line 406.
+    var s = { opcode: "LDMD", params: ["0", "X"], addr: 0x100, lens: [], bytes: 0 };
+    H6309.parseOpcode(s, vars, Parser);
+  }, "opcode with no indexed mode and 2 params should throw");
+});
+
+QUnit.test("LDA 8-bit PC backward — n<0 in 8-bit PC closure (line 490)", function () {
+  // 8-bit PC: zptest = target - vars._PC = 0x80 - 0x100 = -0x80 = -128, in -128..-1 range.
+  // Closure: n = 0x80 - 0x100 - 3 = -131. n < 0 → 256 + (-131) = 125.
+  // Wait — -128 is in range for zptest. zptest = 0x80 - 0x100 = -128. -128>=-129 → 8-bit.
+  var s = { opcode: "LDA", params: ["$0080", "PC"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 3, "bytes — 8-bit PC");
+  QUnit.assert.ok(typeof p.lens[2] === "function", "offset function");
+  // n = 0x80 - 0x100 - 3 = -131 < 0 → 256 + (-131) = 125
+  QUnit.assert.equal(p.lens[2](vars), 125, "backward 8-bit PC offset 256-131=125");
+});
+
+QUnit.test("LDA [16-bit indirect PC] backward — n<0 in 16-bit indirect PC closure (line 509)", function () {
+  // indir=0x10, zptest=1000 (16-bit). PC path, indirect. Target behind PC.
+  // Use target $0050 < $0100: zptest = 0x50 (subtract PC for zptest?) — no.
+  // For 16-bit range: need abs(zptest) >= 128. zptest = target (not PC-relative unless p2==="PC").
+  // Actually zptest for PC is: zptest = target - vars._PC. $0050-$0100 = -0xB0 = -176.
+  // -176 is NOT in 8-bit range (-128..-129 boundary). Actually -176 < -129 → NOT 8-bit → 16-bit.
+  // postbyte = 0x04|0x10|0x89 = 0x9d. Closure n = 0x50 - 0x100 - 4 = -180 < 0 → 65536-180 = 65356.
+  var s = { opcode: "LDA", params: ["[80", "PC]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  // zptest for PC: 80 - 256 = -176, outside 8-bit so 16-bit. indir=0x10.
+  QUnit.assert.equal(p.bytes, 4, "bytes — 16-bit indirect PC");
+  QUnit.assert.ok(typeof p.lens[2] === "function", "offset function");
+  QUnit.assert.equal(p.lens[2](vars), 65356, "backward 16-bit indirect PC: 65536+(80-256-4)=65356");
+});
