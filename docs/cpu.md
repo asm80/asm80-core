@@ -32,6 +32,52 @@ This directory contains CPU-specific modules for the ASM80 assembler. Each modul
 - **Endianness**: Big endian
 - **Features**: 6800 instruction set, dual accumulator architecture
 
+### i8008.js
+**Intel 8008 Processor**
+- **CPU ID**: "i8008"
+- **File Extension**: ".a08"
+- **Endianness**: Little endian
+- **Features**: Original Intel 8008 instruction set
+
+### cdp1802.js
+**RCA CDP1802 Processor**
+- **CPU ID**: "cdp1802"
+- **File Extension**: ".a18"
+- **Endianness**: Big endian
+- **Features**: CDP1802 COSMAC instruction set
+
+### m6809.js
+**Motorola 6809 Processor**
+- **CPU ID**: "m6809"
+- **File Extension**: ".a09"
+- **Endianness**: Big endian
+- **Features**: Full 6809 instruction set, rich indexed addressing modes (5-bit/8-bit/16-bit offsets, accumulator offsets, auto-increment/decrement, indirect), position-independent code support via PC-relative addressing, PSHS/PULS/PSHU/PULU register stacks, EXG/TFR inter-register operations, long branches (LBRA/LBEQ/…)
+
+### h6309.js
+**Hitachi HD6309 Processor**
+- **CPU ID**: "h6309"
+- **File Extension**: ".h09"
+- **Endianness**: Big endian
+- **Features**: Fully backward-compatible superset of M6809. Adds registers E, F (8-bit), W=E:F (16-bit), Q=D:W (32-bit), V (16-bit). New instructions include:
+  - Register-to-register arithmetic: ADDR, ADCR, SUBR, SBCR, ANDR, ORR, EORR, CMPR
+  - Block transfer: TFM (4 modes: X+/Y+, X−/Y−, X+/Y, X/Y+)
+  - Immediate+memory: AIM, EIM, OIM, TIM (direct and indexed addressing)
+  - Bit manipulation: BAND, BIAND, BOR, BIOR, BEOR, BIEOR, LDBT, STBT
+  - W/Q load-store: LDW, STW, LDQ, STQ (LDQ immediate uses 32-bit operand)
+  - E/F accumulator ops: LDE, STE, LDF, STF, ADDE, ADDF, SUBE, SUBF, CMPE, CMPF
+  - W arithmetic: ADDW, SUBW, CMPW, SBCD, ANDD, BITD, EORD, ADCD, ORD
+  - Extended unary ops on D/W/E/F registers (NEGD, COMD, CLRD, CLRW, CLRE, CLRF, …)
+  - Divide/multiply: DIVD, DIVQ, MULD
+  - Mode register: LDMD, BITMD
+  - Extended indexed addressing: W as base register (`,W`, `W++`, `--W`, `n,W`); E, F, W as accumulator offsets
+
+### c65816.js
+**WDC 65816 Processor**
+- **CPU ID**: "c65816"
+- **File Extension**: ".a65"
+- **Endianness**: Little endian
+- **Features**: 65816 16-bit extension of 6502, native/emulation modes, 24-bit address space, extended addressing modes
+
 ### dummy.js
 **Test Processor**
 - **CPU ID**: "dummy"

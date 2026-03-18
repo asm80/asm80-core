@@ -16,7 +16,7 @@ Main compilation function that processes assembly source code into machine code.
 - `source` (string) - Assembly source code to compile
 - `fileSystem` (object) - File system interface with `readFile()` method
 - `opts` (object) - Compilation options:
-  - `assembler` (string|object) - CPU assembler ("z80", "i8080", "c6502", "m6800") or CPU object
+  - `assembler` (string|object) - CPU assembler ("z80", "i8080", "c6502", "m6800", "m6809", "h6309", "i8008", "cdp1802", "c65816") or CPU object
   - Additional options passed to compilation passes
 - `filename` (string, optional) - Source filename, defaults to "noname"
 
@@ -116,7 +116,7 @@ export const asm = {
 
 Array of supported CPU objects:
 ```javascript
-const cpus = [I8080, M6800, C6502, Z80];
+const cpus = [I8080, M6800, C6502, Z80, I8008, CDP1802, M6809, H6309, C65816];
 ```
 
 Each CPU object contains:
@@ -157,9 +157,14 @@ Each CPU object contains:
 ### CPU Support Modules
 
 - **`cpu/i8080.js`** - Intel 8080/8085 support
-- **`cpu/m6800.js`** - Motorola 6800 support  
+- **`cpu/m6800.js`** - Motorola 6800 support
 - **`cpu/c6502.js`** - MOS 6502/65C02 support
 - **`cpu/z80.js`** - Zilog Z80 support
+- **`cpu/i8008.js`** - Intel 8008 support
+- **`cpu/cdp1802.js`** - RCA CDP1802 support
+- **`cpu/m6809.js`** - Motorola 6809 support
+- **`cpu/h6309.js`** - Hitachi HD6309 support (extends M6809)
+- **`cpu/c65816.js`** - WDC 65816 support
 
 ## Compilation Options
 
@@ -242,10 +247,15 @@ const linked = await link({
 
 ### Multi-CPU Support
 ```javascript
-// Auto-detect CPU or specify explicitly
-const z80Result = await compile(source, fs, { assembler: 'z80' });
-const i8080Result = await compile(source, fs, { assembler: 'i8080' });
-const m6800Result = await compile(source, fs, { assembler: 'm6800' });
+// Specify CPU explicitly
+const z80Result    = await compile(source, fs, { assembler: 'z80' });
+const i8080Result  = await compile(source, fs, { assembler: 'i8080' });
+const m6800Result  = await compile(source, fs, { assembler: 'm6800' });
+const m6809Result  = await compile(source, fs, { assembler: 'm6809' });
+const h6309Result  = await compile(source, fs, { assembler: 'h6309' });
+const i8008Result  = await compile(source, fs, { assembler: 'i8008' });
+const cdp1802Result = await compile(source, fs, { assembler: 'cdp1802' });
+const c65816Result = await compile(source, fs, { assembler: 'c65816' });
 ```
 
 ## Performance Notes
