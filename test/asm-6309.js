@@ -381,6 +381,8 @@ QUnit.test("LDA [100,X] — 8-bit indirect indexed", function () {
   var p = H6309.parseOpcode(s, vars, Parser);
   QUnit.assert.equal(p.bytes, 3, "bytes");
   QUnit.assert.equal(p.lens[1], 0x98, "postbyte 8-bit indirect X");
+  QUnit.assert.equal(typeof p.lens[2], "function", "offset function");
+  QUnit.assert.equal(p.lens[2](vars), 100, "offset value 100");
 });
 
 QUnit.module("H6309 indexed — 16-bit offset");
@@ -424,6 +426,8 @@ QUnit.test("LDA [500,X] — 16-bit indirect indexed", function () {
   var p = H6309.parseOpcode(s, vars, Parser);
   QUnit.assert.equal(p.bytes, 4, "bytes");
   QUnit.assert.equal(p.lens[1], 0x99, "postbyte 16-bit indirect X");
+  QUnit.assert.equal(typeof p.lens[2], "function", "offset function");
+  QUnit.assert.equal(p.lens[2](vars), 500, "offset value 500");
 });
 
 QUnit.module("H6309 indexed — null offset fallthrough");
