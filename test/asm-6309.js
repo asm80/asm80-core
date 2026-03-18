@@ -309,3 +309,243 @@ QUnit.test("LDA F,X indexed F accumulator", function () {
   QUnit.assert.equal(p.bytes, 2, "bytes");
   QUnit.assert.equal(p.lens[1], 0x8a, "postbyte F,X");
 });
+
+QUnit.module("H6309 indexed — 5-bit offset");
+
+QUnit.test("LDA 5,X — positive 5-bit offset", function () {
+  // zptest=5: 5<16 && 5>-17 → 5-bit path. postbyte = ixreg("X")|0|(5&0x1f) = 0x05
+  var s = { opcode: "LDA", params: ["5", "X"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[0], 0xa6, "opcode");
+  QUnit.assert.equal(p.lens[1], 0x05, "postbyte 5-bit offset 5,X");
+});
+
+QUnit.test("LDA 65535,X — high-address 5-bit wrap", function () {
+  // zptest=65535 > 65519: high-addr path. postbyte = (32-(65536-65535))&0x1f = 31 = 0x1f
+  var s = { opcode: "LDA", params: ["65535", "X"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x1f, "postbyte high-addr wrap -1");
+});
+
+QUnit.module("H6309 indexed — 8-bit offset");
+
+QUnit.test("LDA 100,X — 8-bit offset non-PC", function () {
+  // zptest=100: 16≤100<128 → 8-bit path. postbyte = ixregPC("X")|0x88 = 0x00|0x88 = 0x88
+  // bytes: start 2, s.bytes++ → 3. Offset func returns Parser.evaluate("100",vars) = 100
+  var s = { opcode: "LDA", params: ["100", "X"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 3, "bytes");
+  QUnit.assert.equal(p.lens[0], 0xa6, "opcode");
+  QUnit.assert.equal(p.lens[1], 0x88, "postbyte 8-bit X");
+  QUnit.assert.equal(typeof p.lens[2], "function", "offset is function");
+  QUnit.assert.equal(p.lens[2](vars), 100, "offset value 100");
+});
+
+QUnit.test("LDA -5,X — negative offset in 5-bit range", function () {
+  // zptest=-5: -5>-17 (strictly) → 5-bit path. postbyte = (-5)&0x1f = 27 = 0x1b. bytes=2.
+  var s = { opcode: "LDA", params: ["-5", "X"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 2, "bytes — negative -5 is in 5-bit range");
+  QUnit.assert.equal(p.lens[1], 0x1b, "postbyte 5-bit encoding of -5");
+});
+
+QUnit.test("LDA -20,X — 8-bit negative offset outside 5-bit range", function () {
+  // zptest=-20: NOT in 5-bit range (-20 is NOT > -17). 8-bit path.
+  // postbyte = 0x00|0x88 = 0x88. Offset func returns -20.
+  var s = { opcode: "LDA", params: ["-20", "X"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 3, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x88, "postbyte 8-bit X negative");
+  QUnit.assert.equal(typeof p.lens[2], "function", "offset is function");
+  QUnit.assert.equal(p.lens[2](vars), -20, "raw offset value -20");
+});
+
+QUnit.test("LDA 300,PC — 8-bit PC-relative (exercises ixregPC PC branch)", function () {
+  // zptest = 300 - vars._PC = 300 - 256 = 44 (subtracted because p2==="PC").
+  // 44 is in 8-bit range (16 ≤ 44 < 128, not in 5-bit range).
+  // ixregPC("PC")=0x04 → postbyte = 0x04|0x88 = 0x8c. bytes=3.
+  // Offset func: n = 300 - vars._PC - s.bytes = 300 - 256 - 3 = 41. 41≥0 → 41.
+  var s = { opcode: "LDA", params: ["300", "PC"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 3, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x8c, "postbyte 8-bit PC (ixregPC r===4 branch)");
+  QUnit.assert.equal(typeof p.lens[2], "function", "offset is function");
+  QUnit.assert.equal(p.lens[2](vars), 41, "PC-relative 8-bit: 300-256-3=41");
+});
+
+QUnit.test("LDA [100,X] — 8-bit indirect indexed", function () {
+  // indir=0x10, zptest=100 → 8-bit. postbyte = 0x00|0x10|0x88 = 0x98. bytes=3.
+  var s = { opcode: "LDA", params: ["[100", "X]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 3, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x98, "postbyte 8-bit indirect X");
+});
+
+QUnit.module("H6309 indexed — 16-bit offset");
+
+QUnit.test("LDA 500,X — 16-bit offset non-PC", function () {
+  // zptest=500: outside 8-bit range → 16-bit path. s.bytes+=2 → 4.
+  // postbyte = ixregPC("X")|0|0x89 = 0x00|0x89 = 0x89
+  // lens[2] = offset func returning 500, lens[3] = null
+  var s = { opcode: "LDA", params: ["500", "X"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 4, "bytes");
+  QUnit.assert.equal(p.lens[0], 0xa6, "opcode");
+  QUnit.assert.equal(p.lens[1], 0x89, "postbyte 16-bit X");
+  QUnit.assert.equal(typeof p.lens[2], "function", "offset is function");
+  QUnit.assert.equal(p.lens[2](vars), 500, "offset value 500");
+  QUnit.assert.equal(p.lens[3], null, "null terminator");
+});
+
+QUnit.test("LDA 500,W — 16-bit W register (must be ≥128 to skip 8-bit path)", function () {
+  // zptest=500 ≥ 128: skips 8-bit path (which has no W guard).
+  // W guard at 16-bit path: p2[0]==="W" → postbyte = 0xaf|0 = 0xaf. bytes=4.
+  var s = { opcode: "LDA", params: ["500", "W"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 4, "bytes");
+  QUnit.assert.equal(p.lens[1], 0xaf, "postbyte W register 16-bit");
+});
+
+QUnit.test("LDA 1000,PC — 16-bit PC-relative", function () {
+  // zptest=1000: outside 8-bit. ixregPC("PC")=0x04, postbyte=0x04|0x89=0x8d. bytes=4.
+  // Offset func (PC path): n = 1000 - vars._PC - s.bytes = 1000 - 256 - 4 = 740
+  var s = { opcode: "LDA", params: ["1000", "PC"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 4, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x8d, "postbyte 16-bit PC");
+  QUnit.assert.equal(p.lens[2](vars), 740, "PC-relative offset 1000-256-4=740");
+});
+
+QUnit.test("LDA [500,X] — 16-bit indirect indexed", function () {
+  // indir=0x10, zptest=500 → 16-bit. postbyte = 0x00|0x10|0x89 = 0x99. bytes=4.
+  var s = { opcode: "LDA", params: ["[500", "X]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 4, "bytes");
+  QUnit.assert.equal(p.lens[1], 0x99, "postbyte 16-bit indirect X");
+});
+
+QUnit.module("H6309 indexed — null offset fallthrough");
+
+QUnit.test("LDA UNDEF,PC — undefined symbol falls through to 16-bit (zptest===null)", function () {
+  // Parser.evaluate("UNDEF", vars) throws → zptest=null.
+  // 5-bit gate: ixregPC("PC")===4 → condition false, 5-bit path skipped.
+  // 8-bit gate: zptest!==null is false → 8-bit path skipped.
+  // Falls to 16-bit block: s.bytes+=2 → 4. W guard: "P"!=="W" → ixregPC("PC")|0x89 = 0x8d.
+  var s = { opcode: "LDA", params: ["UNDEF", "PC"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 4, "bytes — null zptest falls through to 16-bit");
+  QUnit.assert.equal(p.lens[1], 0x8d, "postbyte 0x8d (PC 16-bit)");
+  QUnit.assert.equal(p.lens[3], null, "null terminator");
+});
+
+QUnit.module("H6309 indexed — indirect extended");
+
+QUnit.test("LDA [$1000] — indirect extended 1-byte opcode", function () {
+  // Single param starting with "[": indirect extended path.
+  // ax[2]=0xa6 ≤ 256: lens[0]=0xa6, postbyte=1. lens[1]=0x9f, lens[2]=func, lens[3]=null.
+  // bytes: start 2, s.bytes+=2 → 4.
+  var s = { opcode: "LDA", params: ["[$1000]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 4, "bytes");
+  QUnit.assert.equal(p.lens[0], 0xa6, "opcode");
+  QUnit.assert.equal(p.lens[1], 0x9f, "indirect extended postbyte 0x9f");
+  QUnit.assert.equal(typeof p.lens[2], "function", "address function");
+  QUnit.assert.equal(p.lens[2](vars), 0x1000, "address value $1000");
+  QUnit.assert.equal(p.lens[3], null, "null terminator");
+});
+
+QUnit.test("LDW [$1000] — indirect extended 2-byte opcode", function () {
+  // ax[2]=0x10a6 > 256: 2-byte prefix at lens[0..1], postbyte at lens[2]. s.bytes++ → 3.
+  // Then s.bytes+=2 → 5. lens[2]=0x9f, lens[3]=func, lens[4]=null.
+  var s = { opcode: "LDW", params: ["[$1000]"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 5, "bytes");
+  QUnit.assert.equal(p.lens[0], 0x10, "prefix high byte");
+  QUnit.assert.equal(p.lens[1], 0xa6, "prefix low byte");
+  QUnit.assert.equal(p.lens[2], 0x9f, "indirect extended postbyte 0x9f");
+  QUnit.assert.equal(typeof p.lens[3], "function", "address function");
+  QUnit.assert.equal(p.lens[3](vars), 0x1000, "address value $1000");
+});
+
+QUnit.module("H6309 AIM indexed/extended");
+
+QUnit.test("AIM #$FF,$1000 — extended addressing", function () {
+  // After shift: aimPar="#$FF", params=["$1000"]. 1-param path, amode=3 (extended).
+  // opcode ax[3]=0x72 (1-byte). bytes: 0→+1=1, amode=3→+2=3, aim block→+1=4.
+  // lens=[0x72, 0xff, parserfunc, null]
+  var s = { opcode: "AIM", params: ["#$FF", "$1000"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 4, "bytes");
+  QUnit.assert.equal(p.lens[0], 0x72, "AIM extended opcode");
+  QUnit.assert.equal(p.lens[1], 0xff, "immediate byte $FF");
+  QUnit.assert.equal(typeof p.lens[2], "function", "address function");
+  QUnit.assert.equal(p.lens[2](vars), 0x1000, "address $1000");
+  QUnit.assert.equal(p.lens[3], null, "null terminator");
+});
+
+QUnit.test("AIM #$FF,0,X — indexed addressing", function () {
+  // After shift: aimPar="#$FF", params=["0","X"]. 2-param indexed path.
+  // s.bytes=2. aim block: lens[1]=0xff, postbyte=2, s.bytes=3.
+  // ax[2]=0x62 (1-byte opcode), lens[0]=0x62. p1="0", zptest=0.
+  // 5-bit path: lens[2] = ixreg("X")|(0&0x1f) = 0x00.
+  var s = { opcode: "AIM", params: ["#$FF", "0", "X"], addr: 0x100, lens: [], bytes: 0 };
+  var p = H6309.parseOpcode(s, vars, Parser);
+  QUnit.assert.equal(p.bytes, 3, "bytes");
+  QUnit.assert.equal(p.lens[0], 0x62, "AIM indexed opcode");
+  QUnit.assert.equal(p.lens[1], 0xff, "immediate byte $FF");
+  QUnit.assert.equal(p.lens[2], 0x00, "postbyte 5-bit 0,X = 0x00");
+});
+
+QUnit.module("H6309 error paths");
+
+QUnit.test("PSHS with unrecognized register throws", function () {
+  QUnit.assert.throws(function () {
+    var s = { opcode: "PSHS", params: ["BADREGISTER"], addr: 0x100, lens: [], bytes: 0 };
+    H6309.parseOpcode(s, vars, Parser);
+  }, "PSHS with invalid register should throw");
+});
+
+QUnit.test("PSHU with unrecognized register throws", function () {
+  QUnit.assert.throws(function () {
+    var s = { opcode: "PSHU", params: ["BADREGISTER"], addr: 0x100, lens: [], bytes: 0 };
+    H6309.parseOpcode(s, vars, Parser);
+  }, "PSHU with invalid register should throw");
+});
+
+QUnit.test("EXG with only 1 parameter throws", function () {
+  QUnit.assert.throws(function () {
+    var s = { opcode: "EXG", params: ["A"], addr: 0x100, lens: [], bytes: 0 };
+    H6309.parseOpcode(s, vars, Parser);
+  }, "EXG with 1 param should throw");
+});
+
+QUnit.test("TFM with only 1 parameter throws", function () {
+  QUnit.assert.throws(function () {
+    var s = { opcode: "TFM", params: ["X+"], addr: 0x100, lens: [], bytes: 0 };
+    H6309.parseOpcode(s, vars, Parser);
+  }, "TFM with 1 param should throw");
+});
+
+QUnit.test("AIM without # prefix throws", function () {
+  QUnit.assert.throws(function () {
+    var s = { opcode: "AIM", params: ["$FF", "<$10"], addr: 0x100, lens: [], bytes: 0 };
+    H6309.parseOpcode(s, vars, Parser);
+  }, "AIM without # prefix should throw");
+});
+
+QUnit.test("Indexed mode with invalid base register throws", function () {
+  QUnit.assert.throws(function () {
+    // "Z" is not a valid indexed register (only X/Y/U/S/PC/W/E/F/D/A/B valid)
+    var s = { opcode: "LDA", params: ["100", "Z"], addr: 0x100, lens: [], bytes: 0 };
+    H6309.parseOpcode(s, vars, Parser);
+  }, "Invalid base register should throw");
+});
+
+QUnit.test("parnibble with invalid register name throws", function () {
+  QUnit.assert.throws(function () {
+    var s = { opcode: "ADDR", params: ["D", "NOTAREG"], addr: 0x100, lens: [], bytes: 0 };
+    H6309.parseOpcode(s, vars, Parser);
+  }, "parnibble with unrecognized register should throw");
+});
