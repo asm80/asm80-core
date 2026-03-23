@@ -97,8 +97,10 @@ export const pass2 = (vx, opts) => {
             throw {
               msg: "IF condition mismatched"
             };
+            /* c8 ignore next 2 */
             ifskip = 1;
           }
+          /* c8 ignore next */
           continue;
         }
         if (op.opcode === "IFN") {

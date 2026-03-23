@@ -94,7 +94,8 @@ export const parseLine = (s, macros, opts = {stopFlag:null, olds:null, assembler
       //} catch(e) {
       // console.log(e,t)
       //}
-      //semicolon fix
+      //semicolon fix — strings already encoded as 00ss…! above; these guards are dead code
+      /* c8 ignore next 6 */
       while (t.match(/"(.*?);(.*?)"/g)) {
         t = t.replace(/"(.*?);(.*?)"/g, '"$1§$2"');
       }
@@ -106,8 +107,9 @@ export const parseLine = (s, macros, opts = {stopFlag:null, olds:null, assembler
       if (pp && pp[1].length) {
         s.paramstring = pp[1];
 
-        //sane strings
+        //sane strings — strings already encoded as 00ss…! above; these guards are dead code
         let ppc = pp[1];
+        /* c8 ignore next 6 */
         while (ppc.match(/"(.*?),(.*?)"/g)) {
           ppc = ppc.replace(/"(.*?),(.*?)"/g, '"$1€$2"');
         }
