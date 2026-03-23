@@ -179,6 +179,123 @@ QUnit.test("buildLibrary rejects duplicate exported symbol", (assert) => {
   );
 });
 
+// ─── buildLibrary — additional branch coverage ───────────────────────────────
+
+// Minimal valid obj payload for in-memory tests
+const minObj = (cpu = "i8080", extra = {}) =>
+  JSON.stringify({ cpu, code: [], seglen: {}, exports: { FUNC: 1 }, ...extra });
+
+QUnit.test("buildLibrary — null recipe throws", (assert) => {
+  assert.throws(
+    () => buildLibrary(null, {}, "/"),
+    (e) => /missing or not an object/.test(e.message),
+    "null recipe rejected"
+  );
+});
+
+QUnit.test("buildLibrary — version field undefined → ?? '' branch", (assert) => {
+  // recipe.version is undefined → `recipe.version ?? ""` evaluates the right side
+  assert.throws(
+    () => buildLibrary({ name: "x", modules: ["a"] }, {}, "/"),
+    (e) => /Invalid semver ''/.test(e.message),
+    "undefined version triggers ?? '' fallback"
+  );
+});
+
+QUnit.test("buildLibrary — invalid module entry (non-string)", (assert) => {
+  assert.throws(
+    () => buildLibrary({ name: "x", version: "1.0.0", modules: [null] }, {}, "/"),
+    (e) => /Invalid module entry/.test(e.message),
+    "null module entry rejected"
+  );
+});
+
+QUnit.test("buildLibrary — malformed obj JSON → catch branch", (assert) => {
+  const files = { "/proj/mod.obj80": "not-valid-json" };
+  assert.throws(
+    () => buildLibrary({ name: "x", version: "1.0.0", modules: ["mod"] }, files, "/proj"),
+    (e) => /malformed obj file/.test(e.message),
+    "malformed JSON in obj file triggers catch"
+  );
+});
+
+QUnit.test("buildLibrary — obj without name uses entry as fallback (obj.name ?? entry)", (assert) => {
+  // obj has no `name` field → `obj.name ?? entry` evaluates the right side
+  const files = { "/proj/mymod.obj80": minObj("i8080", { name: undefined }) };
+  // JSON.stringify drops undefined fields, so name is genuinely absent
+  const files2 = { "/proj/mymod.obj80": JSON.stringify({ cpu: "i8080", code: [], seglen: {}, exports: {} }) };
+  const { libContent } = buildLibrary(
+    { name: "x", version: "1.0.0", modules: ["mymod"] },
+    files2, "/proj"
+  );
+  const lib = JSON.parse(libContent);
+  assert.strictEqual(lib.modules[0].name, "mymod", "entry name used when obj.name absent");
+});
+
+QUnit.test("buildLibrary — obj without exports uses {} fallback (obj.exports ?? {})", (assert) => {
+  // obj has no `exports` field → `obj.exports ?? {}` evaluates the right side
+  const files = { "/proj/mod.obj80": JSON.stringify({ cpu: "i8080", code: [], seglen: {} }) };
+  const { libContent } = buildLibrary(
+    { name: "x", version: "1.0.0", modules: ["mod"] },
+    files, "/proj"
+  );
+  const lib = JSON.parse(libContent);
+  assert.deepEqual(lib.symbolIndex, {}, "empty symbolIndex when no exports");
+});
+
+QUnit.test("buildLibrary — recipe without description/author uses '' fallback", (assert) => {
+  // recipe.description and recipe.author both absent → ?? '' fallback
+  const files = { "/proj/mod.obj80": minObj() };
+  const { libContent } = buildLibrary(
+    { name: "x", version: "1.0.0", modules: ["mod"] },
+    files, "/proj"
+  );
+  const lib = JSON.parse(libContent);
+  assert.strictEqual(lib._libDescription, "", "description defaults to ''");
+  assert.strictEqual(lib._libAuthor,      "", "author defaults to ''");
+});
+
+QUnit.test("buildLibrary — entry with explicit extension (file found)", (assert) => {
+  // lastSeg.includes(".") → true branch of resolveObjPath, file exists
+  const files = { "/proj/mod.obj80": minObj() };
+  const { libContent } = buildLibrary(
+    { name: "x", version: "1.0.0", modules: ["mod.obj80"] },
+    files, "/proj"
+  );
+  const lib = JSON.parse(libContent);
+  assert.ok(lib.modules.length === 1, "module resolved via explicit extension");
+});
+
+QUnit.test("buildLibrary — entry with explicit extension (file not found) throws", (assert) => {
+  assert.throws(
+    () => buildLibrary(
+      { name: "x", version: "1.0.0", modules: ["missing.obj80"] },
+      {}, "/proj"
+    ),
+    (e) => /not found/.test(e.message),
+    "explicit-ext entry with missing file throws"
+  );
+});
+
+QUnit.test("buildLibrary — unknown obj extension maps to libExt 'lib' (?? 'lib' branch)", (assert) => {
+  // Use explicit extension "objXXX" which is not in OBJ_EXT_TO_LIB_EXT
+  const files = { "/proj/mod.objxxx": minObj() };
+  const { libPath } = buildLibrary(
+    { name: "x", version: "1.0.0", modules: ["mod.objxxx"] },
+    files, "/proj"
+  );
+  assert.ok(libPath.endsWith(".lib"), "unknown obj ext falls back to .lib extension");
+});
+
+QUnit.test("buildLibrary — empty dir uses '/' as searchDir (dir || '/' branch)", (assert) => {
+  // dir="" is falsy → searchDir = "/" in the error message
+  assert.throws(
+    () => buildLibrary({ name: "x", version: "1.0.0", modules: ["nonexist"] }, {}, ""),
+    (e) => /not found in \//.test(e.message),
+    "empty dir → searchDir defaults to '/'"
+  );
+});
+
 // ─── resolveLibrary ───────────────────────────────────────────────────────────
 
 QUnit.module("semver-resolve");
