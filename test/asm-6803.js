@@ -218,3 +218,45 @@ QUnit.test("BRA $+3 → [0x20, 0x01] (6800 regression)", function(assert) {
   assert.equal(ev(p.lens, 1), 0x01, "offset");
   assert.equal(p.bytes, 2, "bytes");
 });
+
+// --- Edge cases for branch coverage ---
+
+QUnit.test("null opcode → returns null", function(assert) {
+  const s = { opcode: null, params: [], lens: [], bytes: 0 };
+  const p = M6803.parseOpcode(s, vars, Parser);
+  assert.equal(p, null, "null for missing opcode");
+});
+
+QUnit.test("unknown opcode → returns null", function(assert) {
+  const s = { opcode: "BOGUS", params: ["$42"], paramstring: "$42", lens: [], bytes: 0 };
+  const p = M6803.parseOpcode(s, vars, Parser);
+  assert.equal(p, null, "null for unknown opcode");
+});
+
+QUnit.test("register prefix: CLR A → CLRA INH [0x4F]", function(assert) {
+  // params[0] === "A" (length 1) with 3-char opcode triggers register prefix path
+  const s = { opcode: "CLR", params: ["A"], paramstring: "A", lens: [], bytes: 0 };
+  const p = M6803.parseOpcode(s, vars, Parser);
+  assert.equal(p.lens[0], 0x4F, "opcode CLRA");
+  assert.equal(p.bytes, 1, "bytes");
+});
+
+QUnit.test("BRN backward branch → negative offset wraps", function(assert) {
+  // vars._PC = 0x0100, target = $F0 (240) → offset = 240 - 256 - 2 = -18 → 256 - 18 = 238
+  // ev() always calls the lambda with the module-level vars, so _PC must be from vars
+  const s = { opcode: "BRN", params: ["$F0"], paramstring: "$F0", lens: [], bytes: 0 };
+  const p = M6803.parseOpcode(s, vars, Parser);
+  assert.equal(p.lens[0], 0x21, "opcode");
+  assert.equal(ev(p.lens, 1), 238, "wrapped negative offset");
+  assert.equal(p.bytes, 2, "bytes");
+});
+
+QUnit.test("DIR mode with unknown symbol falls back gracefully (catch path)", function(assert) {
+  // UNKNOWN_SYM is not in vars → Parser.evaluate throws → catch fires → zptest stays null
+  // null coerces to 0 in JS comparisons, so DIR mode is still selected
+  const localVars = { _PC: 0x0100 };
+  const s = { opcode: "LDD", params: ["UNKNOWN_SYM"], paramstring: "UNKNOWN_SYM", lens: [], bytes: 0 };
+  const p = M6803.parseOpcode(s, localVars, Parser);
+  assert.equal(p.lens[0], 0xDC, "DIR opcode selected after catch");
+  assert.equal(p.bytes, 2, "bytes");
+});
