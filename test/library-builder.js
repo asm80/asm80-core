@@ -10,7 +10,7 @@ import path from "path";
 import QUnit from "qunit";
 
 import { buildLibrary } from "../libcode.js";
-import { resolveLibrary } from "../semver-resolve.js";
+import { resolveLibrary, semverSatisfies } from "../semver-resolve.js";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -386,4 +386,25 @@ QUnit.test("resolveLibrary — empty files returns null", (assert) => {
     null,
     "empty snapshot → null"
   );
+});
+
+// ─── semverSatisfies — exact match branch (lines 74-76) ──────────────────────
+// resolveLibrary short-circuits exact versions before calling semverSatisfies,
+// so this branch is only reachable by calling semverSatisfies directly.
+
+QUnit.module("semverSatisfies");
+
+QUnit.test("exact range — version matches", (assert) => {
+  assert.strictEqual(semverSatisfies([1, 2, 3], "1.2.3"), true,  "1.2.3 satisfies 1.2.3");
+  assert.strictEqual(semverSatisfies([1, 2, 3], "1.2.4"), false, "1.2.3 does not satisfy 1.2.4");
+  assert.strictEqual(semverSatisfies([2, 0, 0], "1.9.9"), false, "2.0.0 > 1.9.9 but not equal");
+});
+
+QUnit.test("empty / wildcard range — always true", (assert) => {
+  assert.strictEqual(semverSatisfies([1, 0, 0], ""),  true, "empty range → any");
+  assert.strictEqual(semverSatisfies([1, 0, 0], "*"), true, "* → any");
+});
+
+QUnit.test("invalid range string — false", (assert) => {
+  assert.strictEqual(semverSatisfies([1, 0, 0], "notasemver"), false, "unparseable range → false");
 });

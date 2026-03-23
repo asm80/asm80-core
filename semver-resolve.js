@@ -49,7 +49,7 @@ const semverCompare = (a, b) => {
  * @param {string} range                    Range string (may include ^ or ~)
  * @returns {boolean}
  */
-const semverSatisfies = (version, range) => {
+export const semverSatisfies = (version, range) => {
   if (!range || range === "*") return true;
 
   const caret = range.startsWith("^");
