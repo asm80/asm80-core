@@ -16,7 +16,7 @@ Main compilation function that processes assembly source code into machine code.
 - `source` (string) - Assembly source code to compile
 - `fileSystem` (object) - File system interface with `readFile()` method
 - `opts` (object) - Compilation options:
-  - `assembler` (string|object) - CPU assembler ("z80", "i8080", "c6502", "m6800", "m6809", "h6309", "i8008", "cdp1802", "c65816") or CPU object
+  - `assembler` (string|object) - CPU assembler ("z80", "z180", "i8080", "c6502", "m6800", "m6809", "h6309", "i8008", "cdp1802", "c65816") or CPU object
   - Additional options passed to compilation passes
 - `filename` (string, optional) - Source filename, defaults to "noname"
 

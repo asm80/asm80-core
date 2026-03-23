@@ -9,6 +9,9 @@
     "test:run": "c8 qunit",
     "test:report": "c8 report --reporter=html",
     "test:report:text": "c8 report --reporter=text",
+    "test:fast": "qunit",
+    "test:z180": "qunit test/asm-z180.js",
+    "test:z80": "qunit test/asm-z80.js",
     "pub": "npm version patch && git push --follow-tags && npm publish --access=public"
   },
   "repository": {

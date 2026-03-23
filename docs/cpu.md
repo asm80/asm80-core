@@ -71,6 +71,20 @@ This directory contains CPU-specific modules for the ASM80 assembler. Each modul
   - Mode register: LDMD, BITMD
   - Extended indexed addressing: W as base register (`,W`, `W++`, `--W`, `n,W`); E, F, W as accumulator offsets
 
+### z180.js
+**Zilog Z180 / Hitachi HD64180 Processor**
+- **CPU ID**: "z180"
+- **File Extension**: ".z180"
+- **Endianness**: Little endian
+- **Features**: Strict superset of Z80 — all Z80 instructions are valid. Adds 10 new mnemonics (34 ED-prefixed opcodes):
+  - `TST r` / `TST (HL)` / `TST n` — AND A with operand, set flags, no store
+  - `TSTIO n` — AND (C) with n, set flags
+  - `MLT rr` — 8×8 unsigned multiply (BC, DE, HL, SP)
+  - `SLP` — sleep until next interrupt (low-power halt)
+  - `IN0 r,(n)` / `OUT0 (n),r` — I/O with absolute 8-bit port address
+  - `OTIM` / `OTDM` / `OTIMR` / `OTDMR` — block output with increment/decrement
+- **Implementation**: Wrapper over `z80.js` — Z80 instructions delegate to `Z80.parseOpcode`; Z180 extensions are handled as special cases before delegation.
+
 ### c65816.js
 **WDC 65816 Processor**
 - **CPU ID**: "c65816"
