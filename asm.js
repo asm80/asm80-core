@@ -20,7 +20,8 @@ import { M6809 } from "./cpu/m6809.js";
 import { H6309 } from "./cpu/h6309.js";
 import { C65816 } from "./cpu/c65816.js";
 import { Z180 } from "./cpu/z180.js";
-const cpus = [I8080, M6800, C6502, Z80, Z180, I8008, CDP1802, M6809, H6309, C65816];
+import { M6803 } from "./cpu/m6803.js";
+const cpus = [I8080, M6800, M6803, C6502, Z80, Z180, I8008, CDP1802, M6809, H6309, C65816];
 
 /**
  * Compiles assembly source code into machine code
