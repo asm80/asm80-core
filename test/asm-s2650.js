@@ -535,3 +535,232 @@ QUnit.test("ADDA,R0 $0400", function (assert) {
   assert.equal(ev(p.lens, 1, {}), 0x04);
   assert.equal(ev(p.lens, 2, {}), 0x00);
 });
+
+// ─── Module: Missing switch-case coverage ─────────────────────────────────────
+
+QUnit.module("S2650 - additional coverage");
+
+QUnit.test("STRR,R1 relative store", function (assert) {
+  const s = { opcode: "STRR", params: ["", "R1 $0110"], lens: [], bytes: 0, addr: 0x0100 };
+  const p = S2650.parseOpcode(s, varsAt100, Parser);
+  assert.equal(p.lens[0], 0xC9);
+  assert.equal(ev(p.lens, 1, varsAt100), 0x0E, "offset = $0110 - $0102 = 14");
+});
+
+QUnit.test("ADDR,R2 relative", function (assert) {
+  const s = { opcode: "ADDR", params: ["", "R2 $0110"], lens: [], bytes: 0, addr: 0x0100 };
+  const p = S2650.parseOpcode(s, varsAt100, Parser);
+  assert.equal(p.lens[0], 0x8A);
+  assert.equal(ev(p.lens, 1, varsAt100), 0x0E);
+});
+
+QUnit.test("SUBR,R1 relative", function (assert) {
+  const s = { opcode: "SUBR", params: ["", "R1 $0110"], lens: [], bytes: 0, addr: 0x0100 };
+  const p = S2650.parseOpcode(s, varsAt100, Parser);
+  assert.equal(p.lens[0], 0xA9);
+  assert.equal(ev(p.lens, 1, varsAt100), 0x0E);
+});
+
+QUnit.test("SUBA,R0 $0400", function (assert) {
+  const s = { opcode: "SUBA", params: ["", "R0 $0400"], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p.lens[0], 0xAC);
+  assert.equal(ev(p.lens, 1, {}), 0x04);
+});
+
+QUnit.test("EORI,R0 $FF", function (assert) {
+  const s = { opcode: "EORI", params: ["", "R0 $FF"], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p.lens[0], 0x24);
+  assert.equal(ev(p.lens, 1, {}), 0xFF);
+});
+
+QUnit.test("EORR,R2 relative", function (assert) {
+  const s = { opcode: "EORR", params: ["", "R2 $0110"], lens: [], bytes: 0, addr: 0x0100 };
+  const p = S2650.parseOpcode(s, varsAt100, Parser);
+  assert.equal(p.lens[0], 0x2A);
+  assert.equal(ev(p.lens, 1, varsAt100), 0x0E);
+});
+
+QUnit.test("EORA,R1 $0800", function (assert) {
+  const s = { opcode: "EORA", params: ["", "R1 $0800"], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p.lens[0], 0x2D);
+  assert.equal(ev(p.lens, 1, {}), 0x08);
+});
+
+QUnit.test("ANDI,R3 $0F", function (assert) {
+  const s = { opcode: "ANDI", params: ["", "R3 $0F"], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p.lens[0], 0x47);
+  assert.equal(ev(p.lens, 1, {}), 0x0F);
+});
+
+QUnit.test("ANDR,R1 relative", function (assert) {
+  const s = { opcode: "ANDR", params: ["", "R1 $0110"], lens: [], bytes: 0, addr: 0x0100 };
+  const p = S2650.parseOpcode(s, varsAt100, Parser);
+  assert.equal(p.lens[0], 0x49);
+  assert.equal(ev(p.lens, 1, varsAt100), 0x0E);
+});
+
+QUnit.test("ANDA,R0 $0800", function (assert) {
+  const s = { opcode: "ANDA", params: ["", "R0 $0800"], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p.lens[0], 0x4C);
+  assert.equal(ev(p.lens, 1, {}), 0x08);
+});
+
+QUnit.test("IORI,R2 $55", function (assert) {
+  const s = { opcode: "IORI", params: ["", "R2 $55"], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p.lens[0], 0x66);
+  assert.equal(ev(p.lens, 1, {}), 0x55);
+});
+
+QUnit.test("IORR,R0 relative", function (assert) {
+  const s = { opcode: "IORR", params: ["", "R0 $0110"], lens: [], bytes: 0, addr: 0x0100 };
+  const p = S2650.parseOpcode(s, varsAt100, Parser);
+  assert.equal(p.lens[0], 0x68);
+  assert.equal(ev(p.lens, 1, varsAt100), 0x0E);
+});
+
+QUnit.test("IORA,R3 $0800", function (assert) {
+  const s = { opcode: "IORA", params: ["", "R3 $0800"], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p.lens[0], 0x6F);
+  assert.equal(ev(p.lens, 1, {}), 0x08);
+});
+
+QUnit.test("COMR,R0 relative", function (assert) {
+  const s = { opcode: "COMR", params: ["", "R0 $0110"], lens: [], bytes: 0, addr: 0x0100 };
+  const p = S2650.parseOpcode(s, varsAt100, Parser);
+  assert.equal(p.lens[0], 0xE8);
+  assert.equal(ev(p.lens, 1, varsAt100), 0x0E);
+});
+
+QUnit.test("COMA,R1 $0800", function (assert) {
+  const s = { opcode: "COMA", params: ["", "R1 $0800"], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p.lens[0], 0xED);
+  assert.equal(ev(p.lens, 1, {}), 0x08);
+});
+
+QUnit.test("BSFR,EQ relative", function (assert) {
+  const s = { opcode: "BSFR", params: ["", "EQ $0110"], lens: [], bytes: 0, addr: 0x0100 };
+  const p = S2650.parseOpcode(s, varsAt100, Parser);
+  assert.equal(p.lens[0], 0xB8);
+  assert.equal(ev(p.lens, 1, varsAt100), 0x0E);
+});
+
+QUnit.test("BSFA,GT $2000", function (assert) {
+  const s = { opcode: "BSFA", params: ["", "GT $2000"], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p.lens[0], 0xBD);
+  assert.equal(ev(p.lens, 1, {}), 0x20);
+});
+
+QUnit.test("BRNR,R2 relative", function (assert) {
+  const s = { opcode: "BRNR", params: ["", "R2 $0110"], lens: [], bytes: 0, addr: 0x0100 };
+  const p = S2650.parseOpcode(s, varsAt100, Parser);
+  assert.equal(p.lens[0], 0x5A);
+  assert.equal(ev(p.lens, 1, varsAt100), 0x0E);
+});
+
+QUnit.test("BRNA,R0 $2000", function (assert) {
+  const s = { opcode: "BRNA", params: ["", "R0 $2000"], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p.lens[0], 0x5C);
+  assert.equal(ev(p.lens, 1, {}), 0x20);
+});
+
+QUnit.test("BSNR,R1 relative", function (assert) {
+  const s = { opcode: "BSNR", params: ["", "R1 $0110"], lens: [], bytes: 0, addr: 0x0100 };
+  const p = S2650.parseOpcode(s, varsAt100, Parser);
+  assert.equal(p.lens[0], 0x79);
+  assert.equal(ev(p.lens, 1, varsAt100), 0x0E);
+});
+
+QUnit.test("BSNA,R3 $1000", function (assert) {
+  const s = { opcode: "BSNA", params: ["", "R3 $1000"], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p.lens[0], 0x7F);
+  assert.equal(ev(p.lens, 1, {}), 0x10);
+});
+
+QUnit.test("BIRA,R1 $2000", function (assert) {
+  const s = { opcode: "BIRA", params: ["", "R1 $2000"], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p.lens[0], 0xDD);
+  assert.equal(ev(p.lens, 1, {}), 0x20);
+});
+
+QUnit.test("BDRA,R0 $1000", function (assert) {
+  const s = { opcode: "BDRA", params: ["", "R0 $1000"], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p.lens[0], 0xFC);
+  assert.equal(ev(p.lens, 1, {}), 0x10);
+});
+
+// ─── Module: encodeR_zp (ZBRR / ZBSR) ────────────────────────────────────────
+
+QUnit.module("S2650 - zero-page relative");
+
+// ZBRR: _PC=$0100, target=$0110 → iar=$0102, offset=14
+QUnit.test("ZBRR $0110", function (assert) {
+  const s = { opcode: "ZBRR", params: ["", "UN $0110"], lens: [], bytes: 0, addr: 0x0100 };
+  const p = S2650.parseOpcode(s, varsAt100, Parser);
+  assert.equal(p.bytes, 2);
+  assert.equal(p.lens[0], 0x9B);
+  assert.equal(ev(p.lens, 1, varsAt100), 0x0E, "offset=14");
+});
+
+// ZBRR indirect: bit 7 set
+QUnit.test("ZBRR @$0110 indirect", function (assert) {
+  const s = { opcode: "ZBRR", params: ["", "UN @$0110"], lens: [], bytes: 0, addr: 0x0100 };
+  const p = S2650.parseOpcode(s, varsAt100, Parser);
+  assert.equal(ev(p.lens, 1, varsAt100), 0x8E, "indirect: offset | 0x80");
+});
+
+// ZBSR
+QUnit.test("ZBSR $0110", function (assert) {
+  const s = { opcode: "ZBSR", params: ["", "UN $0110"], lens: [], bytes: 0, addr: 0x0100 };
+  const p = S2650.parseOpcode(s, varsAt100, Parser);
+  assert.equal(p.lens[0], 0xBB);
+  assert.equal(ev(p.lens, 1, varsAt100), 0x0E);
+});
+
+// ─── Module: range errors ─────────────────────────────────────────────────────
+
+QUnit.module("S2650 - range errors");
+
+// encodeR out-of-range: _PC=$0100, target=$0200 → offset = $0200 - $0102 = 254 > 63
+QUnit.test("encodeR out of range throws", function (assert) {
+  const s = { opcode: "BCTR", params: ["", "UN $0200"], lens: [], bytes: 0, addr: 0x0100 };
+  S2650.parseOpcode(s, varsAt100, Parser);
+  assert.throws(
+    () => ev(s.lens, 1, varsAt100),
+    /S2650: relative offset out of range/,
+    "throws on offset > 63"
+  );
+});
+
+// encodeR_zp out-of-range
+QUnit.test("encodeR_zp out of range throws", function (assert) {
+  const s = { opcode: "ZBRR", params: ["", "UN $0200"], lens: [], bytes: 0, addr: 0x0100 };
+  S2650.parseOpcode(s, varsAt100, Parser);
+  assert.throws(
+    () => ev(s.lens, 1, varsAt100),
+    /S2650: zero-page relative offset out of range/,
+    "throws on zp offset > 63"
+  );
+});
+
+// ─── Module: default (unknown opcode) ────────────────────────────────────────
+
+QUnit.module("S2650 - default");
+
+QUnit.test("unknown opcode → null", function (assert) {
+  const s = { opcode: "BOGUS", params: [], lens: [], bytes: 0, addr: 0 };
+  const p = S2650.parseOpcode(s, {}, Parser);
+  assert.equal(p, null);
+});
