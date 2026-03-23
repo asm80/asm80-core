@@ -13,7 +13,7 @@ It works, but not documented yet and the API is not settled yet. [NPM is availab
 
 ## IDE (aka https://asm80.com)
 
-See [https://github.com/asm80/webide](https://github.com/asm80/webide)
+See live in action: [https://beta.asm80.com](https://beta.asm80.com)
 
 ## about ASM80
 
