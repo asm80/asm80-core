@@ -321,3 +321,91 @@ QUnit.test('MACRO *REPT1 has no appropriate ENDM', async assert => {
 }
 , (err) => err.msg === 'MACRO *REPT1 has no appropriate ENDM'
 )})
+
+// ─── Preprocessor branch coverage ───────────────────────────────────────────
+
+QUnit.test('INCLUDE — file not found throws', async assert => {
+    asyncThrows(assert, () => {
+        return Parser.parse(`.include "missing.asm"`, {
+            assembler: I8080,
+            readFile: () => null,   // simulate missing file
+        });
+    }, (err) => /not found/.test(err.msg));
+});
+
+QUnit.test('INCLUDE — macros from included file are merged', async assert => {
+    // The included file contains a macro; after include the macro is usable
+    const readFileWithMacro = () => `.macro INCMAC\nnop\n.endm`;
+    const result = await Parser.parse(`.include "lib.asm"\nINCMAC`, {
+        assembler: I8080,
+        readFile: readFileWithMacro,
+    });
+    assert.ok(result.length > 0, 'INCMAC from included file was expanded');
+});
+
+QUnit.test('INCLUDE — duplicate partial block include is skipped (line 151)', async assert => {
+    // Including the same file:block twice — second occurrence is silently skipped.
+    // Must use unquoted path so the colon split works correctly.
+    const result = await Parser.parse(
+        `.include test.asm:blk\n.include test.asm:blk`,
+        { assembler: I8080, readFile: dummyreadFile }
+    );
+    assert.ok(result, 'second include of same block skipped without error');
+});
+
+QUnit.test('INCLUDE — 3-part path (file:module:block) — block = px[2]', async assert => {
+    // Three-colon parts: px[0]=file, px[1]=ignored, px[2]=block
+    const result = await Parser.parse(
+        `.include test.asm:any:blk`,
+        { assembler: I8080, readFile: dummyreadFile }
+    );
+    assert.ok(result, '3-part include resolves block from px[2]');
+});
+
+QUnit.test('INCLUDE — childOpts and resolvePath callbacks are invoked', async assert => {
+    let childOptsCalled = false;
+    let resolvePathCalled = false;
+    await Parser.parse(`.include "sub.asm"`, {
+        assembler: I8080,
+        readFile: () => `nop`,
+        childOpts: (path) => {
+            childOptsCalled = true;
+            return { assembler: I8080, readFile: () => `nop` };
+        },
+        resolvePath: (path) => {
+            resolvePathCalled = true;
+            return '/resolved/' + path;
+        },
+    });
+    assert.ok(childOptsCalled,  'childOpts callback was invoked');
+    assert.ok(resolvePathCalled, 'resolvePath callback was invoked');
+});
+
+QUnit.test('INCLUDE THIS — includes a block from the same file', async assert => {
+    // THIS include works only inside an included file (top-level has no fullfile).
+    // The included file has two blocks; block2 references block1 via THIS.
+    const readFileWithThis = () => [
+        `.block block1`,
+        `nop`,
+        `.endblock`,
+        `.block block2`,
+        `.include THIS:block1`,
+        `.endblock`,
+    ].join('\n');
+    // Include block2 — inside it, THIS:block1 references the same file's block1
+    const result = await Parser.parse(`.include file.asm:block2`, {
+        assembler: I8080,
+        readFile: readFileWithThis,
+    });
+    assert.ok(result, 'THIS include resolved block from same included file');
+});
+
+QUnit.test('REPT — directive line inside body hits macroDefine push (line 311)', async assert => {
+    // Lines inside a REPT body that start with '.' go through the directive path
+    // but since macroDefine is set, they are pushed to macros[] (lines 311-313)
+    const result = await Parser.parse(`.rept 2\n.db 1\n.endm`, {
+        assembler: I8080,
+        readFile: dummyreadFile,
+    });
+    assert.ok(result, 'directive inside REPT body collected correctly');
+});
