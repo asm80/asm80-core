@@ -119,7 +119,7 @@ export const CDP1802 = {
 
 
 
-  parseOpcode: function(s, vars, Parser) {
+  parseOpcode: function(s, vars, Parser, opts) {
     var p1;
     var ax = CDP1802.set[s.opcode];
 

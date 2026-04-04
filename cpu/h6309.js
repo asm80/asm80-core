@@ -116,7 +116,7 @@ const h6309Extensions = {
   TIM:   [-1,  0x0b,   0x6b,   0x7b,  -1,    -1,    -1,    -1],
 };
 
-function parseOpcode(s, vars, Parser) {
+function parseOpcode(s, vars, Parser, opts) {
   if (!s._dp) s._dp = 0;
 
   // --- Helper functions ---

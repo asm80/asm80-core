@@ -1,7 +1,7 @@
 export const DUMMY = {
 
 
-    parseOpcode: function (s, vars, Parser) {
+    parseOpcode: function (s, vars, Parser, opts) {
         s.lens=[]
         if (!s.opcode) return s
         if (s.opcode=="NOP") { return {bytes:1, lens:[0x00]}; }

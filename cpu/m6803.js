@@ -37,7 +37,7 @@ const m6803Extensions = {
 // Merged instruction set: 6800 base + 6803 extensions
 const m6803set = { ...M6800.set, ...m6803Extensions };
 
-function parseOpcode(s, vars, Parser) {
+function parseOpcode(s, vars, Parser, opts) {
   let p1;
   let auxopcode = s.opcode;
   if (!s.opcode) return null;

@@ -145,7 +145,7 @@ export const M6800 = {
 
 
 
-  "parseOpcode": function(s,vars, Parser) {
+  "parseOpcode": function(s,vars, Parser, opts) {
     let p1;
     let auxopcode = s.opcode;
     //fix param

@@ -398,7 +398,7 @@ export const I8008 = {
     },
   },
 
-  parseOpcode: function (s, vars, Parser) {
+  parseOpcode: function (s, vars, Parser, opts) {
     var ax = I8008.set[s.opcode];
     if (ax) {
       if (

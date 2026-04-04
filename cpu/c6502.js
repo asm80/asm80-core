@@ -143,7 +143,7 @@ export const C6502 = {
   "steptab": [1,1,2,3,3,3,2,2,2,3,2,2,2,2,3],
 
 
-  parseOpcode: function (s, vars, Parser) {
+  parseOpcode: function (s, vars, Parser, opts) {
     var ax = C6502.set[s.opcode];
     var addr, p1, p2, ins, lens, zptest;
     if (ax) {

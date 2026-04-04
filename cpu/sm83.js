@@ -377,7 +377,7 @@ function parseAdd(s, vars, Parser) {
 
 // ─── parseOpcode (main entry) ─────────────────────────────────────────────────
 
-function parseOpcode(s, vars, Parser) {
+function parseOpcode(s, vars, Parser, opts) {
   const mn = s.opcode.toUpperCase();
 
   // LDI / LDD aliases → map to canonical LD with modified params

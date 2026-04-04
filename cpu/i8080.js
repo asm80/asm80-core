@@ -199,7 +199,7 @@ export const I8080 = {
     }
   },
 
-  parseOpcode: function (s, vars, Parser) {
+  parseOpcode: function (s, vars, Parser, opts) {
     let ax = I8080.set[s.opcode];
     if (ax) {
       let typ = ax.t;

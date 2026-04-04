@@ -144,7 +144,7 @@ function encodeA(s, opcode, operand, indexParam, _vars, Parser, isBranch) {
 
 // ─── Main parseOpcode ─────────────────────────────────────────────────────────
 
-function parseOpcode(s, vars, Parser) {
+function parseOpcode(s, vars, Parser, opts) {
   const base = s.opcode.toUpperCase();
   const r   = parseReg(getSuffix(s));
   const cc  = parseCC(getSuffix(s));

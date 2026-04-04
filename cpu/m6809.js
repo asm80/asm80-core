@@ -146,7 +146,7 @@ export const M6809 = {
       ANDCC: [-1, -1, -1, -1, -1, 0x1c, -1, -1],
     },
 
-    parseOpcode: function (s, vars, Parser) {
+    parseOpcode: function (s, vars, Parser, opts) {
       if (!s._dp) s._dp = 0;
 
       var dptest = function (par, vars, s) {

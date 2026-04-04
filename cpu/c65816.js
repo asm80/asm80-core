@@ -125,7 +125,7 @@ export const C65816 = {
   "steptab": [1, 1, 2, 3, 3, 3, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 4, 4, 3, 3, 3, 3, 2],
 
 
-  parseOpcode: function (s, vars, Parser) {
+  parseOpcode: function (s, vars, Parser, opts) {
 
     if (s.opcode === ".m16") {
       console.log("M16");
