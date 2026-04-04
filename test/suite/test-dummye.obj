@@ -9,6 +9,10 @@
     "remark": ".pragma relax",
     "notparsed": "",
     "lens": [],
+    "origin": {
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -36,6 +40,11 @@
     "lens": [
       0
     ],
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "addr": 0,
@@ -44,7 +53,7 @@
   {
     "line": "p1 10\r",
     "numline": 4,
-    "addr": 0,
+    "addr": 1,
     "bytes": 2,
     "_dp": 0,
     "params": [
@@ -57,13 +66,21 @@
       1,
       10
     ],
+    "origin": {
+      "opcode": "P1",
+      "params": [
+        "10"
+      ],
+      "paramstring": "10",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
   {
     "line": "p2 10\r",
     "numline": 5,
-    "addr": 0,
+    "addr": 3,
     "bytes": 3,
     "_dp": 0,
     "params": [
@@ -77,13 +94,21 @@
       0,
       10
     ],
+    "origin": {
+      "opcode": "P2",
+      "params": [
+        "10"
+      ],
+      "paramstring": "10",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
   {
     "line": "p1 \"A\"\r",
     "numline": 6,
-    "addr": 0,
+    "addr": 6,
     "bytes": 2,
     "_dp": 0,
     "params": [
@@ -96,13 +121,21 @@
       1,
       65
     ],
+    "origin": {
+      "opcode": "P1",
+      "params": [
+        "\"A\""
+      ],
+      "paramstring": "00ssIkEi!",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
   {
     "line": "p2 \"A\"\r",
     "numline": 7,
-    "addr": 0,
+    "addr": 8,
     "bytes": 3,
     "_dp": 0,
     "params": [
@@ -116,13 +149,21 @@
       65,
       0
     ],
+    "origin": {
+      "opcode": "P2",
+      "params": [
+        "\"A\""
+      ],
+      "paramstring": "00ssIkEi!",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
   {
     "line": "pa2 10\r",
     "numline": 8,
-    "addr": 0,
+    "addr": 11,
     "bytes": 4,
     "_dp": 0,
     "params": [
@@ -137,13 +178,21 @@
       0,
       10
     ],
+    "origin": {
+      "opcode": "PA2",
+      "params": [
+        "10"
+      ],
+      "paramstring": "10",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
   {
     "line": "pa2 \"AB\"\r",
     "numline": 9,
-    "addr": 0,
+    "addr": 15,
     "bytes": 4,
     "_dp": 0,
     "params": [
@@ -158,13 +207,21 @@
       65,
       66
     ],
+    "origin": {
+      "opcode": "PA2",
+      "params": [
+        "\"AB\""
+      ],
+      "paramstring": "00ssIkFCIg==!",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
   {
     "line": "pb2 \"AB\"\r",
     "numline": 10,
-    "addr": 0,
+    "addr": 19,
     "bytes": 5,
     "_dp": 0,
     "params": [
@@ -180,13 +237,21 @@
       65,
       66
     ],
+    "origin": {
+      "opcode": "PB2",
+      "params": [
+        "\"AB\""
+      ],
+      "paramstring": "00ssIkFCIg==!",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
   {
     "line": "pb2 10\r",
     "numline": 11,
-    "addr": 0,
+    "addr": 24,
     "bytes": 5,
     "_dp": 0,
     "params": [
@@ -202,19 +267,31 @@
       0,
       10
     ],
+    "origin": {
+      "opcode": "PB2",
+      "params": [
+        "10"
+      ],
+      "paramstring": "10",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
   {
     "line": "\r",
     "numline": 12,
-    "addr": 0,
+    "addr": 29,
     "bytes": 0,
     "_dp": 0,
     "params": [],
     "remark": " ",
     "notparsed": "",
     "lens": [],
+    "origin": {
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -223,15 +300,20 @@
     "lens": [
       0
     ],
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
-    "addr": 0,
+    "addr": 29,
     "_dp": 0
   },
   {
     "line": " .block blk\r",
     "numline": 2,
-    "addr": 0,
+    "addr": 30,
     "bytes": 0,
     "includedFile": "test2.dummy",
     "includedFileAtLine": 13,
@@ -248,7 +330,7 @@
   {
     "line": " oma: dw 1\r",
     "numline": 3,
-    "addr": 0,
+    "addr": 30,
     "bytes": 2,
     "includedFile": "test2.dummy",
     "includedFileAtLine": 13,
@@ -270,7 +352,7 @@
   {
     "line": " .endblock",
     "numline": 4,
-    "addr": 0,
+    "addr": 30,
     "bytes": 0,
     "includedFile": "test2.dummy",
     "includedFileAtLine": 13,
@@ -284,20 +366,24 @@
   {
     "line": "\r",
     "numline": 14,
-    "addr": 0,
+    "addr": 30,
     "bytes": 0,
     "_dp": 0,
     "params": [],
     "remark": " ",
     "notparsed": "",
     "lens": [],
+    "origin": {
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
   {
     "line": "label2: equ $\r",
     "numline": 15,
-    "addr": 0,
+    "addr": 30,
     "bytes": 0,
     "label": "LABEL2",
     "_dp": 0,
@@ -316,7 +402,7 @@
   {
     "line": "px2 10\r",
     "numline": 16,
-    "addr": 0,
+    "addr": 30,
     "bytes": 4,
     "_dp": 0,
     "params": [
@@ -331,13 +417,21 @@
       0,
       10
     ],
+    "origin": {
+      "opcode": "PX2",
+      "params": [
+        "10"
+      ],
+      "paramstring": "10",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
   {
     "line": "py2 10\r",
     "numline": 17,
-    "addr": 0,
+    "addr": 34,
     "bytes": 4,
     "_dp": 0,
     "params": [
@@ -353,13 +447,21 @@
       0,
       10
     ],
+    "origin": {
+      "opcode": "PY2",
+      "params": [
+        "10"
+      ],
+      "paramstring": "10",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
   {
     "line": "p1 +10\r",
     "numline": 18,
-    "addr": 0,
+    "addr": 38,
     "bytes": 2,
     "_dp": 0,
     "params": [
@@ -372,13 +474,21 @@
       1,
       10
     ],
+    "origin": {
+      "opcode": "P1",
+      "params": [
+        "+10"
+      ],
+      "paramstring": "+10",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
   {
     "line": "p2 lsb(label2)\r",
     "numline": 19,
-    "addr": 0,
+    "addr": 40,
     "bytes": 3,
     "_dp": 0,
     "params": [
@@ -390,15 +500,23 @@
     "lens": [
       1,
       0,
-      0
+      30
     ],
+    "origin": {
+      "opcode": "P2",
+      "params": [
+        "lsb(label2)"
+      ],
+      "paramstring": "lsb(label2)",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
   {
     "line": "db 3*\"A\"\r",
     "numline": 20,
-    "addr": 0,
+    "addr": 43,
     "bytes": 1,
     "_dp": 0,
     "params": [
@@ -416,7 +534,7 @@
   {
     "line": "db /*test*/ \"Hel\"+\"lo\" /* \"Hello\" */",
     "numline": 21,
-    "addr": 0,
+    "addr": 43,
     "bytes": 1,
     "_dp": 0,
     "params": [

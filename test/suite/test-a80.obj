@@ -468,6 +468,11 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -491,6 +496,15 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "LXI",
+      "params": [
+        "h",
+        "label+1"
+      ],
+      "paramstring": "h, label+1",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "usage": [
@@ -516,6 +530,15 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "MVI",
+      "params": [
+        "a",
+        "1"
+      ],
+      "paramstring": "a,1",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -538,6 +561,15 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "MVI",
+      "params": [
+        "c",
+        "\":\""
+      ],
+      "paramstring": "c,00ssIjoi!",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -559,6 +591,15 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "MOV",
+      "params": [
+        "b",
+        "a"
+      ],
+      "paramstring": "b,a",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -579,6 +620,14 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "ADD",
+      "params": [
+        "b"
+      ],
+      "paramstring": "b",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -601,6 +650,14 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "JMP",
+      "params": [
+        "label"
+      ],
+      "paramstring": "label",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "usage": [
@@ -648,6 +705,11 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -692,6 +754,11 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "ifskip": true
@@ -722,6 +789,11 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "ifskip": true
@@ -854,6 +926,11 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -958,6 +1035,11 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "phase": 238
@@ -1104,6 +1186,11 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -1126,6 +1213,14 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "JMP",
+      "params": [
+        "label"
+      ],
+      "paramstring": "label   ",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "usage": [
@@ -1150,6 +1245,15 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "MOV",
+      "params": [
+        "A",
+        "C"
+      ],
+      "paramstring": "A,C",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -1172,6 +1276,14 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "JZ",
+      "params": [
+        "LABEL"
+      ],
+      "paramstring": "LABEL",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "usage": [
@@ -1197,6 +1309,15 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "MVI",
+      "params": [
+        "a",
+        "0x0f"
+      ],
+      "paramstring": "a, 0x0f",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -1220,6 +1341,15 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "MOV",
+      "params": [
+        "a",
+        "C"
+      ],
+      "paramstring": "a, C ",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -1574,6 +1704,11 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -1603,6 +1738,11 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "ifskip": true
@@ -1646,6 +1786,11 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -1676,6 +1821,11 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "beGlobal": true
@@ -1861,6 +2011,12 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "NOP",
+      "params": [],
+      "paramstring": "nop",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -2050,6 +2206,14 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "INR",
+      "params": [
+        "a"
+      ],
+      "paramstring": "a",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -2071,6 +2235,14 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "DCR",
+      "params": [
+        "b"
+      ],
+      "paramstring": "b",
+      "notparsed": ""
+    },
     "remark": "",
     "pass": 2,
     "segment": "CSEG"
@@ -2095,6 +2267,14 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "JNZ",
+      "params": [
+        "loopM_120S117"
+      ],
+      "paramstring": "loopM_120S117",
+      "notparsed": ""
+    },
     "remark": "",
     "pass": 2,
     "segment": "CSEG",
@@ -2129,6 +2309,14 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "INR",
+      "params": [
+        "a"
+      ],
+      "paramstring": "a",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -2150,6 +2338,14 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "DCR",
+      "params": [
+        "b"
+      ],
+      "paramstring": "b",
+      "notparsed": ""
+    },
     "remark": "",
     "pass": 2,
     "segment": "CSEG"
@@ -2174,6 +2370,14 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "JNZ",
+      "params": [
+        "loopM_121S118"
+      ],
+      "paramstring": "loopM_121S118",
+      "notparsed": ""
+    },
     "remark": "",
     "pass": 2,
     "segment": "CSEG",
@@ -2208,6 +2412,14 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "INR",
+      "params": [
+        "a"
+      ],
+      "paramstring": "a",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -2229,6 +2441,14 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "DCR",
+      "params": [
+        "b"
+      ],
+      "paramstring": "b",
+      "notparsed": ""
+    },
     "remark": "",
     "pass": 2,
     "segment": "CSEG"
@@ -2253,6 +2473,14 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "JNZ",
+      "params": [
+        "loopM_122S119"
+      ],
+      "paramstring": "loopM_122S119",
+      "notparsed": ""
+    },
     "remark": "",
     "pass": 2,
     "segment": "CSEG",

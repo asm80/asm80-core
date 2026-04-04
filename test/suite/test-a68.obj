@@ -71,6 +71,15 @@
       9
     ],
     "wia": 1,
+    "origin": {
+      "opcode": "DEC",
+      "params": [
+        "9",
+        "X"
+      ],
+      "paramstring": "9,X",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -92,6 +101,14 @@
       98
     ],
     "wia": 1,
+    "origin": {
+      "opcode": "LDAA",
+      "params": [
+        "\"ab\""
+      ],
+      "paramstring": "00ssImFiIg==!",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -113,6 +130,14 @@
       210
     ],
     "wia": 1,
+    "origin": {
+      "opcode": "LDX",
+      "params": [
+        "1234"
+      ],
+      "paramstring": "1234",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -145,6 +170,14 @@
       246
     ],
     "wia": 1,
+    "origin": {
+      "opcode": "BRA",
+      "params": [
+        "loop"
+      ],
+      "paramstring": "loop",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "usage": [

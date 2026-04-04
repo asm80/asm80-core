@@ -45,6 +45,14 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "IN",
+      "params": [
+        "0x7a"
+      ],
+      "paramstring": "0x7a",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -67,6 +75,14 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "STA",
+      "params": [
+        "buffer_key"
+      ],
+      "paramstring": "buffer_key",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "usage": [
@@ -91,6 +107,14 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "CPI",
+      "params": [
+        "0xff"
+      ],
+      "paramstring": "0xff",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
@@ -113,6 +137,14 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "JZ",
+      "params": [
+        "keyin"
+      ],
+      "paramstring": "keyin",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "usage": [
@@ -138,6 +170,14 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "STA",
+      "params": [
+        "last_key"
+      ],
+      "paramstring": "last_key",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "usage": [
@@ -158,6 +198,11 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "RET",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },

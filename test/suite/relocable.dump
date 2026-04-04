@@ -102,6 +102,15 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "LXI",
+      "params": [
+        "h",
+        "hello"
+      ],
+      "paramstring": "h,hello",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "usage": [
@@ -127,6 +136,14 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "CALL",
+      "params": [
+        "print"
+      ],
+      "paramstring": "print",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "usage": [
@@ -164,6 +181,14 @@
     ],
     "wia": 1,
     "resolve": 1,
+    "origin": {
+      "opcode": "CALL",
+      "params": [
+        "keyin"
+      ],
+      "paramstring": "keyin",
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG",
     "usage": [
@@ -184,6 +209,11 @@
     ],
     "wia": 1,
     "resolve": 0,
+    "origin": {
+      "opcode": "HLT",
+      "params": [],
+      "notparsed": ""
+    },
     "pass": 2,
     "segment": "CSEG"
   },
