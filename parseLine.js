@@ -239,6 +239,10 @@ export const parseLine = (s, macros, opts = {stopFlag:null, olds:null, assembler
       s.opcode = "DS";
       return s;
     }
+    if (s.opcode === ".DS") {
+      s.opcode = "DS";
+      return s;
+    }
 
     if (s.opcode === ".ALIGN") {
       s.opcode = "ALIGN";
