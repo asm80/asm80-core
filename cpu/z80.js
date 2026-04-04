@@ -278,6 +278,36 @@ set2: {
             return s;
           }
           */
+          // JPOPT: replace unconditional JP with JR when pragma active and in range
+          if (opts && opts.PRAGMAS && opts.PRAGMAS.indexOf("JPOPT") >= 0) {
+            let target = null;
+            try { target = Parser.evaluate(par, vars); } catch(e) { /* forward reference */ }
+            if (target !== null) {
+              const offset = target - (vars._PC + 2);
+              if (offset >= -128 && offset <= 127) {
+                s.bytes = 2;
+                s.lens = [0x18];
+                s.lens[1] = function(vars) {
+                  const lab = Parser.evaluate(par, vars);
+                  const disp = lab - (vars._PC + 2);
+                  if (disp > 127 || disp < -128) throw "Target is out of relative jump reach";
+                  return disp < 0 ? disp + 256 : disp;
+                };
+                return s;
+              }
+            } else {
+              // Forward reference: optimistically emit JR
+              s.bytes = 2;
+              s.lens = [0x18];
+              s.lens[1] = function(vars) {
+                const lab = Parser.evaluate(par, vars);
+                const disp = lab - (vars._PC + 2);
+                if (disp > 127 || disp < -128) throw "Target is out of relative jump reach";
+                return disp < 0 ? disp + 256 : disp;
+              };
+              return s;
+            }
+          }
           s.bytes = 3;
           s.lens[0] = ax[12];
           s.lens[1] = function(vars){return Parser.evaluate(par,vars); };
@@ -433,6 +463,40 @@ set2: {
           if (reg >= 0 && ax[5]>0){
             op = ax[5];
             if (op>0) {
+              // JPOPT: replace JP cond with JR cond when pragma active, condition JR-compatible (reg<4), and in range
+              if (opts && opts.PRAGMAS && opts.PRAGMAS.indexOf("JPOPT") >= 0 && reg < 4) {
+                let target = null;
+                try { target = Parser.evaluate(par2, vars); } catch(e) { /* forward reference */ }
+                if (target !== null) {
+                  const offset = target - (vars._PC + 2);
+                  if (offset >= -128 && offset <= 127) {
+                    const jrOp = 0x20 + (reg << 3);
+                    s.bytes = 2;
+                    s.lens = [];
+                    s.lens[0] = jrOp;
+                    s.lens[1] = function(vars) {
+                      const lab = Parser.evaluate(par2, vars);
+                      const disp = lab - (vars._PC + 2);
+                      if (disp > 127 || disp < -128) throw "Target is out of relative jump reach";
+                      return disp < 0 ? disp + 256 : disp;
+                    };
+                    return s;
+                  }
+                } else {
+                  // Forward reference: optimistically emit JR, will re-evaluate next pass1 iteration
+                  const jrOp = 0x20 + (reg << 3);
+                  s.bytes = 2;
+                  s.lens = [];
+                  s.lens[0] = jrOp;
+                  s.lens[1] = function(vars) {
+                    const lab = Parser.evaluate(par2, vars);
+                    const disp = lab - (vars._PC + 2);
+                    if (disp > 127 || disp < -128) throw "Target is out of relative jump reach";
+                    return disp < 0 ? disp + 256 : disp;
+                  };
+                  return s;
+                }
+              }
               op += reg<<3;
               s.bytes = 3;
               s.lens=[];
