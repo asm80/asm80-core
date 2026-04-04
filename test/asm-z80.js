@@ -5349,3 +5349,97 @@ QUnit.test( "Relative addressing boundary negative", function() {
 	QUnit.assert.equal(p.lens[0],0x18,"Opcode for JR");
 	QUnit.assert.throws(function(){p.lens[1](boundaryVars);},"Should throw for negative offset"); // -127 + 256 = 129
 });
+
+// ─── .pragma JPOPT tests ───────────────────────────────────────────────────
+
+const jpoptOpts = { PRAGMAS: ["JPOPT"] };
+
+// nearVars: _PC=0x0100, target NEAR=0x0150, offset = 0x0150-(0x0100+2) = 0x4E (in range)
+// farVars:  _PC=0x0100, target FAR=0x0200,  offset = 0x0200-(0x0100+2) = 0xFE (out of range)
+const nearVars     = { _PC: 0x0100, NEAR: 0x0150 };
+const farVars      = { _PC: 0x0100, FAR:  0x0200 };
+const boundVars127 = { _PC: 0x0100, B127: 0x0100 + 2 + 127 }; // offset exactly 127
+const boundVars128 = { _PC: 0x0100, B128: 0x0100 + 2 + 128 }; // offset exactly 128 → out of range
+
+QUnit.test("JPOPT: JP NZ,near → JR NZ (0x20, 2 bytes)", function(assert) {
+  const s = { opcode: "JP", params: ["NZ", "NEAR"], addr: 0x0100, lens: [], bytes: 0 };
+  const p = Z80.parseOpcode(s, nearVars, Parser, jpoptOpts);
+  assert.equal(p.bytes, 2, "bytes=2");
+  assert.equal(p.lens[0], 0x20, "opcode=0x20 (JR NZ)");
+});
+
+QUnit.test("JPOPT: JP Z,near → JR Z (0x28, 2 bytes)", function(assert) {
+  const s = { opcode: "JP", params: ["Z", "NEAR"], addr: 0x0100, lens: [], bytes: 0 };
+  const p = Z80.parseOpcode(s, nearVars, Parser, jpoptOpts);
+  assert.equal(p.bytes, 2, "bytes=2");
+  assert.equal(p.lens[0], 0x28, "opcode=0x28 (JR Z)");
+});
+
+QUnit.test("JPOPT: JP NC,near → JR NC (0x30, 2 bytes)", function(assert) {
+  const s = { opcode: "JP", params: ["NC", "NEAR"], addr: 0x0100, lens: [], bytes: 0 };
+  const p = Z80.parseOpcode(s, nearVars, Parser, jpoptOpts);
+  assert.equal(p.bytes, 2, "bytes=2");
+  assert.equal(p.lens[0], 0x30, "opcode=0x30 (JR NC)");
+});
+
+QUnit.test("JPOPT: JP C,near → JR C (0x38, 2 bytes)", function(assert) {
+  const s = { opcode: "JP", params: ["C", "NEAR"], addr: 0x0100, lens: [], bytes: 0 };
+  const p = Z80.parseOpcode(s, nearVars, Parser, jpoptOpts);
+  assert.equal(p.bytes, 2, "bytes=2");
+  assert.equal(p.lens[0], 0x38, "opcode=0x38 (JR C)");
+});
+
+QUnit.test("JPOPT: JP near (unconditional) → JR (0x18, 2 bytes)", function(assert) {
+  const s = { opcode: "JP", params: ["NEAR"], addr: 0x0100, lens: [], bytes: 0 };
+  const p = Z80.parseOpcode(s, nearVars, Parser, jpoptOpts);
+  assert.equal(p.bytes, 2, "bytes=2");
+  assert.equal(p.lens[0], 0x18, "opcode=0x18 (JR)");
+});
+
+QUnit.test("JPOPT: JP P,near → stays JP P (0xF2, 3 bytes)", function(assert) {
+  const s = { opcode: "JP", params: ["P", "NEAR"], addr: 0x0100, lens: [], bytes: 0 };
+  const p = Z80.parseOpcode(s, nearVars, Parser, jpoptOpts);
+  assert.equal(p.bytes, 3, "bytes=3");
+  assert.equal(p.lens[0], 0xF2, "opcode=0xF2 (JP P)");
+});
+
+QUnit.test("JPOPT: JP M,near → stays JP M (0xFA, 3 bytes)", function(assert) {
+  const s = { opcode: "JP", params: ["M", "NEAR"], addr: 0x0100, lens: [], bytes: 0 };
+  const p = Z80.parseOpcode(s, nearVars, Parser, jpoptOpts);
+  assert.equal(p.bytes, 3, "bytes=3");
+  assert.equal(p.lens[0], 0xFA, "opcode=0xFA (JP M)");
+});
+
+QUnit.test("JPOPT: JP NZ,far (out of range) → stays JP NZ (0xC2, 3 bytes)", function(assert) {
+  const s = { opcode: "JP", params: ["NZ", "FAR"], addr: 0x0100, lens: [], bytes: 0 };
+  const p = Z80.parseOpcode(s, farVars, Parser, jpoptOpts);
+  assert.equal(p.bytes, 3, "bytes=3");
+  assert.equal(p.lens[0], 0xC2, "opcode=0xC2 (JP NZ)");
+});
+
+QUnit.test("JPOPT: JP NZ,b127 (offset=127, boundary) → JR NZ (2 bytes)", function(assert) {
+  const s = { opcode: "JP", params: ["NZ", "B127"], addr: 0x0100, lens: [], bytes: 0 };
+  const p = Z80.parseOpcode(s, boundVars127, Parser, jpoptOpts);
+  assert.equal(p.bytes, 2, "bytes=2 (127 is in range)");
+  assert.equal(p.lens[0], 0x20, "opcode=0x20 (JR NZ)");
+});
+
+QUnit.test("JPOPT: JP NZ,b128 (offset=128, boundary) → stays JP NZ (3 bytes)", function(assert) {
+  const s = { opcode: "JP", params: ["NZ", "B128"], addr: 0x0100, lens: [], bytes: 0 };
+  const p = Z80.parseOpcode(s, boundVars128, Parser, jpoptOpts);
+  assert.equal(p.bytes, 3, "bytes=3 (128 is out of range)");
+  assert.equal(p.lens[0], 0xC2, "opcode=0xC2 (JP NZ)");
+});
+
+QUnit.test("JPOPT: JP NZ without pragma → stays JP NZ (3 bytes)", function(assert) {
+  const s = { opcode: "JP", params: ["NZ", "NEAR"], addr: 0x0100, lens: [], bytes: 0 };
+  const p = Z80.parseOpcode(s, nearVars, Parser, {});
+  assert.equal(p.bytes, 3, "bytes=3 (no pragma)");
+  assert.equal(p.lens[0], 0xC2, "opcode=0xC2 (JP NZ)");
+});
+
+QUnit.test("JPOPT: JP NZ with no opts at all → stays JP NZ (3 bytes)", function(assert) {
+  const s = { opcode: "JP", params: ["NZ", "NEAR"], addr: 0x0100, lens: [], bytes: 0 };
+  const p = Z80.parseOpcode(s, nearVars, Parser);
+  assert.equal(p.bytes, 3, "bytes=3 (opts undefined)");
+});
