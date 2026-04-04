@@ -556,7 +556,7 @@ export const pass1 = async (V, vxs, opts) => {
       }
 
       //je to instrukce? Jde optimalizovat?
-      let opa = opts.assembler.parseOpcode(origin, vars, Parser);
+      let opa = opts.assembler.parseOpcode(origin, vars, Parser, opts);
       if (opa) {
         segallow();
         //console.log(op,opa);

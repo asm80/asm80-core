@@ -101,7 +101,7 @@ set2: {
 
  */
 
-  parseOpcode: function(s, vars, Parser) {
+  parseOpcode: function(s, vars, Parser, opts) {
 
     var R8 = function(reg) {
       var n = ["B","C","D","E","H","L","~","A"].indexOf(reg.toUpperCase());

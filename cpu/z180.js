@@ -22,7 +22,7 @@ const R16ORDER = ["BC","DE","HL","SP"];
 
 const NOOPS = { SLP:0xed76, OTIM:0xed83, OTDM:0xed8b, OTIMR:0xed93, OTDMR:0xed9b };
 
-function parseOpcode(s, vars, Parser) {
+function parseOpcode(s, vars, Parser, opts) {
 
   if (s.opcode === "TST" && s.params && s.params.length === 1) {
     const p = s.params[0].toUpperCase().trim();
@@ -72,7 +72,7 @@ function parseOpcode(s, vars, Parser) {
     s.bytes = 3; return s;
   }
 
-  return Z80.parseOpcode(s, vars, Parser);
+  return Z80.parseOpcode(s, vars, Parser, opts);
 }
 
 export const Z180 = {
