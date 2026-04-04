@@ -3,6 +3,7 @@ import { Parser } from "../expression-parser.js";
 import QUnit from "qunit"
 
 import { asyncThrows } from "./_asyncThrows.js";
+import { compile } from "../asm.js";
 
 
 QUnit.module("ASM - Z80");
@@ -5442,4 +5443,36 @@ QUnit.test("JPOPT: JP NZ with no opts at all → stays JP NZ (3 bytes)", functio
   const s = { opcode: "JP", params: ["NZ", "NEAR"], addr: 0x0100, lens: [], bytes: 0 };
   const p = Z80.parseOpcode(s, nearVars, Parser);
   assert.equal(p.bytes, 3, "bytes=3 (opts undefined)");
+});
+
+// ─── JPOPT integration tests (end-to-end via compile()) ───────────────────
+
+const compilefs = { readFile: async () => { throw new Error("no fs"); } };
+
+QUnit.test("JPOPT integration: JP NZ compiled as JR NZ", async function(assert) {
+  const src = `.pragma JPOPT\n.org 0x0100\n JP NZ, TARGET\n NOP\nTARGET: NOP`;
+  const result = await compile(src, compilefs, { assembler: "Z80" });
+  // JP NZ→JR NZ = 2 bytes at 0x100. offset = TARGET(0x103) - (0x100+2) = 1
+  const inst = result.dump.find(d => d.opcode === "JP" || (d.lens && d.lens[0] === 0x20));
+  assert.equal(inst.lens[0], 0x20, "first byte = 0x20 (JR NZ)");
+  assert.equal(inst.lens[1], 0x01, "offset = 1");
+  assert.equal(inst.bytes, 2, "instruction is 2 bytes");
+});
+
+QUnit.test("JPOPT integration: JP P not converted", async function(assert) {
+  const src = `.pragma JPOPT\n.org 0x0100\n JP P, TARGET\n NOP\nTARGET: NOP`;
+  const result = await compile(src, compilefs, { assembler: "Z80" });
+  // JP P = 0xF2 addr_lo addr_hi — not JR-convertible
+  const inst = result.dump.find(d => d.opcode === "JP");
+  assert.equal(inst.lens[0], 0xF2, "first byte = 0xF2 (JP P)");
+  assert.equal(inst.bytes, 3, "instruction is 3 bytes (not optimized)");
+});
+
+QUnit.test("JPOPT integration: JP NZ far → stays JP NZ", async function(assert) {
+  const nops = " NOP\n".repeat(200);
+  const src = `.pragma JPOPT\n.org 0x0100\n JP NZ, TARGET\n${nops}TARGET: NOP`;
+  const result = await compile(src, compilefs, { assembler: "Z80" });
+  const inst = result.dump.find(d => d.opcode === "JP");
+  assert.equal(inst.lens[0], 0xC2, "first byte = 0xC2 (JP NZ, not optimized)");
+  assert.equal(inst.bytes, 3, "instruction is 3 bytes (out of JR range)");
 });

@@ -560,6 +560,7 @@ export const pass1 = async (V, vxs, opts) => {
       if (opa) {
         segallow();
         //console.log(op,opa);
+        Object.assign(op, opa);
         op = opa;
       }
 

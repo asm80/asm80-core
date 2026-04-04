@@ -347,6 +347,7 @@ export const parseLine = (s, macros, opts = {stopFlag:null, olds:null, assembler
       return s;
     }
     let ax = null
+    const sOrigin = { opcode: s.opcode, params: s.params ? [...s.params] : [], paramstring: s.paramstring, notparsed: s.notparsed };
     try {
       ax = opts.assembler.parseOpcode(s, {}, Parser);
     } catch (e) {
@@ -356,7 +357,10 @@ export const parseLine = (s, macros, opts = {stopFlag:null, olds:null, assembler
       };
     }
     //console.log("SS",JSON.stringify(s),ax)
-    if (ax !== null) return ax;
+    if (ax !== null) {
+      ax.origin = sOrigin;
+      return ax;
+    }
 
     if (macros[s.opcode]) {
       s.macro = s.opcode;
