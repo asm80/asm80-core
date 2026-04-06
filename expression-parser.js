@@ -1293,7 +1293,7 @@ export function Token(type_, index_, prio_, number_) {
           break;
         }
         if (c.toUpperCase() === c.toLowerCase() && c !== "<" && c !== ">") {
-          if (i === this.pos || (c != "_" && (c < "0" || c > "9"))) {
+          if ((i === this.pos && c !== "_") || (c != "_" && (c < "0" || c > "9"))) {
             break;
           }
         }
