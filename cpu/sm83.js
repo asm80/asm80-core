@@ -287,6 +287,7 @@ function parseJp(s, vars, Parser) {
 // ─── parseJr ──────────────────────────────────────────────────────────────────
 
 function parseJr(s, vars, Parser) {
+  s.isRelJump = true;
   // JR n (unconditional)
   if (s.params.length === 1) {
     s.bytes = 2;

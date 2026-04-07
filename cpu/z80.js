@@ -236,6 +236,7 @@ set2: {
         if (ax[11]>0) {
           //rel jump
           s.bytes = 2;
+          s.isRelJump = true;
           s.lens = [];
           s.lens[0] = ax[11];
           s.lens[1] = function(vars){
@@ -519,6 +520,7 @@ set2: {
             if (op>0) {
               op += reg<<3;
               s.bytes = 2;
+              s.isRelJump = true;
               s.lens = [];
               s.lens[0] = op;
               s.lens[1] = function(vars){

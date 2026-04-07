@@ -3,20 +3,11 @@
     {
       "lens": [
         126,
-        183
-      ],
-      "segment": "CSEG"
-    },
-    {
-      "lens": [
+        183,
         40,
         6
       ],
-      "segment": "CSEG",
-      "rel": true,
-      "relseg": "CSEG",
-      "add": 6,
-      "wia": 1
+      "segment": "CSEG"
     },
     {
       "lens": [
@@ -27,28 +18,14 @@
       "segment": "CSEG",
       "rel": true,
       "relseg": "CSEG",
-      "add": 11,
-      "wia": 1
+      "wia": 1,
+      "add": 11
     },
     {
       "lens": [
-        35
-      ],
-      "segment": "CSEG"
-    },
-    {
-      "lens": [
+        35,
         24,
-        246
-      ],
-      "segment": "CSEG",
-      "rel": true,
-      "relseg": "CSEG",
-      "add": 246,
-      "wia": 1
-    },
-    {
-      "lens": [
+        246,
         201
       ],
       "segment": "CSEG"
@@ -62,8 +39,8 @@
       "segment": "CSEG",
       "rel": true,
       "relseg": "BSSEG",
-      "add": 9,
-      "wia": 1
+      "wia": 1,
+      "add": 9
     },
     {
       "lens": [
@@ -73,8 +50,8 @@
       ],
       "segment": "CSEG",
       "ext": "BIOS_PRINT",
-      "add": 0,
-      "wia": 1
+      "wia": 1,
+      "add": 0
     },
     {
       "lens": [
@@ -118,8 +95,8 @@
       "segment": "ESEG",
       "rel": true,
       "relseg": "ESEG",
-      "add": 0,
-      "wia": 1
+      "wia": 1,
+      "add": 0
     }
   ],
   "externs": [

@@ -129,18 +129,25 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
             let usage = ln.usage
             for (let u of usage) {
                 if (externs.indexOf(u) < 0) {
-                    // Internal symbol - needs relocation
-                    op.rel=true
-                    op.relseg = varsSegs[u]  // Target segment for relocation
+                    if (!ln.isRelJump) {
+                        // Internal absolute address - needs relocation
+                        op.rel=true
+                        op.relseg = varsSegs[u]  // Target segment for relocation
+                    }
+                    // Internal relative jump: displacement already baked in by pass2 lambda
                 } else {
                     // External symbol - needs linker resolution
                     op.ext=u
                     used.push(u)
                 }
             }
-            // Extract current address value for relocation calculation
-            op.add = get16(ln, opts.endian)
             op.wia = ln.wia  // Position of address in instruction
+            if (ln.isRelJump) {
+                op.isRelJump = true
+            } else {
+                // Extract current address value for absolute relocation
+                op.add = get16(ln, opts.endian)
+            }
         }
 
         // Optimization: concatenate consecutive pure code instructions
@@ -420,6 +427,15 @@ export const linkModules = (data, modules, library) => {
 
         //external relocs
         for (let s of out) {
+            if (s.isRelJump && s.resolved !== undefined) {
+                // Relative jump to external symbol: compute displacement from final addresses
+                let disp = s.resolved - (s.addr + s.lens.length)
+                if (disp > 127 || disp < -128) throw {msg: "Relative jump out of range"}
+                s.lens[s.wia] = disp < 0 ? 256 + disp : disp
+                delete s.resolved
+            }
+        }
+        for (let s of out) {
             if (s.resolved) {
                 //let add = get16(s, data.endian)
                 //s.add = add
@@ -434,6 +450,7 @@ export const linkModules = (data, modules, library) => {
         for (let s of out) {
             delete s.rel
             delete s.relseg
+            delete s.isRelJump
             delete s.ext
             delete s.add
             delete s.wia

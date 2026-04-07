@@ -77,6 +77,7 @@ function parseOpcode(s, vars, Parser, opts) {
       let o6 = ax[6];
 
       if (o6 > -1) {
+        s.isRelJump = true;
         s.lens[0] = o6;
         s.lens[1] = function(vars) {
           let n = Parser.evaluate(p1, vars) - vars._PC - 2;

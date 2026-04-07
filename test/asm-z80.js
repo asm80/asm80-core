@@ -4,6 +4,7 @@ import QUnit from "qunit"
 
 import { asyncThrows } from "./_asyncThrows.js";
 import { compile } from "../asm.js";
+import { linkModules } from "../objcode.js";
 
 
 QUnit.module("ASM - Z80");
@@ -5483,4 +5484,24 @@ QUnit.test("JPOPT: CALL nn stays CALL (not converted to JR)", async function(ass
   const inst = result.dump.find(d => d.opcode === "CALL");
   assert.equal(inst.lens[0], 0xCD, "first byte = 0xCD (CALL nn)");
   assert.equal(inst.bytes, 3, "CALL is always 3 bytes");
+});
+
+const modulefs = { readFile: async () => { throw new Error("no fs"); } };
+
+QUnit.test("link: internal JR displacement not corrupted", async function(assert) {
+  // Module with JR forward 2 bytes (over 2 NOPs); displacement must survive linking at non-zero base
+  const src = `.pragma module\nstart: jr done\n nop\n nop\ndone: nop\n.export start`;
+  const { obj } = await compile(src, modulefs, { assembler: "Z80" });
+  const data = { segments: { CSEG: "0x1000" }, vars: {}, endian: false };
+  const linked = linkModules(data, [obj], []);
+  // jr done: at 0x1000, done at 0x1004, pc after jr = 0x1002, disp = 2
+  const jrInstr = linked.dump.find(d => d.lens && d.lens[0] === 0x18);
+  assert.equal(jrInstr.lens[0], 0x18, "JR opcode");
+  assert.equal(jrInstr.lens[1], 0x02, "displacement = 2 (not corrupted by linker)");
+});
+
+QUnit.test("JR isRelJump flag set by Z80 parseOpcode", function(assert) {
+  const s = { opcode: "JR", params: ["$"], addr: 0x100, lens: [], bytes: 0 };
+  const p = Z80.parseOpcode(s, { _PC: 0x100 }, Parser);
+  assert.equal(p.isRelJump, true, "isRelJump flag set for JR");
 });

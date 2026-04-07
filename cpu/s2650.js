@@ -78,6 +78,7 @@ function imm8(expr, _vars, Parser) {
 function encodeR(s, opcode, operand, _vars, Parser) {
   const { indirect, expr: rawExpr } = parseIndirect(operand);
   const expr = resolvePC(rawExpr);
+  s.isRelJump = true;
   s.lens = [
     opcode,
     (v) => {

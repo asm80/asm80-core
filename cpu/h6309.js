@@ -330,6 +330,8 @@ function parseOpcode(s, vars, Parser, opts) {
     if (code > 0xff) s.bytes += 2; else s.bytes += 1;
 
     if (amode === 4) {
+      s.isRelJump = true;
+      s.wia = code > 0xff ? 2 : 1;
       parserfunc = function (vars) {
         const n = Parser.evaluate(p1, vars) - vars._PC - 2;
         if (n > 127) throw { msg: "Target out of range, diff is " + n, s: s };

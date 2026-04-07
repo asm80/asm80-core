@@ -203,6 +203,7 @@ export const M6800 = {
 
         if (o6>-1) {
           //REL
+          s.isRelJump = true;
           s.lens[0] = o6;
           s.lens[1] = function(vars){
                         let n= Parser.evaluate(p1,vars) - vars._PC-2;

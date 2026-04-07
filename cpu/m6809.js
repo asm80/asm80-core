@@ -350,6 +350,8 @@ export const M6809 = {
           }
 
           if (amode == 4) {
+            s.isRelJump = true;
+            s.wia = code > 0xff ? 2 : 1;
             parserfunc = /*prefixed ? (function(vars){
             var n = Parser.evaluate(p1.substr(1),vars)-vars._PC-2;
             //console.log(n)
