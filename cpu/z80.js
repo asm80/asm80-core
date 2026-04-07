@@ -287,6 +287,7 @@ set2: {
               const offset = target - (vars._PC + 2);
               if (offset >= -128 && offset <= 127) {
                 s.bytes = 2;
+                s.isRelJump = true;
                 s.lens = [0x18];
                 s.lens[1] = function(vars) {
                   const lab = Parser.evaluate(par, vars);
@@ -299,6 +300,7 @@ set2: {
             } else {
               // Forward reference: optimistically emit JR
               s.bytes = 2;
+              s.isRelJump = true;
               s.lens = [0x18];
               s.lens[1] = function(vars) {
                 const lab = Parser.evaluate(par, vars);
@@ -473,6 +475,7 @@ set2: {
                   if (offset >= -128 && offset <= 127) {
                     const jrOp = 0x20 + (reg << 3);
                     s.bytes = 2;
+                    s.isRelJump = true;
                     s.lens = [];
                     s.lens[0] = jrOp;
                     s.lens[1] = function(vars) {
@@ -487,6 +490,7 @@ set2: {
                   // Forward reference: optimistically emit JR, will re-evaluate next pass1 iteration
                   const jrOp = 0x20 + (reg << 3);
                   s.bytes = 2;
+                  s.isRelJump = true;
                   s.lens = [];
                   s.lens[0] = jrOp;
                   s.lens[1] = function(vars) {
