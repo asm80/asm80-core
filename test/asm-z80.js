@@ -5476,3 +5476,11 @@ QUnit.test("JPOPT integration: JP NZ far → stays JP NZ", async function(assert
   assert.equal(inst.lens[0], 0xC2, "first byte = 0xC2 (JP NZ, not optimized)");
   assert.equal(inst.bytes, 3, "instruction is 3 bytes (out of JR range)");
 });
+
+QUnit.test("JPOPT: CALL nn stays CALL (not converted to JR)", async function(assert) {
+  const src = `.pragma JPOPT\n.org 0x0100\n CALL TARGET\n NOP\nTARGET: NOP`;
+  const result = await compile(src, compilefs, { assembler: "Z80" });
+  const inst = result.dump.find(d => d.opcode === "CALL");
+  assert.equal(inst.lens[0], 0xCD, "first byte = 0xCD (CALL nn)");
+  assert.equal(inst.bytes, 3, "CALL is always 3 bytes");
+});

@@ -279,7 +279,7 @@ set2: {
           }
           */
           // JPOPT: replace unconditional JP with JR when pragma active and in range
-          if (opts && opts.PRAGMAS && opts.PRAGMAS.indexOf("JPOPT") >= 0) {
+          if (s.opcode === "JP" && opts && opts.PRAGMAS && opts.PRAGMAS.indexOf("JPOPT") >= 0) {
             let target = null;
             try { target = Parser.evaluate(par, vars); } catch(e) { /* forward reference */ }
             if (target !== null) {
