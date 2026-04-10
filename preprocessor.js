@@ -336,11 +336,16 @@ export const prepro = async (V, opts = {}, fullfile) => {
         };
       }
       macroDefine = `*REPT${item.numline}`;
-      if (macros[macroDefine])
+      if (macros[macroDefine]) {
+        if (opts.relaxed && opts.errors) {
+          opts.errors.push({ msg: `Macro redefinition at line ${item.numline}`, s: "Preprocessor error", wline: item });
+          continue;
+        }
         throw {
           msg: `Macro redefinition at line ${item.numline}`,
-          s: item
+          s: item,
         };
+      }
       macros[macroDefine] = [];
       continue;
     }
