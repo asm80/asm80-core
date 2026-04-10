@@ -90,3 +90,24 @@ QUnit.test("relaxed: INCLUDE of missing file collects error and continues",
     }
   }
 );
+
+QUnit.test("relaxed: full pipeline collects errors from multiple phases",
+  async (assert) => {
+    const src = [
+      "LD A, B",
+      "BADINSTR1",
+      "LD B, C",
+      "BADINSTR2",
+      "LD H, L",
+    ].join("\n");
+    try {
+      await asm.compile(src, fs, z80opts);
+      assert.ok(false, "should throw");
+    } catch (e) {
+      assert.ok(Array.isArray(e.errors), "throws errors array");
+      assert.ok(e.errors.length >= 2, "collects 2+ errors");
+      assert.ok(e.errors.every(err => err.msg), "all errors have msg");
+      assert.ok(e.errors.every(err => err.wline), "all errors have wline");
+    }
+  }
+);

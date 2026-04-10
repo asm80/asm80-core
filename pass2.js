@@ -620,6 +620,14 @@ export const pass2 = (vx, opts) => {
         //console.log(op.lens,op)
         //xref usage
       } catch (e) {
+        if (opts.relaxed && opts.errors) {
+          opts.errors.push({
+            msg: e.msg || String(e),
+            s: e.s || "Pass2 error",
+            wline: op
+          });
+          continue;
+        }
         throw {
           msg: e.msg,
           s: op,
