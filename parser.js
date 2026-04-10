@@ -25,6 +25,7 @@ export const parse = async (s, opts) => {
   let prei = await prepro(i, opts);
   //console.log(prei)
   i = prei[0].map((line) => parseLine(line, prei[1], opts));
+  if (opts.relaxed) i = i.filter(line => !line._parseError);
   i = unroll(i, prei[1], null, opts);
   
   //console.log("prei",i)

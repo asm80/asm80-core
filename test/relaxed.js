@@ -31,3 +31,35 @@ QUnit.test("relaxed: no errors returns result normally", async (assert) => {
   );
   assert.ok(result.dump, "returns dump");
 });
+
+import { parseLine } from "../parseLine.js";
+import { parse } from "../parser.js";
+
+QUnit.test("parseLine: relaxed returns marker on bad instruction", (assert) => {
+  const opts = { assembler: Z80, relaxed: true, errors: [] };
+  const s = { line: "BADINSTR", numline: 5 };
+  const result = parseLine(s, {}, opts);
+  assert.ok(result._parseError, "returns _parseError marker");
+  assert.equal(opts.errors.length, 1, "error pushed to opts.errors");
+  assert.ok(opts.errors[0].msg, "error has msg");
+});
+
+QUnit.test("parseLine: normal mode still throws on bad instruction", (assert) => {
+  const opts = { assembler: Z80 };
+  const s = { line: "BADINSTR", numline: 5 };
+  assert.throws(
+    () => parseLine(s, {}, opts),
+    (e) => !!e.msg,
+    "throws error object with msg"
+  );
+});
+
+QUnit.test("parser: _parseError markers are filtered before unroll()", async (assert) => {
+  const opts = { assembler: Z80, relaxed: true, errors: [],
+    readFile: async () => null, childOpts: null, resolvePath: null,
+    includedFiles: {}, PRAGMAS: [] };
+  const result = await parse("LD A, B\nBADINSTR\nLD B, C", opts);
+  assert.equal(result.filter(l => !l._parseError && l.opcode).length, 2,
+    "only valid lines reach unroll");
+  assert.ok(opts.errors.length >= 1, "error was collected");
+});

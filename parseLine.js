@@ -19,7 +19,7 @@ const includedLineNumber = (s) => {
  * @returns {Object} Tokenizovaný řádek s rozpoznanými poli (label, opcode, params, ...)
  * @throws {Object} Pokud dojde k chybě v syntaxi nebo neznámé instrukci
  */
-export const parseLine = (s, macros, opts = {stopFlag:null, olds:null, assembler:null}) => {
+const parseLineCore = (s, macros, opts = {stopFlag:null, olds:null, assembler:null}) => {
     let t = s.line;
     let ll;
 
@@ -418,4 +418,20 @@ export const parseLine = (s, macros, opts = {stopFlag:null, olds:null, assembler
       msg: "Unrecognized instruction " + s.opcode,
       s: s
     };
-  };  
+  };
+
+export const parseLine = (s, macros, opts = {stopFlag:null, olds:null, assembler:null}) => {
+    if (opts.relaxed && opts.errors) {
+        try {
+            return parseLineCore(s, macros, opts);
+        } catch (e) {
+            opts.errors.push({
+                msg: e.msg || String(e),
+                s: e.s || "Parse error",
+                wline: s
+            });
+            return { _parseError: true };
+        }
+    }
+    return parseLineCore(s, macros, opts);
+};
