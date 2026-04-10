@@ -58,13 +58,14 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
 
     }
     if (opts.relaxed) opts.errors = [];
+    let parsePhaseErrors = [];
     try {
 
 
     // parse source code into internal representation
     let parsedSource = await Parser.parse(source, opts);
     // preserve any preprocessor errors collected during parse
-    const parsePhaseErrors = opts.relaxed ? [...(opts.errors || [])] : [];
+    if (opts.relaxed) parsePhaseErrors = [...(opts.errors || [])];
 
     // pass 1: prepare instruction codes and try to evaluate expressions
     if (opts.relaxed) opts.errors = [];
