@@ -1,8 +1,8 @@
 import { Parser } from "./expression-parser.js";
 
-const notInModule = (opts) => {
-  if (opts.PRAGMAS && opts.PRAGMAS. indexOf("MODULE") > -1){
-    throw {msg:"Not allowed in modules"}
+const notInModule = (opts, directive) => {
+  if (opts.PRAGMAS && opts.PRAGMAS.indexOf("MODULE") > -1){
+    throw {msg:`${directive} is not allowed in modules`}
   }
 }
 
@@ -31,6 +31,7 @@ export const pass1 = async (V, vxs, opts) => {
     //main loop - for each line
     //for (let i = 0, j = V.length; i < j; i++) {
     for (let op of V) {
+      try {
 
       const origin = {...op.origin}; //original line clone
 
@@ -259,7 +260,7 @@ export const pass1 = async (V, vxs, opts) => {
         }
 
         if (op.opcode === ".PHASE") {
-          notInModule(opts);
+          notInModule(opts, ".PHASE");
           if (phase) throw {
             msg: "PHASE cannot be nested"
           };
@@ -270,7 +271,7 @@ export const pass1 = async (V, vxs, opts) => {
           continue;
         }
         if (op.opcode === ".DEPHASE") {
-          notInModule(opts);
+          notInModule(opts, ".DEPHASE");
           op.addr = PC;
           PC = PC - phase;
           phase = 0;
@@ -399,7 +400,7 @@ export const pass1 = async (V, vxs, opts) => {
         continue;
       }
       if (op.opcode === "ALIGN") {
-        notInModule(opts);
+        notInModule(opts, "ALIGN");
         //op.bytes = Parser.evaluate(op.params[0]);
         let align = Parser.evaluate(op.params[0], vars);
 
@@ -572,6 +573,18 @@ export const pass1 = async (V, vxs, opts) => {
           msg: "No opcode, possible missing",
           s: op
         };
+      }
+
+      } catch (e) {
+        if (opts.relaxed && opts.errors) {
+          opts.errors.push({
+            msg: e.msg || String(e),
+            s: e.s || "Pass1 error",
+            wline: opts.WLINE || op
+          });
+          continue;
+        }
+        throw e;
       }
     }
 
