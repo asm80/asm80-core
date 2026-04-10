@@ -101,9 +101,6 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
       out.obj = obj;
     }
 
-    if (opts.relaxed && opts.errors && opts.errors.length > 0) {
-        throw { errors: opts.errors };
-    }
     return out
     } catch (e) {
         if (opts.relaxed) {
@@ -142,6 +139,9 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
             wline: opts.WLINE
           }
         };
+    }
+    if (opts.relaxed && opts.errors && opts.errors.length > 0) {
+        throw { errors: opts.errors };
     }
 }
 
