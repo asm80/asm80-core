@@ -9,8 +9,8 @@
       "segment": "CSEG",
       "rel": true,
       "relseg": "DSEG",
-      "add": 0,
-      "wia": 1
+      "wia": 1,
+      "add": 0
     },
     {
       "lens": [
@@ -20,8 +20,8 @@
       ],
       "segment": "CSEG",
       "ext": "PRINT",
-      "add": 0,
-      "wia": 1
+      "wia": 1,
+      "add": 0
     },
     {
       "lens": [
@@ -31,8 +31,8 @@
       ],
       "segment": "CSEG",
       "ext": "KEYIN",
-      "add": 0,
-      "wia": 1
+      "wia": 1,
+      "add": 0
     },
     {
       "lens": [

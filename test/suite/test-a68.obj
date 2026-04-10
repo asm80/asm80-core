@@ -170,6 +170,7 @@
       246
     ],
     "wia": 1,
+    "isRelJump": true,
     "origin": {
       "opcode": "BRA",
       "params": [

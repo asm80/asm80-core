@@ -16,8 +16,8 @@
       "segment": "CSEG",
       "rel": true,
       "relseg": "BSSEG",
-      "add": 9,
-      "wia": 1
+      "wia": 1,
+      "add": 9
     },
     {
       "lens": [
@@ -35,8 +35,8 @@
       "segment": "CSEG",
       "rel": true,
       "relseg": "CSEG",
-      "add": 0,
-      "wia": 1
+      "wia": 1,
+      "add": 0
     },
     {
       "lens": [
@@ -47,8 +47,8 @@
       "segment": "CSEG",
       "rel": true,
       "relseg": "BSSEG",
-      "add": 0,
-      "wia": 1
+      "wia": 1,
+      "add": 0
     },
     {
       "lens": [

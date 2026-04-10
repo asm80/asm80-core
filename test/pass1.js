@@ -154,14 +154,14 @@ QUnit.test('.PHASE throws inside a module (notInModule)', async assert => {
     asyncThrows(assert, () => doPassOpts(
         `.pragma module\n.phase 100\nnop\n.dephase`,
         MODULE_OPTS
-    ), (err) => err.msg === 'Not allowed in modules');
+    ), (err) => err.msg === '.PHASE is not allowed in modules');
 });
 
 QUnit.test('ALIGN throws inside a module (notInModule)', async assert => {
     asyncThrows(assert, () => doPassOpts(
         `.pragma module\nnop\n.align 4`,
         MODULE_OPTS
-    ), (err) => err.msg === 'Not allowed in modules');
+    ), (err) => err.msg === 'ALIGN is not allowed in modules');
 });
 
 QUnit.test('ORG throws inside a module', async assert => {

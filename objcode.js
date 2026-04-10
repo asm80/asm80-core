@@ -326,9 +326,7 @@ export const linkModules = (data, modules, library) => {
 
     for (let mod of modules) {
         //take each module and check externs/exports
-        for (let k in mod.exports) {
-            resolveModule(mod)
-        }
+        resolveModule(mod)
     }
     while (notresolved.length) {
         let name = notresolved.pop()
