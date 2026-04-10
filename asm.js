@@ -75,8 +75,6 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
     metacode = await pass1(metacode[0], metacode[1], opts);
     if (opts.relaxed) opts.errors = [];
     metacode = await pass1(metacode[0], metacode[1], opts);
-    if (opts.relaxed) opts.errors = [];
-    metacode = await pass1(metacode[0], metacode[1], opts);
     // DO NOT reset opts.errors here — pass1 errors must survive into pass2
 
     metacode[1]["__PRAGMAS"] = opts.PRAGMAS;
