@@ -133,3 +133,16 @@ QUnit.test("relaxed: errors in included files carry includedFile info",
     }
   }
 );
+
+QUnit.test("normal mode: bad instruction still throws { error } not { errors }",
+  async (assert) => {
+    try {
+      await asm.compile("BADINSTR", fs, { assembler: Z80 });
+      assert.ok(false, "should throw");
+    } catch (e) {
+      assert.notOk(Array.isArray(e.errors), "does NOT throw errors array");
+      assert.ok(e.error, "throws { error: ... } object");
+      assert.ok(e.error.msg, "error has msg");
+    }
+  }
+);
