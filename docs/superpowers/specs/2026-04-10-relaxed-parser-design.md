@@ -48,7 +48,7 @@ In normal mode, behavior is unchanged: `throw { error: { msg, s, wline } }`.
 
 - Wrap the function body in try/catch.
 - On error in relaxed mode: push to `opts.errors`, return a `{ _parseError: true }` marker object instead of throwing.
-- `parser.js` filters out marker objects before passing to pass1.
+- `parser.js` filters out marker objects **after `parseLine` but before `unroll()`**, so that `unroll()` never receives a marker object (which would lack the `.opcode`, `.params`, `.label` fields it expects).
 
 ### Phase 2: `preprocessor.js` (prepro)
 
@@ -60,6 +60,7 @@ In normal mode, behavior is unchanged: `throw { error: { msg, s, wline } }`.
 
 - Wrap the per-line processing body in try/catch.
 - On error in relaxed mode: push to `opts.errors`, `continue` to next line.
+- **Pass1 runs 4 times** for forward reference resolution. `opts.errors` is **reset to `[]` at the start of each Pass1 iteration** in `compile()`. Only errors surviving the final (4th) Pass1 iteration are kept. This prevents phantom errors from early passes where forward references were not yet resolved.
 
 ### Phase 4: `pass2.js`
 
@@ -69,6 +70,8 @@ In normal mode, behavior is unchanged: `throw { error: { msg, s, wline } }`.
 
 - Initialize `opts.errors = []` at start if `opts.relaxed`.
 - The outer try/catch is kept for fatal errors (missing assembler, etc.).
+- `opts.errors` is **reset to `[]` before each of the 4 Pass1 iterations**. It is **not reset before Pass2** — Pass1 errors from the final iteration must survive into Pass2 and be accumulated alongside Pass2 errors.
+- `prepro()` and recursive `prepro()` calls for included files receive the same `opts` object (not a copy), so `opts.errors` is a true shared reference and included-file errors accumulate in the same array.
 - At the end of the pipeline, if `opts.relaxed && opts.errors.length > 0`: throw `{ errors: opts.errors }`.
 - If relaxed mode and no errors: return result normally.
 
@@ -82,6 +85,20 @@ Lines from included files already carry `includedFile` and `includedFileAtLine` 
 - Existing `opts.PRAGMAS.RELAX` (array-based) is unrelated and untouched.
 - The thrown object shape in normal mode (`{ error: ... }`) is unchanged.
 - New relaxed mode always throws `{ errors: [...] }` (array, even for a single error).
+
+## Fatal Errors in Relaxed Mode
+
+Some errors are fatal and cannot be skipped (e.g. missing ENDM, unresolvable circular INCLUDE, missing assembler). When a fatal error fires, `compile()` throws:
+
+```javascript
+throw { errors: [...opts.errors, { msg: fatalError.msg, s: fatalError.s, wline: opts.WLINE }] }
+```
+
+Partial errors collected up to the fatal point are included in the array so the caller still sees all previously discovered issues.
+
+## Known Limitations
+
+- **No column number in errors.** The error format includes `numline` but no column offset. Most IDE integrations require a column for inline squiggles. This is a known gap — deferred to a future enhancement.
 
 ## Out of Scope
 
