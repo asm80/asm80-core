@@ -33,7 +33,7 @@ export const pass1 = async (V, vxs, opts) => {
     for (let op of V) {
       try {
 
-      const origin = {...op.origin}; //original line clone
+      const origin = {...op.origin, numline: op.numline, includedFile: op.includedFile, includedFileAtLine: op.includedFileAtLine}; //original line clone
 
       opts.WLINE = origin;
       op.pass = 1;
