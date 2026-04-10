@@ -48,32 +48,39 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
     opts = {...opts, readFile: fileSystem.readFile, childOpts: fileSystem.childOpts, resolvePath: fileSystem.resolvePath,
         ENT:null,
         BINFROM:null,
-        BINTO:null, 
+        BINTO:null,
         ENGINE:null,
         PRAGMAS:[],
         includedFiles:{},
         endian:opts.assembler.endian || false,
         xfre: {},
         xref: {},
-    
+
     }
+    if (opts.relaxed) opts.errors = [];
     try {
-    
+
 
     // parse source code into internal representation
     let parsedSource = await Parser.parse(source, opts);
 
     // pass 1: prepare instruction codes and try to evaluate expressions
+    if (opts.relaxed) opts.errors = [];
     let metacode = await pass1(parsedSource, null, opts)
 
     // metacode is passed again and again until all expressions are evaluated
+    if (opts.relaxed) opts.errors = [];
     metacode = await pass1(metacode[0], metacode[1], opts);
+    if (opts.relaxed) opts.errors = [];
     metacode = await pass1(metacode[0], metacode[1], opts);
+    if (opts.relaxed) opts.errors = [];
     metacode = await pass1(metacode[0], metacode[1], opts);
+    if (opts.relaxed) opts.errors = [];
     metacode = await pass1(metacode[0], metacode[1], opts);
+    // DO NOT reset opts.errors here — pass1 errors must survive into pass2
 
     metacode[1]["__PRAGMAS"] = opts.PRAGMAS;
-    
+
     // pass 2: assign addresses to labels and evaluate expressions
     //        (this pass is not repeated)
     // It should be all resolved aftrer the 2nd pass
@@ -87,7 +94,7 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
       opts: opts,
     }
 
-    
+
     // is it a module?
 
     let vars = metacode[1];
@@ -96,8 +103,19 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
       out.obj = obj;
     }
 
+    if (opts.relaxed && opts.errors && opts.errors.length > 0) {
+        throw { errors: opts.errors };
+    }
     return out
     } catch (e) {
+        if (opts.relaxed) {
+            const fatalError = {
+                msg: e.msg || "Internal error",
+                s: e.s || "Fatal error",
+                wline: opts.WLINE
+            };
+            throw { errors: [...(opts.errors || []), fatalError] };
+        }
         // Some error occured
         //console.log(e)
         let s = e.s || "Internal error";
@@ -115,10 +133,10 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
               wline: opts.WLINE
             }
           }
-          
+
         }
         if (!e.s) e.s = s;
-        
+
         throw {
           error: {
             msg: e.msg,
