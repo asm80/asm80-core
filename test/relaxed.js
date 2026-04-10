@@ -111,3 +111,25 @@ QUnit.test("relaxed: full pipeline collects errors from multiple phases",
     }
   }
 );
+
+QUnit.test("relaxed: errors in included files carry includedFile info",
+  async (assert) => {
+    const mockFs = {
+      readFile: async (path) => {
+        if (path === "inc.asm") return "LD A, B\nBADINSTR_IN_INC\nLD B, C";
+        return null;
+      },
+      childOpts: null,
+      resolvePath: (p) => p
+    };
+    const src = "LD H, L\n.INCLUDE \"inc.asm\"\nLD A, B";
+    try {
+      await asm.compile(src, mockFs, { assembler: Z80, relaxed: true });
+      assert.ok(false, "should throw");
+    } catch (e) {
+      assert.ok(Array.isArray(e.errors), "throws errors array");
+      const incErr = e.errors.find(err => err.wline && err.wline.includedFile === "inc.asm");
+      assert.ok(incErr, "error from included file has includedFile set");
+    }
+  }
+);
