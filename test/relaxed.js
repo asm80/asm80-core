@@ -63,3 +63,17 @@ QUnit.test("parser: _parseError markers are filtered before unroll()", async (as
     "only valid lines reach unroll");
   assert.ok(opts.errors.length >= 1, "error was collected");
 });
+
+QUnit.test("relaxed: INCLUDE of missing file collects error and continues",
+  async (assert) => {
+    const src = "LD A, B\n.INCLUDE \"missing.asm\"\nLD B, C";
+    try {
+      await asm.compile(src, fs, z80opts);
+      assert.ok(false, "should throw");
+    } catch (e) {
+      assert.ok(Array.isArray(e.errors), "throws errors array");
+      const incErr = e.errors.find(e => /missing\.asm|not found/i.test(e.msg));
+      assert.ok(incErr, "error about missing file is present");
+    }
+  }
+);

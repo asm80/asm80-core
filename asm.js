@@ -63,6 +63,8 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
 
     // parse source code into internal representation
     let parsedSource = await Parser.parse(source, opts);
+    // preserve any preprocessor errors collected during parse
+    const parsePhaseErrors = opts.relaxed ? [...(opts.errors || [])] : [];
 
     // pass 1: prepare instruction codes and try to evaluate expressions
     if (opts.relaxed) opts.errors = [];
@@ -101,15 +103,23 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
       out.obj = obj;
     }
 
+    if (opts.relaxed) {
+        const allErrors = [...parsePhaseErrors, ...(opts.errors || [])];
+        if (allErrors.length > 0) {
+            throw { errors: allErrors };
+        }
+    }
     return out
     } catch (e) {
         if (opts.relaxed) {
+            // Re-throw already-wrapped error arrays without double-wrapping
+            if (e.errors) throw e;
             const fatalError = {
                 msg: e.msg || "Internal error",
                 s: e.s || "Fatal error",
                 wline: opts.WLINE
             };
-            throw { errors: [...(opts.errors || []), fatalError] };
+            throw { errors: [...parsePhaseErrors, ...(opts.errors || []), fatalError] };
         }
         // Some error occured
         //console.log(e)
@@ -139,9 +149,6 @@ export const compile = async (source, fileSystem, opts = {assembler:null}, filen
             wline: opts.WLINE
           }
         };
-    }
-    if (opts.relaxed && opts.errors && opts.errors.length > 0) {
-        throw { errors: opts.errors };
     }
 }
 

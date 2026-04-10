@@ -133,10 +133,16 @@ export const prepro = async (V, opts = {}, fullfile) => {
     if (opcode === ".INCLUDE") {
       //block selective include
       let block = "";
-      if (!params?.[0]) throw {
-        msg: "No file name given",
-        s: item
-      };
+      if (!params?.[0]) {
+        if (opts.relaxed && opts.errors) {
+          opts.errors.push({ msg: "No file name given", s: "Preprocessor error", wline: item });
+          continue;
+        }
+        throw {
+          msg: "No file name given",
+          s: item
+        };
+      }
       if (params[0].includes(":")) {
         const px = params[0].split(":");
         params[0] = px[0];
@@ -164,10 +170,16 @@ export const prepro = async (V, opts = {}, fullfile) => {
         //if (includedFiles[params[0].replace(/\"/g,"")]) throw {"msg":"File "+params[0].replace(/\"/g,"")+" is already included elsewhere - maybe recursion","s":item};
         //console.log("Include "+params[0]);
         nf = await opts.readFile(params[0].replace(/\"/g, ""));
-        if (!nf) throw {
-          msg: `File ${params[0]} not found`,
-          s: item
-        };
+        if (!nf) {
+          if (opts.relaxed && opts.errors) {
+            opts.errors.push({ msg: `File ${params[0]} not found`, s: "Preprocessor error", wline: item });
+            continue;
+          }
+          throw {
+            msg: `File ${params[0]} not found`,
+            s: item
+          };
+        }
         //console.log(nf);
         ni = toInternal(nf.split(/\n/));
         ni = nonempty(ni);
@@ -200,6 +212,10 @@ export const prepro = async (V, opts = {}, fullfile) => {
     if (opcode === ".ENDM") {
       //console.log("endm")
       if (!macroDefine) {
+        if (opts.relaxed && opts.errors) {
+          opts.errors.push({ msg: `ENDM without MACRO at line ${item.numline}`, s: "Preprocessor error", wline: item });
+          continue;
+        }
         throw {
           msg: `ENDM without MACRO at line ${item.numline}`,
           s: item
@@ -268,35 +284,57 @@ export const prepro = async (V, opts = {}, fullfile) => {
         if (params?.[0]) macroName = params.shift();
       }
 
-      if (!macroName)
+      if (!macroName) {
+        if (opts.relaxed && opts.errors) {
+          opts.errors.push({ msg: `Bad macro name at line ${item.numline}`, s: "Preprocessor error", wline: item });
+          continue;
+        }
         throw {
           msg: `Bad macro name at line ${item.numline}`,
           s: item
         };
+      }
       if (macroName.endsWith(":"))
         macroName = macroName.slice(0, -1);
 
       macroDefine = macroName.toUpperCase();
-      if (macros[macroDefine])
+      if (macros[macroDefine]) {
+        if (opts.relaxed && opts.errors) {
+          opts.errors.push({ msg: `Macro ${macroDefine} redefinition at line ${item.numline}`, s: "Preprocessor error", wline: item });
+          continue;
+        }
         throw {
           msg: `Macro ${macroDefine} redefinition at line ${item.numline}`,
           s: item,
         };
+      }
       macros[macroDefine] = [params];
       //macroPars[macroDefine] = params;
       continue;
     }
 
     if (opcode === ".REPT") {
-      if (!params?.[0]) throw {
-        msg: "No repeat count given",
-        s: item
-      };
+      if (!params?.[0]) {
+        if (opts.relaxed && opts.errors) {
+          opts.errors.push({ msg: "No repeat count given", s: "Preprocessor error", wline: item });
+          continue;
+        }
+        throw {
+          msg: "No repeat count given",
+          s: item
+        };
+      }
       reptCount = Parser.evaluate(params[0]);
-      if (!reptCount || reptCount < 1) throw {
-        msg: "Bad repeat count given",
-        s: item
-      };
+      if (!reptCount || reptCount < 1) {
+        if (opts.relaxed && opts.errors) {
+          opts.errors.push({ msg: "Bad repeat count given", s: "Preprocessor error", wline: item });
+          continue;
+        }
+        throw {
+          msg: "Bad repeat count given",
+          s: item
+        };
+      }
       macroDefine = `*REPT${item.numline}`;
       if (macros[macroDefine])
         throw {
@@ -314,6 +352,10 @@ export const prepro = async (V, opts = {}, fullfile) => {
     out.push(item);
   }
   if (macroDefine) {
+    if (opts.relaxed && opts.errors) {
+      opts.errors.push({ msg: `MACRO ${macroDefine} has no appropriate ENDM`, s: "Preprocessor error" });
+      return [out, macros];
+    }
     throw {
       msg: `MACRO ${macroDefine} has no appropriate ENDM`,
       //s: item,
