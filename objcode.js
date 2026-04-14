@@ -148,7 +148,7 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
                     used.push(u)
                 }
             }
-            op.wia = ln.wia  // Position of address in instruction
+            op.wia = ln.wia ?? 0  // Position of address in instruction (data directives like DW default to 0)
             if (ln.isRelJump) {
                 op.isRelJump = true
             } else {
