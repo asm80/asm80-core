@@ -1,4 +1,6 @@
-import {asm} from "../asm.js"
+import {asm, compile} from "../asm.js"
+import { objCode, linkModules } from "../objcode.js"
+import { C6502 } from "../cpu/c6502.js"
 
 import fs from "fs";
 
@@ -203,4 +205,33 @@ QUnit.test('hex2', async assert => {
     let hexmaster = await fileSystem.readFile("tinybasic.a80.master.hex")
     assert.equal(hex, hexmaster)
 
+});
+
+QUnit.test('link 6502 - EQU ZP constants not relocated', async assert => {
+    const src = `
+  .pragma module
+  PTR  EQU 2
+  CNT  EQU 3
+  .export MYSTART
+  MYSTART:
+  LDX #0
+  LDY #0
+  LDA #$61
+  STA (PTR),Y
+  INC CNT
+  BNE MYSTART
+  JSR $E020
+  RTS
+`;
+    const result = await compile(src, {readFile:()=>null}, {assembler: C6502});
+    const obj = objCode(result.dump, result.vars, {endian:false, assembler:C6502});
+    const linked = linkModules({endian:false, segments:{CSEG:"0xE000"}, vars:{}}, [obj], []);
+    const hex = ihex(linked);
+    // All code should be in a single contiguous record (no torn/overlapping records)
+    const dataRecords = hex.split('\n').filter(l => l.startsWith(':') && !l.startsWith(':00000001'));
+    assert.equal(dataRecords.length, 1, "linked hex should be one contiguous record");
+    // STA (PTR),Y: ZP address 02 must not be relocated to E002
+    assert.ok(hex.includes('9102'), "STA (PTR),Y should use ZP addr 02, not relocated");
+    // INC CNT: ZP address 03 must not be relocated to E003
+    assert.ok(hex.toUpperCase().includes('E603'), "INC CNT should use ZP addr 03, not relocated");
 });

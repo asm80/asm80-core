@@ -27,15 +27,16 @@ const put16 = (s, v, endian=false) => {
     // Split 16-bit value into low and high bytes
     let a = v&0xff        // Low byte
     let b = (v>>8)&0xff   // High byte
-    
+    const has2 = s.lens.length > s.wia + 1  // Don't extend array for 1-byte address fields (e.g. ZP)
+
     if (endian) {
         // Big endian: store high byte first
         s.lens[s.wia] = b
-        s.lens[s.wia+1] = a
+        if (has2) s.lens[s.wia+1] = a
     } else {
         // Little endian: store low byte first
         s.lens[s.wia] = a
-        s.lens[s.wia+1] = b
+        if (has2) s.lens[s.wia+1] = b
     }
 }
 
@@ -56,10 +57,12 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
     let used = []       // External symbols actually used
     let exports = {}    // Symbols exported from this module
 
-    // Build symbol-to-segment mapping for relocation
+    // Build symbol-to-segment mapping for relocation.
+    // Only include code/data labels, not EQU/SET/= assignments (those are
+    // absolute constants and must not have a segment base added during linking).
     let varsSegs = {}
     for (let ln of V) {
-        if (ln.label) {
+        if (ln.label && ln.opcode !== "EQU" && ln.opcode !== "SET" && ln.opcode !== "=") {
             // Map each label to its segment for relocation calculations
             varsSegs[ln.label.toUpperCase()] = ln.segment
         }
@@ -130,9 +133,13 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
             for (let u of usage) {
                 if (externs.indexOf(u) < 0) {
                     if (!ln.isRelJump) {
-                        // Internal absolute address - needs relocation
-                        op.rel=true
-                        op.relseg = varsSegs[u]  // Target segment for relocation
+                        const seg = varsSegs[u]
+                        if (seg !== undefined) {
+                            // Internal address in a relocatable segment - needs relocation
+                            op.rel = true
+                            op.relseg = seg
+                        }
+                        // EQU/absolute constants (not in varsSegs) need no relocation
                     }
                     // Internal relative jump: displacement already baked in by pass2 lambda
                 } else {
