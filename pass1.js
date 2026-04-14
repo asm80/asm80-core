@@ -110,6 +110,22 @@ export const pass1 = async (V, vxs, opts) => {
         continue;
       }
 
+      if (op.opcode === "IFDEF") {
+        const isDefined = Object.prototype.hasOwnProperty.call(vars, op.params[0].toUpperCase());
+        if (!isDefined) ifskip = 1;
+        doif = 1;
+        ifstack.push(ifskip);
+        continue;
+      }
+
+      if (op.opcode === "IFNDEF") {
+        const isDefined = Object.prototype.hasOwnProperty.call(vars, op.params[0].toUpperCase());
+        if (isDefined) ifskip = 1;
+        doif = 1;
+        ifstack.push(ifskip);
+        continue;
+      }
+
       if (ifskip) {
         op.ifskip = true;
         continue;

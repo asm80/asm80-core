@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.94% </span>
+                <span class="strong">94.07% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>568/592</span>
+                <span class='fraction'>572/608</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.89% </span>
+                <span class="strong">91.97% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>170/183</span>
+                <span class='fraction'>172/187</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.94% </span>
+                <span class="strong">94.07% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>568/592</span>
+                <span class='fraction'>572/608</span>
             </div>
         
             
@@ -654,7 +654,23 @@
 <a name='L589'></a><a href='#L589'>589</a>
 <a name='L590'></a><a href='#L590'>590</a>
 <a name='L591'></a><a href='#L591'>591</a>
-<a name='L592'></a><a href='#L592'>592</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L592'></a><a href='#L592'>592</a>
+<a name='L593'></a><a href='#L593'>593</a>
+<a name='L594'></a><a href='#L594'>594</a>
+<a name='L595'></a><a href='#L595'>595</a>
+<a name='L596'></a><a href='#L596'>596</a>
+<a name='L597'></a><a href='#L597'>597</a>
+<a name='L598'></a><a href='#L598'>598</a>
+<a name='L599'></a><a href='#L599'>599</a>
+<a name='L600'></a><a href='#L600'>600</a>
+<a name='L601'></a><a href='#L601'>601</a>
+<a name='L602'></a><a href='#L602'>602</a>
+<a name='L603'></a><a href='#L603'>603</a>
+<a name='L604'></a><a href='#L604'>604</a>
+<a name='L605'></a><a href='#L605'>605</a>
+<a name='L606'></a><a href='#L606'>606</a>
+<a name='L607'></a><a href='#L607'>607</a>
+<a name='L608'></a><a href='#L608'>608</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">51x</span>
@@ -765,6 +781,22 @@
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">10999x</span>
+<span class="cline-any cline-yes">11192x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10999x</span>
+<span class="cline-any cline-yes">11192x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">10999x</span>
 <span class="cline-any cline-yes">11192x</span>
 <span class="cline-any cline-yes">65x</span>
@@ -1357,6 +1389,22 @@ export const pass1 = async (V, vxs, opts) =&gt; {
         continue;
       }
 &nbsp;
+      if (op.opcode === "IFDEF") <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        const isDefined = Object.prototype.hasOwnProperty.call(vars, op.params[0].toUpperCase());</span>
+<span class="cstat-no" title="statement not covered" >        if (!isDefined) ifskip = 1;</span>
+<span class="cstat-no" title="statement not covered" >        doif = 1;</span>
+<span class="cstat-no" title="statement not covered" >        ifstack.push(ifskip);</span>
+<span class="cstat-no" title="statement not covered" >        continue;</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+&nbsp;
+      if (op.opcode === "IFNDEF") <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        const isDefined = Object.prototype.hasOwnProperty.call(vars, op.params[0].toUpperCase());</span>
+<span class="cstat-no" title="statement not covered" >        if (isDefined) ifskip = 1;</span>
+<span class="cstat-no" title="statement not covered" >        doif = 1;</span>
+<span class="cstat-no" title="statement not covered" >        ifstack.push(ifskip);</span>
+<span class="cstat-no" title="statement not covered" >        continue;</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+&nbsp;
       if (ifskip) {
         op.ifskip = true;
         continue;
@@ -1843,7 +1891,7 @@ export const pass1 = async (V, vxs, opts) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-10T10:15:34.600Z
+                at 2026-04-14T16:22:47.530Z
             </div>
         <script src="../prettify.js"></script>
         <script>

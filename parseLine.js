@@ -253,7 +253,17 @@ const parseLineCore = (s, macros, opts = {stopFlag:null, olds:null, assembler:nu
         s.opcode = "IFN";
         return s;
     }
-    
+
+    if (s.opcode === ".IFNDEF") {
+        s.opcode = "IFNDEF";
+        return s;
+    }
+
+    if (s.opcode === ".IFDEF") {
+        s.opcode = "IFDEF";
+        return s;
+    }
+
      if (s.opcode === ".IF") {
       s.opcode = "IF";
       return s;
@@ -279,6 +289,8 @@ const parseLineCore = (s, macros, opts = {stopFlag:null, olds:null, assembler:nu
       s.opcode === ".SET" ||
       s.opcode === "IF" ||
       s.opcode === "IFN" ||
+      s.opcode === "IFDEF" ||
+      s.opcode === "IFNDEF" ||
       s.opcode === "ELSE" ||
       s.opcode === "ENDIF" ||
       s.opcode === ".ERROR" ||
