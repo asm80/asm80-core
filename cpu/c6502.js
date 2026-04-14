@@ -319,7 +319,7 @@ export const C6502 = {
       s.bytes = this.steptab[addr];
 
       s.wia = 1; //Where is address (for relocation)
-
+      if (addr === 12) s.isRelJump = true; // Relative branch: displacement needs no segment relocation
 
       return s;
     }

@@ -430,6 +430,11 @@ export const C65816 = {
       s.lens = lens;
       s.bytes = C65816.steptab[addr];
 
+      if (addr === 12 || addr === 21) {
+        s.wia = 1; // Where is address (for relocation)
+        s.isRelJump = true; // Relative branch: displacement needs no segment relocation
+      }
+
       //M16
       if (vars && addr === 2) {
         if (s.opcode === "LDX" || s.opcode === "LDY") {
