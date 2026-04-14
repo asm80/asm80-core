@@ -305,7 +305,7 @@ export const linkModules = (data, modules, library) => {
     let notresolved=[]
     for (let v in data.vars) {
         let val = parseInt(data.vars[v])
-        resolves[v] = {addr:val,seg:null}
+        resolves[v.toUpperCase()] = {addr:val,seg:null}
     }
     //console.log("PASS1: Resolves init: ", resolves)
 
@@ -441,7 +441,7 @@ export const linkModules = (data, modules, library) => {
             }
         }
         for (let s of out) {
-            if (s.resolved) {
+            if (s.resolved !== undefined) {
                 //let add = get16(s, data.endian)
                 //s.add = add
                 let base = s.resolved
