@@ -150,6 +150,8 @@ function parseOpcode(s, vars, Parser, opts) {
 
   const dptest = function (par, vars, s) {
     if (s._dp < 0 || s._dp > 255) return false;
+    // In relocatable modules, final load address is unknown — never auto-select direct mode
+    if (vars.__PRAGMAS && vars.__PRAGMAS.indexOf('MODULE') >= 0) return false;
     try {
       const v = Parser.evaluate(par, vars);
       if (v !== null && v !== undefined && (v >> 8) === s._dp) return true;
@@ -329,9 +331,10 @@ function parseOpcode(s, vars, Parser, opts) {
     }
     if (code > 0xff) s.bytes += 2; else s.bytes += 1;
 
+    s.wia = code > 0xff ? 2 : 1;
+
     if (amode === 4) {
       s.isRelJump = true;
-      s.wia = code > 0xff ? 2 : 1;
       parserfunc = function (vars) {
         const n = Parser.evaluate(p1, vars) - vars._PC - 2;
         if (n > 127) throw { msg: "Target out of range, diff is " + n, s: s };
@@ -340,6 +343,7 @@ function parseOpcode(s, vars, Parser, opts) {
       };
     }
     if (amode === 7) {
+      s.isRelJump = true;
       parserfunc = function (vars) {
         const n = Parser.evaluate(p1, vars) - vars._PC - s.bytes;
         return n < 0 ? 65536 + n : n;

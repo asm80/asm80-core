@@ -17,6 +17,7 @@ export const pass1 = async (V, vxs, opts) => {
     let PC = 0;
     let vars = {};
     if (vxs) vars = vxs;
+    vars.__PRAGMAS = opts.PRAGMAS;
     let op = null;
     let m, l;
     let ifskip = 0;
@@ -211,6 +212,12 @@ export const pass1 = async (V, vxs, opts) => {
         vars[varname + "$"] = PC;
         //console.log(op.label,vars[op.label],PC, vars)
         vars[op.label] = PC;
+        // Store segment info so CPUs can check whether a label is in a
+        // relocatable non-ZP segment (e.g. CSEG) and avoid incorrect ZP mode.
+        // EQU/SET/= are absolute constants — don't tag them with a segment.
+        if (op.opcode !== "EQU" && op.opcode !== "SET" && op.opcode !== "=") {
+          vars[op.label + "$$seg"] = segment;
+        }
         //if (isNaN(PC)) throw {msg:"PC NaN",s:op}
         if (beGlobal) vars[varname] = PC;
       }
@@ -241,7 +248,7 @@ export const pass1 = async (V, vxs, opts) => {
           }
           let name = op.params[0];
           if (!name) name = op.label
-          vars[name.toUpperCase()] = 0;
+          vars[name.toUpperCase()] = null;
           continue;
         }
 

@@ -8,7 +8,8 @@ const get16 = (s, endian=false) => {
     // Get low and high bytes from instruction at wia position
     let a = s.lens[s.wia]
     let b = s.lens[s.wia+1]
-    
+    // Single-byte field (e.g. direct page): no endianness, just the byte value
+    if (b === undefined) return a
     if (endian) {
         // Big endian: high byte first
         return (a<<8)|b
@@ -29,14 +30,17 @@ const put16 = (s, v, endian=false) => {
     let b = (v>>8)&0xff   // High byte
     const has2 = s.lens.length > s.wia + 1  // Don't extend array for 1-byte address fields (e.g. ZP)
 
-    if (endian) {
+    if (!has2) {
+        // Single-byte field (e.g. direct page): no endianness, always low byte
+        s.lens[s.wia] = a
+    } else if (endian) {
         // Big endian: store high byte first
         s.lens[s.wia] = b
-        if (has2) s.lens[s.wia+1] = a
+        s.lens[s.wia+1] = a
     } else {
         // Little endian: store low byte first
         s.lens[s.wia] = a
-        if (has2) s.lens[s.wia+1] = b
+        s.lens[s.wia+1] = b
     }
 }
 
@@ -152,8 +156,10 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
             if (ln.isRelJump) {
                 op.isRelJump = true
             } else {
-                // Extract current address value for absolute relocation
-                op.add = get16(ln, opts.endian)
+                // Extract current address value for absolute relocation.
+                // Use op.wia (with ?? 0 applied) because ln.wia may be undefined
+                // for data directives (DW/DB) that don't set wia during pass1/pass2.
+                op.add = get16({lens: ln.lens, wia: op.wia}, opts.endian)
             }
         }
 
@@ -435,8 +441,17 @@ export const linkModules = (data, modules, library) => {
             if (s.isRelJump && s.resolved !== undefined) {
                 // Relative jump to external symbol: compute displacement from final addresses
                 let disp = s.resolved - (s.addr + s.lens.length)
-                if (disp > 127 || disp < -128) throw {msg: "Relative jump out of range"}
-                s.lens[s.wia] = disp < 0 ? 256 + disp : disp
+                if (s.lens.length - s.wia >= 2) {
+                    // 16-bit relative offset (e.g. 6809 long branches)
+                    if (disp > 32767 || disp < -32768) throw {msg: "Relative jump out of range"}
+                    const n = disp < 0 ? 65536 + disp : disp
+                    s.lens[s.wia] = n >> 8
+                    s.lens[s.wia + 1] = n & 0xFF
+                } else {
+                    // 8-bit relative offset
+                    if (disp > 127 || disp < -128) throw {msg: "Relative jump out of range"}
+                    s.lens[s.wia] = disp < 0 ? 256 + disp : disp
+                }
                 delete s.resolved
             }
         }

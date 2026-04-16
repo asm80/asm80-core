@@ -151,6 +151,8 @@ export const M6809 = {
 
       var dptest = function (par, vars, s) {
         if (s._dp < 0 || s._dp > 255) return false;
+        // In relocatable modules, final load address is unknown — never auto-select direct mode
+        if (vars.__PRAGMAS && vars.__PRAGMAS.indexOf('MODULE') >= 0) return false;
         try {
           zptest = Parser.evaluate(par, vars);
 
@@ -349,9 +351,13 @@ export const M6809 = {
             s.bytes += 1;
           }
 
+          s.wia = code > 0xff ? 2 : 1;
+
+          if (amode == 7) {
+            s.isRelJump = true;
+          }
           if (amode == 4) {
             s.isRelJump = true;
-            s.wia = code > 0xff ? 2 : 1;
             parserfunc = /*prefixed ? (function(vars){
             var n = Parser.evaluate(p1.substr(1),vars)-vars._PC-2;
             //console.log(n)
