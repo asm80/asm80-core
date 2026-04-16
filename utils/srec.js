@@ -23,7 +23,7 @@ const srecLine = (addr, buffer) => {
     }
     
     // Add one's complement checksum
-    s += toHex2(256 - (checksum % 256));
+    s += toHex2(255 - (checksum % 256));
     return s;
   };
 

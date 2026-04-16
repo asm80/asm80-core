@@ -207,6 +207,16 @@ QUnit.test('hex2', async assert => {
 
 });
 
+QUnit.test('srec checksum uses ones complement', assert => {
+    const result = {
+        dump: [{ addr: 0x1000, lens: [0x12, 0x34], segment: "CSEG" }],
+        entry: { address: 0 },
+        opts: { ENT: 0 }
+    };
+    const srec = isrec(result).split('\n')[0];
+    assert.equal(srec, "S10510001234A4");
+});
+
 QUnit.test('link 6502 - EQU ZP constants not relocated', async assert => {
     const src = `
   .pragma module
