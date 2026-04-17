@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>532/532</span>
+                <span class='fraction'>542/542</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>532/532</span>
+                <span class='fraction'>542/542</span>
             </div>
         
             
@@ -595,7 +595,17 @@
 <a name='L530'></a><a href='#L530'>530</a>
 <a name='L531'></a><a href='#L531'>531</a>
 <a name='L532'></a><a href='#L532'>532</a>
-<a name='L533'></a><a href='#L533'>533</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L533'></a><a href='#L533'>533</a>
+<a name='L534'></a><a href='#L534'>534</a>
+<a name='L535'></a><a href='#L535'>535</a>
+<a name='L536'></a><a href='#L536'>536</a>
+<a name='L537'></a><a href='#L537'>537</a>
+<a name='L538'></a><a href='#L538'>538</a>
+<a name='L539'></a><a href='#L539'>539</a>
+<a name='L540'></a><a href='#L540'>540</a>
+<a name='L541'></a><a href='#L541'>541</a>
+<a name='L542'></a><a href='#L542'>542</a>
+<a name='L543'></a><a href='#L543'>543</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -784,6 +794,7 @@
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">381x</span>
 <span class="cline-any cline-yes">390x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -799,6 +810,7 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">374x</span>
 <span class="cline-any cline-yes">374x</span>
 <span class="cline-any cline-yes">390x</span>
@@ -806,6 +818,7 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -815,7 +828,9 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">390x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -825,7 +840,9 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">390x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -1004,6 +1021,7 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">70x</span>
 <span class="cline-any cline-yes">70x</span>
 <span class="cline-any cline-yes">390x</span>
@@ -1077,8 +1095,10 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-yes">390x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -1314,6 +1334,7 @@ function parseOpcode(s, vars, Parser, opts) {
     s.bytes = 2;
     if (s.params.length !== 2) throw s.opcode + " needs exactly 2 registers at line " + s.numline;
     s.lens[1] = (parnibble(s.params[0]) &lt;&lt; 4) + parnibble(s.params[1]);
+    s.noReloc = true;
     return s;
   }
 &nbsp;
@@ -1329,6 +1350,7 @@ function parseOpcode(s, vars, Parser, opts) {
     s.lens[0] = 0x11;
     s.bytes = 3;
     s.lens[2] = (tfmnibble(s.params[0]) &lt;&lt; 4) + tfmnibble(s.params[1]);
+    s.noReloc = true;
     return s;
   }
 &nbsp;
@@ -1339,27 +1361,32 @@ function parseOpcode(s, vars, Parser, opts) {
     s.bytes = 3;
     if (s.params.length !== 2) throw s.opcode + " needs exactly 2 registers at line " + s.numline;
     s.lens[2] = (parnibble(s.params[0]) &lt;&lt; 4) + parnibble(s.params[1]);
+    s.noReloc = true;
     return s;
   }
 &nbsp;
   if (s.opcode === "PSHS") {
     s.lens[0] = 0x34; s.bytes = 2; s.lens[1] = 0;
     for (i = 0; i &lt; s.params.length; i++) s.lens[1] |= pshsbyte(s.params[i]);
+    s.noReloc = true;
     return s;
   }
   if (s.opcode === "PULS") {
     s.lens[0] = 0x35; s.bytes = 2; s.lens[1] = 0;
     for (i = 0; i &lt; s.params.length; i++) s.lens[1] |= pshsbyte(s.params[i]);
+    s.noReloc = true;
     return s;
   }
   if (s.opcode === "PSHU") {
     s.lens[0] = 0x36; s.bytes = 2; s.lens[1] = 0;
     for (i = 0; i &lt; s.params.length; i++) s.lens[1] |= pshubyte(s.params[i]);
+    s.noReloc = true;
     return s;
   }
   if (s.opcode === "PULU") {
     s.lens[0] = 0x37; s.bytes = 2; s.lens[1] = 0;
     for (i = 0; i &lt; s.params.length; i++) s.lens[1] |= pshubyte(s.params[i]);
+    s.noReloc = true;
     return s;
   }
 &nbsp;
@@ -1534,6 +1561,7 @@ function parseOpcode(s, vars, Parser, opts) {
     s.lens[postbyte + 1] = function (vars) { return Parser.evaluate(p1.substr(1, p1.length - 2), vars); };
     s.lens[postbyte + 2] = null;
     s.bytes += 2;
+    s.wia = postbyte + 1;
     return s;
   }
 &nbsp;
@@ -1607,11 +1635,13 @@ function parseOpcode(s, vars, Parser, opts) {
 &nbsp;
   if (zptest &gt; 65536 - 17 &amp;&amp; ixregPC(p2) !== 4) {
     s.lens[postbyte] = ixreg(p2) | indir | ((32 - (65536 - zptest)) &amp; 0x1f);
+    s.noReloc = true; // 5-bit offset baked into postbyte — no address field to relocate
     return s;
   }
 &nbsp;
   if (zptest &lt; 16 &amp;&amp; zptest &gt; -17 &amp;&amp; ixregPC(p2) !== 4 &amp;&amp; !indir) {
     s.lens[postbyte] = ixreg(p2) | indir | (zptest &amp; 0x1f);
+    s.noReloc = true; // 5-bit offset baked into postbyte — no address field to relocate
     return s;
   }
 &nbsp;
@@ -1666,7 +1696,7 @@ export const H6309 = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-16T09:35:51.040Z
+                at 2026-04-17T06:53:05.569Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

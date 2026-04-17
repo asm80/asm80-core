@@ -185,6 +185,7 @@ function parseOpcode(s, vars, Parser, opts) {
     s.bytes = 2;
     if (s.params.length !== 2) throw s.opcode + " needs exactly 2 registers at line " + s.numline;
     s.lens[1] = (parnibble(s.params[0]) << 4) + parnibble(s.params[1]);
+    s.noReloc = true;
     return s;
   }
 
@@ -200,6 +201,7 @@ function parseOpcode(s, vars, Parser, opts) {
     s.lens[0] = 0x11;
     s.bytes = 3;
     s.lens[2] = (tfmnibble(s.params[0]) << 4) + tfmnibble(s.params[1]);
+    s.noReloc = true;
     return s;
   }
 
@@ -210,27 +212,32 @@ function parseOpcode(s, vars, Parser, opts) {
     s.bytes = 3;
     if (s.params.length !== 2) throw s.opcode + " needs exactly 2 registers at line " + s.numline;
     s.lens[2] = (parnibble(s.params[0]) << 4) + parnibble(s.params[1]);
+    s.noReloc = true;
     return s;
   }
 
   if (s.opcode === "PSHS") {
     s.lens[0] = 0x34; s.bytes = 2; s.lens[1] = 0;
     for (i = 0; i < s.params.length; i++) s.lens[1] |= pshsbyte(s.params[i]);
+    s.noReloc = true;
     return s;
   }
   if (s.opcode === "PULS") {
     s.lens[0] = 0x35; s.bytes = 2; s.lens[1] = 0;
     for (i = 0; i < s.params.length; i++) s.lens[1] |= pshsbyte(s.params[i]);
+    s.noReloc = true;
     return s;
   }
   if (s.opcode === "PSHU") {
     s.lens[0] = 0x36; s.bytes = 2; s.lens[1] = 0;
     for (i = 0; i < s.params.length; i++) s.lens[1] |= pshubyte(s.params[i]);
+    s.noReloc = true;
     return s;
   }
   if (s.opcode === "PULU") {
     s.lens[0] = 0x37; s.bytes = 2; s.lens[1] = 0;
     for (i = 0; i < s.params.length; i++) s.lens[1] |= pshubyte(s.params[i]);
+    s.noReloc = true;
     return s;
   }
 
@@ -405,6 +412,7 @@ function parseOpcode(s, vars, Parser, opts) {
     s.lens[postbyte + 1] = function (vars) { return Parser.evaluate(p1.substr(1, p1.length - 2), vars); };
     s.lens[postbyte + 2] = null;
     s.bytes += 2;
+    s.wia = postbyte + 1;
     return s;
   }
 
@@ -478,11 +486,13 @@ function parseOpcode(s, vars, Parser, opts) {
 
   if (zptest > 65536 - 17 && ixregPC(p2) !== 4) {
     s.lens[postbyte] = ixreg(p2) | indir | ((32 - (65536 - zptest)) & 0x1f);
+    s.noReloc = true; // 5-bit offset baked into postbyte — no address field to relocate
     return s;
   }
 
   if (zptest < 16 && zptest > -17 && ixregPC(p2) !== 4 && !indir) {
     s.lens[postbyte] = ixreg(p2) | indir | (zptest & 0x1f);
+    s.noReloc = true; // 5-bit offset baked into postbyte — no address field to relocate
     return s;
   }
 

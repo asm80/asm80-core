@@ -126,7 +126,7 @@ export const pass2 = (vx, opts) => {
           //const param = op.params[parIdx];
 
           try {
-            let usage = Parser.usage(param.toUpperCase(), vars);
+            let usage = Parser.usage(param.replace(/^[#<>]/, '').replace(/^\[(.+)\]$/, '$1').toUpperCase(), vars);
             if(usage.length>0) op.usage=usage;
             //for (let u = 0; u < usage.length; u++) {
             for (let varname of usage) {

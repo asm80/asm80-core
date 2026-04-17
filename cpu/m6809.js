@@ -232,7 +232,7 @@ export const M6809 = {
         if (s.params.length != 2)
           throw s.opcode + " needs exactly 2 registers  at line " + s.numline;
         s.lens[1] = (parnibble(s.params[0]) << 4) + parnibble(s.params[1]);
-
+        s.noReloc = true;
         return s;
       }
       if (s.opcode == "PSHS") {
@@ -242,6 +242,7 @@ export const M6809 = {
         for (i = 0; i < s.params.length; i++) {
           s.lens[1] |= pshsbyte(s.params[i]);
         }
+        s.noReloc = true;
         return s;
       }
       if (s.opcode == "PULS") {
@@ -251,6 +252,7 @@ export const M6809 = {
         for (i = 0; i < s.params.length; i++) {
           s.lens[1] |= pshsbyte(s.params[i]);
         }
+        s.noReloc = true;
         return s;
       }
       if (s.opcode == "PSHU") {
@@ -260,6 +262,7 @@ export const M6809 = {
         for (i = 0; i < s.params.length; i++) {
           s.lens[1] |= pshubyte(s.params[i]);
         }
+        s.noReloc = true;
         return s;
       }
       if (s.opcode == "PULU") {
@@ -269,6 +272,7 @@ export const M6809 = {
         for (i = 0; i < s.params.length; i++) {
           s.lens[1] |= pshubyte(s.params[i]);
         }
+        s.noReloc = true;
         return s;
       }
 
@@ -436,6 +440,7 @@ export const M6809 = {
           };
           s.lens[postbyte + 2] = null;
           s.bytes += 2;
+          s.wia = postbyte + 1;
           return s;
         }
 
@@ -547,6 +552,7 @@ export const M6809 = {
           //direct
           s.lens[postbyte] =
             ixreg(p2) | indir | ((32 - (65536 - zptest)) & 0x1f);
+          s.noReloc = true; // 5-bit offset baked into postbyte — no address field to relocate
           return s;
         }
 
@@ -555,6 +561,7 @@ export const M6809 = {
         if (zptest < 16 && zptest > -17 && ixregPC(p2) != 4 && !indir) {
           //direct
           s.lens[postbyte] = ixreg(p2) | indir | (zptest & 0x1f);
+          s.noReloc = true; // 5-bit offset baked into postbyte — no address field to relocate
           return s;
         }
 
