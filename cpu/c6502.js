@@ -188,8 +188,17 @@ export const C6502 = {
           try {
             zptest = Parser.evaluate(p1,vars);
             if (zptest<0x100 && ax[6]>=0) {
-              addr = 6;
-              lens[1] = function(vars){return Parser.evaluate(p1,vars);};
+              // Don't auto-select ZP mode if any referenced symbol is in a
+              // non-ZP segment (CSEG/ESEG) — those get relocated to high addresses.
+              const syms = Parser.usage(p1, vars);
+              const hasAbsRelocatable = syms.some(s => {
+                const seg = vars[s + "$$seg"];
+                return seg === "CSEG" || seg === "ESEG";
+              });
+              if (!hasAbsRelocatable) {
+                addr = 6;
+                lens[1] = function(vars){return Parser.evaluate(p1,vars);};
+              }
             }
           } catch (e) {
            // console.log("ZDECH",p1,vars)

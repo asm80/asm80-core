@@ -134,7 +134,11 @@ export const resolveLibrary = (name, cpuExt, files, dir) => {
     candidates.push({ path: key, ver: parsed });
   }
 
-  if (candidates.length === 0) return null;
+  // ── Fallback: unversioned file (e.g. "libc.lib65") ────────────────────────
+  if (candidates.length === 0) {
+    const unversionedPath = joinPath(dir, `${bareName}.${cpuExt}`);
+    return files[unversionedPath] !== undefined ? unversionedPath : null;
+  }
 
   // Return path of the highest satisfying version
   candidates.sort((a, b) => semverCompare(b.ver, a.ver));
