@@ -5,7 +5,7 @@ import * as Parser from "../parser.js";
 import { pass1 } from "../pass1.js";
 import { pass2 } from "../pass2.js";
 import { lst } from "../listing.js";
-import { objCode } from "../objcode.js";
+import { objCode, linkModules } from "../objcode.js";
 
 QUnit.module("debug-loc");
 
@@ -76,4 +76,123 @@ nop`);
         { off: 0, fileId: 1, line: 9, comment: "first" },
         { off: 1, fileId: 1, line: 12, comment: "second" }
     ], "merged code item keeps shifted debug locations");
+});
+
+QUnit.test("linkModules emits absolute debug line starts", async assert => {
+    const moduleA = await compileAssembly(`.pragma module
+.file 1 "main.c"
+.export main
+main:
+.loc 1 9 ; first
+nop
+.loc 1 12 ; second
+nop`);
+    const moduleB = await compileAssembly(`.pragma module
+.file 4 "lib.c"
+.export helper
+helper:
+.loc 4 27 ; helper
+nop`);
+
+    const objA = objCode(moduleA.dump, moduleA.vars, moduleA.opts, "module-a");
+    const objB = objCode(moduleB.dump, moduleB.vars, moduleB.opts, "module-b");
+    const linked = linkModules({
+        endian: false,
+        segments: { CSEG: "0x2000" },
+        vars: {},
+        entrypoint: "main"
+    }, [objA, objB], []);
+
+    assert.deepEqual(linked.debug, {
+        files: [
+            { id: 1, path: "main.c" },
+            { id: 4, path: "lib.c" }
+        ],
+        lineStarts: [
+            { addr: 0x2000, fileId: 1, line: 9, comment: "first" },
+            { addr: 0x2001, fileId: 1, line: 12, comment: "second" },
+            { addr: 0x2002, fileId: 4, line: 27, comment: "helper" }
+        ]
+    }, "linked debug contains absolute addresses with preserved file ids and lines");
+});
+
+QUnit.test("linkModules always returns debug envelope", async assert => {
+    const moduleNoDebug = await compileAssembly(`.pragma module
+.export main
+main:
+nop`);
+    const obj = objCode(moduleNoDebug.dump, moduleNoDebug.vars, moduleNoDebug.opts, "module-nodbg");
+    const linked = linkModules({
+        endian: false,
+        segments: { CSEG: "0x1000" },
+        vars: {},
+        entrypoint: "main"
+    }, [obj], []);
+
+    assert.deepEqual(linked.debug, {
+        files: [],
+        lineStarts: []
+    }, "debug envelope exists even when there are no debug records");
+});
+
+QUnit.test("linkModules deduplicates debug files by file id", async assert => {
+    const moduleA = await compileAssembly(`.pragma module
+.file 1 "a.c"
+.export main
+main:
+.loc 1 1
+nop`);
+    const moduleB = await compileAssembly(`.pragma module
+.file 1 "b.c"
+.export helper
+helper:
+.loc 1 2
+nop`);
+    const objA = objCode(moduleA.dump, moduleA.vars, moduleA.opts, "module-a");
+    const objB = objCode(moduleB.dump, moduleB.vars, moduleB.opts, "module-b");
+    const linked = linkModules({
+        endian: false,
+        segments: { CSEG: "0x3000" },
+        vars: {},
+        entrypoint: "main"
+    }, [objA, objB], []);
+
+    assert.deepEqual(linked.debug.files, [
+        { id: 1, path: "a.c" }
+    ], "file table keeps a single entry per file id");
+    assert.equal(linked.debug.lineStarts.length, 2, "line starts from both modules are preserved");
+});
+
+QUnit.test("linkModules includes debug files from library modules pulled by extern resolution", async assert => {
+    const mainModule = await compileAssembly(`.pragma module
+.file 1 "main.c"
+.extern helper
+.export main
+main:
+.loc 1 1
+nop
+jmp helper`);
+    const libModule = await compileAssembly(`.pragma module
+.file 7 "lib.c"
+.export helper
+helper:
+.loc 7 20
+nop`);
+    const mainObj = objCode(mainModule.dump, mainModule.vars, mainModule.opts, "main-module");
+    const libObj = objCode(libModule.dump, libModule.vars, libModule.opts, "lib-module");
+    const linked = linkModules({
+        endian: false,
+        segments: { CSEG: "0x4000" },
+        vars: {},
+        entrypoint: "main"
+    }, [mainObj], [libObj]);
+
+    assert.deepEqual(linked.debug.files, [
+        { id: 1, path: "main.c" },
+        { id: 7, path: "lib.c" }
+    ], "debug file table includes library-provided module file");
+    assert.deepEqual(linked.debug.lineStarts, [
+        { addr: 0x4000, fileId: 1, line: 1 },
+        { addr: 0x4004, fileId: 7, line: 20 }
+    ], "line starts include both main and pulled library module");
 });

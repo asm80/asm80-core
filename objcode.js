@@ -333,6 +333,7 @@ export const linkModules = (data, modules, library) => {
     let entrypoint = data.entrypoint?data.entrypoint.toUpperCase():"_MAIN"
 
     let out = []
+    let debugFiles = new Map()
     let resolves = {}
     let notresolved=[]
     for (let v in data.vars) {
@@ -420,6 +421,14 @@ export const linkModules = (data, modules, library) => {
 
     //add all modules we have specified in link recipe
     for (let mod of modules) {
+        if (mod.debug && mod.debug.files && mod.debug.files.length) {
+            for (let file of mod.debug.files) {
+                if (!Number.isInteger(file.id)) continue
+                if (!debugFiles.has(file.id)) {
+                    debugFiles.set(file.id, file.path)
+                }
+            }
+        }
         state = addModule(mod, state, out)
     }
 
@@ -506,7 +515,19 @@ export const linkModules = (data, modules, library) => {
 
         out.sort((a,b) => a.addr-b.addr)
 
-    return {
+    let lineStarts = []
+    for (let s of out) {
+        if (!s.dbg || !s.dbg.length) continue
+        lineStarts = lineStarts.concat(s.dbg.map((dbg) => ({
+            addr: s.addr + dbg.off,
+            fileId: dbg.fileId,
+            line: dbg.line,
+            ...(dbg.comment ? { comment: dbg.comment } : {}),
+        })))
+    }
+    lineStarts.sort((a, b) => a.addr - b.addr)
+
+    let result = {
         //notresolved, 
         CSEG,
         DSEG,
@@ -517,6 +538,12 @@ export const linkModules = (data, modules, library) => {
         dump:out, 
 
     }
+    result.debug = {
+        files: [...debugFiles.entries()].map(([id, path]) => ({ id, path })).sort((a, b) => a.id - b.id),
+        lineStarts,
+    }
+
+    return result
 
     /*
     return {
