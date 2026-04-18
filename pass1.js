@@ -275,8 +275,12 @@ export const pass1 = async (V, vxs, opts) => {
           try {
             let [fileIdExpr, filePathExpr] = parseDebugParams(op);
             let fileId = Parser.evaluate(fileIdExpr, vars);
-            let filePath = Parser.evaluate(filePathExpr, vars);
-            if (Number.isInteger(fileId) && fileId > 0 && typeof filePath === "string") {
+            // Strip surrounding quotes without expression evaluation so that
+            // Windows paths with backslashes are not treated as escape sequences.
+            let filePath = typeof filePathExpr === "string"
+              ? filePathExpr.trim().replace(/^["']|["']$/g, "")
+              : null;
+            if (Number.isInteger(fileId) && fileId > 0 && typeof filePath === "string" && filePath.length > 0) {
               opts.debugFiles[fileId] = filePath;
             }
           } catch (e) {
