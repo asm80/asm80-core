@@ -1,5 +1,6 @@
 import QUnit from "qunit";
 
+import { asm } from "../asm.js";
 import { I8080 } from "../cpu/i8080.js";
 import * as Parser from "../parser.js";
 import { pass1 } from "../pass1.js";
@@ -195,4 +196,77 @@ nop`);
         { addr: 0x4000, fileId: 1, line: 1 },
         { addr: 0x4004, fileId: 7, line: 20 }
     ], "line starts include both main and pulled library module");
+});
+
+QUnit.test("asm.lmap exports linked debug data as sidecar text", async assert => {
+    const moduleA = await compileAssembly(`.pragma module
+.file 1 "main.c"
+.export main
+main:
+.loc 1 9 ; first
+nop
+.loc 1 12 ; second
+nop`);
+    const moduleB = await compileAssembly(`.pragma module
+.file 4 "lib.c"
+.export helper
+helper:
+.loc 4 27 ; helper
+nop`);
+    const linked = linkModules({
+        endian: false,
+        segments: { CSEG: "0x20A0" },
+        vars: {},
+        entrypoint: "main"
+    }, [
+        objCode(moduleA.dump, moduleA.vars, moduleA.opts, "module-a"),
+        objCode(moduleB.dump, moduleB.vars, moduleB.opts, "module-b")
+    ], []);
+
+    assert.equal(asm.lmap(linked), `# files
+file_id,path
+1,main.c
+4,lib.c
+
+# lines
+addr,file_id,line,comment
+0x20A0,1,9,first
+0x20A1,1,12,second
+0x20A2,4,27,helper`, "lmap matches the expected sidecar text format");
+});
+
+QUnit.test("asm.lmap escapes commas and quotes in path and comment", assert => {
+    const linked = {
+        debug: {
+            files: [
+                { id: 7, path: 'src,"main".c' }
+            ],
+            lineStarts: [
+                { addr: 0x4ABC, fileId: 7, line: 42, comment: 'call "puts", now' }
+            ]
+        }
+    };
+
+    assert.equal(asm.lmap(linked), `# files
+file_id,path
+7,"src,""main"".c"
+
+# lines
+addr,file_id,line,comment
+0x4ABC,7,42,"call ""puts"", now"`, "CSV output escapes quotes and commas");
+});
+
+QUnit.test("asm.lmap emits headers when debug arrays are empty", assert => {
+    const linked = {
+        debug: {
+            files: [],
+            lineStarts: []
+        }
+    };
+
+    assert.equal(asm.lmap(linked), `# files
+file_id,path
+
+# lines
+addr,file_id,line,comment`, "empty debug still produces a valid envelope");
 });

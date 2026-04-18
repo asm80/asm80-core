@@ -1,4 +1,51 @@
 import {toHex2, toHex4} from './utils/utils.js';
+
+const csvEscape = (value) => {
+  if (value === undefined || value === null) {
+    return "";
+  }
+  let text = `${value}`;
+  if (text.includes('"')) {
+    text = text.replace(/"/g, '""');
+  }
+  if (/[",\r\n]/.test(text)) {
+    return `"${text}"`;
+  }
+  return text;
+};
+
+const formatAddr = (addr) => `0x${Number(addr).toString(16).toUpperCase()}`;
+
+export const lmap = (result) => {
+  const debug = result && result.debug ? result.debug : {};
+  const files = Array.isArray(debug.files) ? [...debug.files] : [];
+  const lineStarts = Array.isArray(debug.lineStarts) ? [...debug.lineStarts] : [];
+  const out = [
+    "# files",
+    "file_id,path",
+  ];
+
+  files
+    .sort((a, b) => a.id - b.id)
+    .forEach((file) => {
+      out.push(`${file.id},${csvEscape(file.path)}`);
+    });
+
+  out.push("");
+  out.push("# lines");
+  out.push("addr,file_id,line,comment");
+
+  lineStarts
+    .sort((a, b) => a.addr - b.addr)
+    .forEach((entry) => {
+      out.push(
+        `${formatAddr(entry.addr)},${entry.fileId},${entry.line},${csvEscape(entry.comment)}`
+      );
+    });
+
+  return out.join("\n");
+};
+
 export const lst = (result, raw, compact=false) => {
   let V = result.dump;
   let  vars = result.vars;
