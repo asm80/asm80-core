@@ -331,6 +331,8 @@ const parseLineCore = (s, macros, opts = {stopFlag:null, olds:null, assembler:nu
       s.opcode === ".CSTR" ||
       s.opcode === ".ISTR" ||
       s.opcode === ".PSTR" ||
+      s.opcode === ".FILE" ||
+      s.opcode === ".LOC" ||
       //segments
       s.opcode === ".CSEG" ||
       s.opcode === ".DSEG" ||

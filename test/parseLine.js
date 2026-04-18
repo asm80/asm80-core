@@ -55,3 +55,20 @@ QUnit.test("label-less line with .segment in params → second parse returns opc
         "throws Unrecognized when second-pass opcode is empty string"
     );
 });
+
+QUnit.test("recognizes .file with numeric id and quoted path", assert => {
+    const s = parseLine({ line: '.file 12, "demo.asm"', numline: 1 }, macros, opts);
+    assert.equal(s.opcode, ".FILE", "opcode is preserved as .FILE");
+    assert.equal(s.params.length, 2, "has id and path params");
+    assert.equal(Number(s.params[0]), 12, "id parses as number");
+    assert.equal(s.params[1], "\"demo.asm\"", "path parameter is preserved");
+});
+
+QUnit.test("recognizes .loc with numeric fields and trailing comment", assert => {
+    const s = parseLine({ line: ".loc 12, 34 ; comment", numline: 1 }, macros, opts);
+    assert.equal(s.opcode, ".LOC", "opcode is preserved as .LOC");
+    assert.equal(s.params.length, 2, "has fileId and line params");
+    assert.equal(Number(s.params[0]), 12, "fileId parses as number");
+    assert.equal(Number(s.params[1]), 34, "line parses as number");
+    assert.equal((s.remark || "").trim(), "comment", "trailing comment is preserved");
+});
