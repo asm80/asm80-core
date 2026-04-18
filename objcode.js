@@ -60,6 +60,10 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
     let externs = []    // External symbol declarations
     let used = []       // External symbols actually used
     let exports = {}    // Symbols exported from this module
+    let debugFiles = Object.entries(opts.debugFiles || {})
+        .map(([id, path]) => ({ id: Number(id), path }))
+        .filter((file) => Number.isInteger(file.id))
+        .sort((a, b) => a.id - b.id)
 
     // Build symbol-to-segment mapping for relocation.
     // Only include code/data labels, not EQU/SET/= assignments (those are
@@ -97,6 +101,14 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
         let op = {
             lens: ln.lens,        // Generated machine code bytes
             segment: ln.segment,  // Segment where instruction resides
+        }
+        if (ln.loc) {
+            op.dbg = [{
+                off: 0,
+                fileId: ln.loc.fileId,
+                line: ln.loc.line,
+                ...(ln.loc.comment ? { comment: ln.loc.comment } : {}),
+            }]
         }
 
 
@@ -168,7 +180,15 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
         // Optimization: concatenate consecutive pure code instructions
         if (typeof op.rel=="undefined" && typeof op.ext=="undefined" && lastOne && lastOne.segment==op.segment) {
             // Merge with previous instruction if both are pure code in same segment
+            let baseOff = lastOne.lens.length
             lastOne.lens = lastOne.lens.concat(op.lens)
+            if (op.dbg && op.dbg.length) {
+                if (!lastOne.dbg) lastOne.dbg = []
+                lastOne.dbg = lastOne.dbg.concat(op.dbg.map((dbg) => ({
+                    ...dbg,
+                    off: dbg.off + baseOff,
+                })))
+            }
             continue
         }
 
@@ -200,7 +220,7 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
      */
 
     // Return relocatable object module
-    return {
+    let result = {
         code:out,                      // Generated object code instructions
         externs:used,                  // External symbols referenced
         exports:exports,               // Symbols exported by this module
@@ -209,6 +229,10 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
         name: moduleName,              // Module identifier
         seglen: seglen,                // Length of each segment
     }
+    if (debugFiles.length) {
+        result.debug = { files: debugFiles }
+    }
+    return result
 }
 
 /**

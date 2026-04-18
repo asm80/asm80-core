@@ -5,12 +5,13 @@ import * as Parser from "../parser.js";
 import { pass1 } from "../pass1.js";
 import { pass2 } from "../pass2.js";
 import { lst } from "../listing.js";
+import { objCode } from "../objcode.js";
 
 QUnit.module("debug-loc");
 
 const readFile = () => "";
 
-const compileListing = async (source, compact = false) => {
+const compileAssembly = async (source) => {
     const opts = {
         assembler: I8080,
         readFile,
@@ -28,7 +29,12 @@ const compileListing = async (source, compact = false) => {
     vx[1].__PRAGMAS = opts.PRAGMAS;
     vx = pass2(vx, opts);
 
-    return lst({ dump: vx[0], vars: vx[1], opts }, false, compact);
+    return { dump: vx[0], vars: vx[1], opts };
+};
+
+const compileListing = async (source, compact = false) => {
+    const assembled = await compileAssembly(source);
+    return lst(assembled, false, compact);
 };
 
 QUnit.test("lst renders .loc marker with comment on tagged emitted line", async assert => {
@@ -50,4 +56,24 @@ nop`, true);
     assert.ok(line, "compact instruction line rendered");
     assert.true(line.includes("NOP"), "opcode remains present");
     assert.true(line.includes(".loc 1 12 ; once"), "compact listing shows .loc marker");
+});
+
+QUnit.test("objCode emits debug.files and merged dbg offsets", async assert => {
+    const assembled = await compileAssembly(`.file 1 "main.c"
+.loc 1 9 ; first
+nop
+.loc 1 12 ; second
+nop`);
+    const obj = objCode(assembled.dump, assembled.vars, assembled.opts, "debug-loc");
+
+    assert.deepEqual(obj.debug, {
+        files: [
+            { id: 1, path: "main.c" }
+        ]
+    }, "object includes debug file table");
+    assert.equal(obj.code.length, 1, "pure code instructions still merge");
+    assert.deepEqual(obj.code[0].dbg, [
+        { off: 0, fileId: 1, line: 9, comment: "first" },
+        { off: 1, fileId: 1, line: 12, comment: "second" }
+    ], "merged code item keeps shifted debug locations");
 });
