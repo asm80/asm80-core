@@ -3,6 +3,14 @@ export const lst = (result, raw, compact=false) => {
   let V = result.dump;
   let  vars = result.vars;
   let opts = result.opts;
+    let formatLoc = (loc) => {
+      if (!loc) return "";
+      let marker = `.loc ${loc.fileId} ${loc.line}`;
+      if (loc.comment) {
+        marker += ` ; ${loc.comment}`;
+      }
+      return marker;
+    };
     let ln;
     let op;
     let out = "";
@@ -64,6 +72,12 @@ export const lst = (result, raw, compact=false) => {
       }
       if (op.remark) {
         ln += ";" + op.remark;
+      }
+      if (op.loc) {
+        if (ln.length && ln[ln.length - 1] !== " ") {
+          ln += " ";
+        }
+        ln += formatLoc(op.loc);
       }
       out += ln + "\n";
     }
