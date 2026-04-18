@@ -32,6 +32,16 @@ Promise resolving to compilation result object:
 }
 ```
 
+When source uses `.file/.loc`, `dump` may contain optional line-start markers on emitted rows:
+
+```javascript
+{
+  opcode: "NOP",
+  lens: [0x00],
+  loc: { fileId: 1, line: 9, comment: "i = 1;" } // optional
+}
+```
+
 **Example:**
 ```javascript
 import { compile } from './asm.js';
@@ -95,6 +105,9 @@ Promise resolving to linked program object
 - Handles endianness consistency
 - Resolves inter-module references
 - Supports library linking
+- Carries optional debug map in `result.debug`:
+  - `files: [{ id, path }]`
+  - `lineStarts: [{ addr, fileId, line, comment? }]`
 
 ### `lmap(result)`
 
