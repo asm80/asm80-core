@@ -9,9 +9,28 @@ const notInModule = (opts, directive) => {
 
 export const pass1 = async (V, vxs, opts) => {
     if (!opts.xref) opts.xref = {};
+    if (!opts.debugFiles) opts.debugFiles = {};
+    opts._pendingLoc = null;
     let segment = "CSEG";
     let segallow = () => {
       if (segment === "BSSEG") throw {msg:op.opcode + " is not allowed in BSSEG"};
+    };
+    let attachPendingLoc = (op) => {
+      if (opts._pendingLoc &&
+        !op.ifskip &&
+        ((typeof op.bytes === "number" && op.bytes > 0) || (op.lens && op.lens.length > 0))) {
+        op.loc = {...opts._pendingLoc};
+        opts._pendingLoc = null;
+      }
+    };
+    let parseDebugParams = (op) => {
+      if (op.params.length > 1) return op.params;
+      if (!op.params.length || typeof op.params[0] !== "string") return [];
+      let raw = op.params[0].trim();
+      if (!raw) return [];
+      let match = raw.match(/^(\S+)\s+(.+)$/);
+      if (!match) return [raw];
+      return [match[1], match[2].trim()];
     };
     let seg = {};
     let PC = 0;
@@ -252,6 +271,39 @@ export const pass1 = async (V, vxs, opts) => {
           continue;
         }
 
+        if (op.opcode === ".FILE") {
+          try {
+            let [fileIdExpr, filePathExpr] = parseDebugParams(op);
+            let fileId = Parser.evaluate(fileIdExpr, vars);
+            let filePath = Parser.evaluate(filePathExpr, vars);
+            if (Number.isInteger(fileId) && fileId > 0 && typeof filePath === "string") {
+              opts.debugFiles[fileId] = filePath;
+            }
+          } catch (e) {
+            // Silent ignore for invalid .FILE metadata.
+          }
+          continue;
+        }
+
+        if (op.opcode === ".LOC") {
+          try {
+            let [fileIdExpr, lineExpr] = parseDebugParams(op);
+            let fileId = Parser.evaluate(fileIdExpr, vars);
+            let line = Parser.evaluate(lineExpr, vars);
+            if (Number.isInteger(fileId) &&
+              fileId > 0 &&
+              Number.isInteger(line) &&
+              line > 0 &&
+              opts.debugFiles[fileId]) {
+              let comment = op.remark && op.remark.trim() ? op.remark.trim() : undefined;
+              opts._pendingLoc = comment ? {fileId, line, comment} : {fileId, line};
+            }
+          } catch (e) {
+            // Silent ignore for invalid .LOC metadata.
+          }
+          continue;
+        }
+
 
         if (op.opcode === ".CSEG") {
           seg[segment] = PC;
@@ -418,6 +470,7 @@ export const pass1 = async (V, vxs, opts) => {
           //console.log(op.lens);
         }
 
+        attachPendingLoc(op);
         PC = PC + bytes;
 
         continue;
@@ -452,6 +505,7 @@ export const pass1 = async (V, vxs, opts) => {
           op.lens[iq] = m;
         }
         //console.log(op.lens);
+        attachPendingLoc(op);
         PC = PC + bytes;
 
         continue;
@@ -465,6 +519,7 @@ export const pass1 = async (V, vxs, opts) => {
         for (let iq = 0; iq < bytes; iq++) {
           op.lens[iq] = 0;
         }
+        attachPendingLoc(op);
         PC = PC + bytes;
 
         continue;
@@ -556,6 +611,7 @@ export const pass1 = async (V, vxs, opts) => {
           op.lens[op.bytes++] = cd % 256;
         }
         //console.log(op.lens);
+        attachPendingLoc(op);
         PC = PC + op.bytes;
 
         continue;
@@ -585,11 +641,11 @@ export const pass1 = async (V, vxs, opts) => {
         segallow();
         //console.log(op,opa);
         Object.assign(op, opa);
-        op = opa;
       }
 
       if (op.bytes === undefined) op.bytes = 0;
       //console.log(op.bytes,op)
+      attachPendingLoc(op);
       PC += op.bytes;
       if (op.params && op.params.length && !op.opcode) {
         throw {

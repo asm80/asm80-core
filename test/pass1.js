@@ -204,3 +204,75 @@ QUnit.test('params without opcode throws "No opcode"', async assert => {
     asyncThrows(assert, () => doPass(`nop\n 0x42, 0x43`),
         (err) => /No opcode/.test(err.msg));
 });
+
+QUnit.test('.loc tags first byte-emitting line even across non-emitting directives', async assert => {
+    const [ops] = await doPass(`.file 1 "main.c"
+.loc 1 9 ;  i = 1
+.if 1
+.endif
+nop`);
+
+    const emitted = ops.find((op) => op.opcode === 'NOP');
+    assert.ok(emitted, 'found emitted instruction');
+    assert.deepEqual(emitted.loc, { fileId: 1, line: 9, comment: 'i = 1' });
+});
+
+QUnit.test('invalid .file/.loc are silently ignored', async assert => {
+    assert.expect(4);
+
+    const [ops] = await doPass(`.file X "bad.c"
+.loc 99 NaN ; ignored
+nop`);
+
+    const emitted = ops.find((op) => op.opcode === 'NOP');
+    assert.ok(emitted, 'found emitted instruction');
+    assert.strictEqual(emitted.loc, undefined, 'invalid .loc does not attach metadata');
+    assert.strictEqual(ops.find((op) => op.opcode === '.FILE').params[0], 'X "bad.c"', 'invalid .file did not disrupt assembly');
+    assert.deepEqual(ops.filter((op) => op.opcode === '.FILE' || op.opcode === '.LOC').map((op) => op.loc), [undefined, undefined], 'debug directives themselves are untouched');
+});
+
+QUnit.test('invalid .loc does not overwrite prior valid pending loc', async assert => {
+    const [ops] = await doPass(`.file 1 "main.c"
+.loc 1 7 ; keep me
+.loc nope NaN ; ignore me
+nop`);
+
+    const emitted = ops.find((op) => op.opcode === 'NOP');
+    assert.ok(emitted, 'found emitted instruction');
+    assert.deepEqual(emitted.loc, { fileId: 1, line: 7, comment: 'keep me' });
+});
+
+QUnit.test('pending .loc is cleared after the first emitted instruction', async assert => {
+    const [ops] = await doPass(`.file 1 "main.c"
+.loc 1 12 ; once
+nop
+nop`);
+
+    const emitted = ops.filter((op) => op.opcode === 'NOP');
+    assert.strictEqual(emitted.length, 2, 'found both emitted instructions');
+    assert.deepEqual(emitted[0].loc, { fileId: 1, line: 12, comment: 'once' }, 'first emitted instruction gets pending loc');
+    assert.strictEqual(emitted[1].loc, undefined, 'second emitted instruction does not keep stale loc');
+});
+
+QUnit.test('pending .loc does not leak across separate pass1 invocations with shared opts', async assert => {
+    const opts = { assembler: I8080, readFile };
+    const first = await Parser.parse(`.file 1 "main.c"\n.loc 1 33 ; stale`, opts);
+    await pass1(first, null, opts);
+
+    const second = await Parser.parse(`nop`, opts);
+    const [ops] = await pass1(second, null, opts);
+
+    assert.strictEqual(ops[0].opcode, 'NOP', 'second invocation parsed emitted instruction');
+    assert.strictEqual(ops[0].loc, undefined, 'stale pending loc is cleared at the start of the next pass');
+});
+
+QUnit.test('.loc attaches to byte-emitting data directives without lens', async assert => {
+    const [ops] = await doPass(`.file 1 "main.c"
+.loc 1 21 ; table
+db 1`);
+
+    const data = ops.find((op) => op.opcode === 'DB');
+    assert.ok(data, 'found byte-emitting data directive');
+    assert.strictEqual(data.bytes, 1, 'data directive emits bytes');
+    assert.deepEqual(data.loc, { fileId: 1, line: 21, comment: 'table' }, 'loc attaches based on emission, not only lens');
+});
