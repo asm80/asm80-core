@@ -139,3 +139,5 @@ old-cpu/
 asm.old.js
 
 fail
+
+.worktrees/
