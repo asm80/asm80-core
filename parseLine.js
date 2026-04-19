@@ -338,6 +338,8 @@ const parseLineCore = (s, macros, opts = {stopFlag:null, olds:null, assembler:nu
       s.opcode === ".DSEG" ||
       s.opcode === ".ESEG" ||
       s.opcode === ".BSSEG" ||
+      s.opcode === ".HEAPSEG" ||
+      s.opcode === ".SEGMENT" ||
       //modules
       s.opcode === ".EXPORT" ||
       s.opcode === ".EXTERN" ||
@@ -355,7 +357,6 @@ const parseLineCore = (s, macros, opts = {stopFlag:null, olds:null, assembler:nu
       s.opcode === ".MACPACK" ||
       s.opcode === ".FEATURE" ||
       s.opcode === ".ZEROPAGE" ||
-      s.opcode === ".SEGMENT" ||
       s.opcode === ".SETCPU") {
       s.opcode = "";
       return s;

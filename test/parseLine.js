@@ -46,14 +46,12 @@ QUnit.test("line starting with $ has no opcode but non-empty params → throws",
 
 // ─── second parse attempt returns opcode="" → throw — lines 397-399 ──────────
 
-QUnit.test("label-less line with .segment in params → second parse returns opcode='' → throws", assert => {
-    // 'foo' is parsed as opcode, '.segment code' as params.  The second-attempt parse
-    // produces opcode=".SEGMENT" which parseLine maps to "" → !sx.opcode is true → throws.
-    assert.throws(
-        () => parseLine({ line: "foo .segment code", numline: 1 }, macros, opts),
-        (e) => typeof e === "object" && /Unrecognized/.test(e.msg),
-        "throws Unrecognized when second-pass opcode is empty string"
-    );
+QUnit.test("label-less line with .segment in params is reparsed as a valid segment directive", assert => {
+    // 'foo .segment code' is reparsed as 'foo: .segment code'.
+    const s = parseLine({ line: "foo .segment code", numline: 1 }, macros, opts);
+    assert.equal(s.label, "FOO", "first token is interpreted as label in second pass");
+    assert.equal(s.opcode, ".SEGMENT", "opcode is preserved as .SEGMENT");
+    assert.equal(s.params[0], "code", "segment name is parsed as directive parameter");
 });
 
 QUnit.test("recognizes .file with numeric id and quoted path", assert => {

@@ -12,6 +12,14 @@ export const pass1 = async (V, vxs, opts) => {
     if (!opts.debugFiles) opts.debugFiles = {};
     opts._pendingLoc = null;
     let segment = "CSEG";
+    const normalizeSegmentName = (name) => String(name || "").trim().toUpperCase();
+    const segmentAlias = {
+      ".CSEG": "CSEG",
+      ".DSEG": "DSEG",
+      ".ESEG": "ESEG",
+      ".BSSEG": "BSSEG",
+      ".HEAPSEG": "HEAPSEG",
+    };
     let segallow = () => {
       if (segment === "BSSEG") throw {msg:op.opcode + " is not allowed in BSSEG"};
     };
@@ -32,7 +40,8 @@ export const pass1 = async (V, vxs, opts) => {
       if (!match) return [raw];
       return [match[1], match[2].trim()];
     };
-    let seg = {};
+    let segmentPC = {};
+    segmentPC[segment] = 0;
     let PC = 0;
     let vars = {};
     if (vxs) vars = vxs;
@@ -47,6 +56,18 @@ export const pass1 = async (V, vxs, opts) => {
     let phase = 0;
     let DP = 0;
     //let anon = []
+
+    const switchSegment = (target, op) => {
+      const normalized = normalizeSegmentName(target);
+      if (!normalized) {
+        throw {msg: ".SEGMENT needs a segment name"};
+      }
+      segmentPC[segment] = PC;
+      segment = normalized;
+      PC = segmentPC[segment] || 0;
+      op.segment = segment;
+      op.addr = PC;
+    };
 
     //main loop - for each line
     //for (let i = 0, j = V.length; i < j; i++) {
@@ -249,7 +270,7 @@ export const pass1 = async (V, vxs, opts) => {
           }
           PC = Parser.evaluate(op.params[0], vars);
           op.addr = PC;
-          seg[segment] = PC;
+          segmentPC[segment] = PC;
           continue;
         }
 
@@ -309,33 +330,17 @@ export const pass1 = async (V, vxs, opts) => {
         }
 
 
-        if (op.opcode === ".CSEG") {
-          seg[segment] = PC;
-          segment = "CSEG";
-          op.segment = segment;
-          PC = seg[segment] || 0;
-          op.addr = PC;
+        if (segmentAlias[op.opcode]) {
+          switchSegment(segmentAlias[op.opcode], op);
         }
-        if (op.opcode === ".DSEG") {
-          seg[segment] = PC;
-          segment = "DSEG";
-          op.segment = segment;
-          PC = seg[segment] || 0;
-          op.addr = PC;
-        }
-        if (op.opcode === ".ESEG") {
-          seg[segment] = PC;
-          segment = "ESEG";
-          op.segment = segment;
-          PC = seg[segment] || 0;
-          op.addr = PC;
-        }
-        if (op.opcode === ".BSSEG") {
-          seg[segment] = PC;
-          segment = "BSSEG";
-          op.segment = segment;
-          PC = seg[segment] || 0;
-          op.addr = PC;
+        if (op.opcode === ".SEGMENT") {
+          let target = "";
+          if (op.params && op.params.length > 0) {
+            target = op.params[0];
+          } else if (typeof op.paramstring === "string" && op.paramstring.trim()) {
+            target = op.paramstring.trim();
+          }
+          switchSegment(target, op);
         }
 
         if (op.opcode === ".PHASE") {
