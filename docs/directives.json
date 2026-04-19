@@ -105,7 +105,15 @@
   },
   {
     "name": ".BSSEG",
-    "function": "Bit Segment - switches to the bit-segment for bit-addressable data (8051)."
+    "function": "BSS Segment - switches to uninitialized data segment (reserved space, no emitted bytes)."
+  },
+  {
+    "name": ".HEAPSEG",
+    "function": "Heap Segment - alias that switches to the HEAPSEG segment."
+  },
+  {
+    "name": ".SEGMENT",
+    "function": "Generic Segment Switch - switches to any named segment: .SEGMENT <name>."
   },
   {
     "name": ".PHASE",

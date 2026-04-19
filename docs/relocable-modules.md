@@ -84,7 +84,7 @@ This produces compact **line-start** metadata (not per-instruction metadata for 
 
 ### Segments
 
-Modules can place data and code into named segments:
+Modules can place data and code into named segments. Built-in aliases:
 
 | Segment | Directive | Typical use |
 |---------|-----------|-------------|
@@ -92,6 +92,13 @@ Modules can place data and code into named segments:
 | `DSEG`  | `.dseg` | Initialized data |
 | `ESEG`  | `.eseg` | Extra segment (e.g. ROM data) |
 | `BSSEG` | `.bsseg` | Uninitialized data (BSS) |
+| `HEAPSEG` | `.heapseg` | Heap-oriented data region (regular relocatable segment) |
+
+You can also switch to any custom segment name with:
+
+```asm
+.segment ZPSEG
+```
 
 Switch between segments freely within a source file:
 
@@ -107,6 +114,12 @@ main: lxi h, hello
 .dseg
 hello: .cstr "Hello, World!\n"
 ```
+
+Notes:
+
+- Segment names are case-insensitive and normalized internally to uppercase.
+- `.SEGMENT` requires a segment name.
+- `BSSEG` keeps its special behavior: it reserves space but does not emit load bytes.
 
 ---
 
@@ -208,17 +221,21 @@ The link recipe is a JSON file that tells the linker how to combine object files
 #### `segments`
 
 Specifies the base address of each segment. Values are strings and support hexadecimal notation (`"0x100"`).
+Any segment name can be used (`CSEG`, `DSEG`, `HEAPSEG`, `FOO`, ...).
 
 ```json
 "segments": {
     "CSEG": "0",
     "DSEG": "0x100",
     "ESEG": "0x200",
-    "BSSEG": "0x300"
+    "BSSEG": "0x300",
+    "HEAPSEG": "0x400",
+    "FOO": "0x500"
 }
 ```
 
 Segments not listed are placed **automatically** immediately after the previous segment ends.
+Placement order is deterministic: known aliases (`CSEG`, `DSEG`, `ESEG`, `BSSEG`, `HEAPSEG`) first, then remaining custom segments in lexicographic order.
 
 #### `vars`
 
@@ -282,7 +299,7 @@ Called automatically by `compile()` when `MODULE` pragma is active. The result i
     cpu:     "8080",         // target CPU
     endian:  false,
     name:    "filename",
-    seglen:  { CSEG, DSEG, ESEG, BSSEG }, // byte lengths of each segment
+    seglen:  { [segmentName]: number },    // byte lengths of each used segment
     debug: {                                // optional
       files: [{ id, path }]                 // source file table from .file
     }
@@ -315,8 +332,9 @@ Links object modules according to a recipe.
 **Returns:**
 ```js
 {
-    CSEG, DSEG, ESEG, BSSEG,   // resolved base addresses
-    seglen,                     // { CSEG, DSEG, ESEG, BSSEG } — total lengths
+    CSEG, DSEG, ESEG, BSSEG,   // legacy convenience fields (0 if missing)
+    segments,                   // { [segmentName]: baseAddress }
+    seglen,                     // { [segmentName]: totalLength }
     entry: { addr, seg },       // resolved entrypoint
     dump: [                     // final code, sorted by address
         { lens, addr, segment }, ...

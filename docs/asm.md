@@ -235,6 +235,16 @@ const opts = {
 };
 ```
 
+## Segment Model
+
+Assembler and linker support generic named segments.
+
+- Built-in aliases: `.CSEG`, `.DSEG`, `.ESEG`, `.BSSEG`, `.HEAPSEG`
+- Generic switch: `.SEGMENT <name>`
+- Segment names are case-insensitive (internally normalized to uppercase)
+- `BSSEG` is special: reserves address space but does not emit load bytes
+- Linker script `segments` map can define base addresses for any segment name
+
 ## Error Handling
 
 The assembler provides structured error reporting:
