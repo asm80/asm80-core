@@ -51,6 +51,37 @@ Use `.export` to make a symbol visible to other modules:
 
 Only exported symbols can be referenced via `.extern` in other modules.
 
+### Source Line Debug Directives (`.file` / `.loc`)
+
+ASM80 supports lightweight C-source-to-ASM line mapping for debugger integrations.
+
+#### `.file`
+
+Registers a source file ID inside the current module:
+
+```asm
+.file 1 "main.c"
+.file 2 "helpers.h"
+```
+
+#### `.loc`
+
+Declares source location for subsequent emitted code:
+
+```asm
+.loc 1 9 ; i = 1;
+```
+
+Semantics:
+
+- `.loc` sets a pending source location
+- pending location is applied to the **first following byte-emitting line** only
+- non-emitting directives between `.loc` and emitted code do not consume it
+- after first emitted line, pending location is cleared
+- invalid `.file` / `.loc` directives are silently ignored (no assembler error)
+
+This produces compact **line-start** metadata (not per-instruction metadata for every instruction).
+
 ### Segments
 
 Modules can place data and code into named segments:
@@ -251,9 +282,26 @@ Called automatically by `compile()` when `MODULE` pragma is active. The result i
     cpu:     "8080",         // target CPU
     endian:  false,
     name:    "filename",
-    seglen:  { CSEG, DSEG, ESEG, BSSEG }  // byte lengths of each segment
+    seglen:  { CSEG, DSEG, ESEG, BSSEG }, // byte lengths of each segment
+    debug: {                                // optional
+      files: [{ id, path }]                 // source file table from .file
+    }
 }
 ```
+
+`code[]` items may also include optional debug markers:
+
+```js
+{
+  lens: [...],
+  segment: "CSEG",
+  dbg: [                                   // optional line-start markers
+    { off: 0, fileId: 1, line: 9, comment: "i = 1;" }
+  ]
+}
+```
+
+`off` is byte offset inside `lens` (important when multiple instructions are merged into one `code` item).
 
 ### `linkModules(data, modules, library)`
 
@@ -272,7 +320,13 @@ Links object modules according to a recipe.
     entry: { addr, seg },       // resolved entrypoint
     dump: [                     // final code, sorted by address
         { lens, addr, segment }, ...
-    ]
+    ],
+    debug: {
+      files: [{ id, path }],    // deduplicated linked file table
+      lineStarts: [             // absolute line-start addresses
+        { addr, fileId, line, comment? }, ...
+      ]
+    }
 }
 ```
 
@@ -332,6 +386,29 @@ const srec = isrec(result);
 ```
 
 Available output functions: `ihex` (Intel HEX), `isrec` / `isrec28` (Motorola S-Record).
+
+### LMAP Sidecar Export
+
+Intel HEX/SREC outputs do not carry source line metadata. Export line mapping as a sidecar:
+
+```js
+import { asm } from './asm.js';
+
+const linked = linkModules(recipe, modules, library);
+const lmapText = asm.lmap(linked);
+```
+
+LMAP text format:
+
+```text
+# files
+file_id,path
+1,main.c
+
+# lines
+addr,file_id,line,comment
+0x4010,1,9,i = 1;
+```
 
 ---
 

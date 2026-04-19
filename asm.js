@@ -1,6 +1,6 @@
 // this is a main file, you know...
 
-import {lst, html} from "./listing.js"
+import {lst, html, lmap} from "./listing.js"
 import { pass1 } from "./pass1.js";
 import {pass2} from "./pass2.js";
 import {objCode, linkModules} from "./objcode.js"
@@ -245,6 +245,7 @@ const link = async (linkList, fileSystem, name="noname") => {
 export const asm = {
   lst,
   html,
+  lmap,
   compile,
   compileFromFile,
   link,

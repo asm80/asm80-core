@@ -32,6 +32,16 @@ Promise resolving to compilation result object:
 }
 ```
 
+When source uses `.file/.loc`, `dump` may contain optional line-start markers on emitted rows:
+
+```javascript
+{
+  opcode: "NOP",
+  lens: [0x00],
+  loc: { fileId: 1, line: 9, comment: "i = 1;" } // optional
+}
+```
+
 **Example:**
 ```javascript
 import { compile } from './asm.js';
@@ -95,6 +105,45 @@ Promise resolving to linked program object
 - Handles endianness consistency
 - Resolves inter-module references
 - Supports library linking
+- Carries optional debug map in `result.debug`:
+  - `files: [{ id, path }]`
+  - `lineStarts: [{ addr, fileId, line, comment? }]`
+
+### `lmap(result)`
+
+Exports linked debug metadata as a sidecar text map.
+
+**Parameters:**
+- `result` (object) - Linked result object containing `debug.files` and `debug.lineStarts`
+
+**Returns:**
+- `string` - Text sidecar with file table and line-start table
+
+**Expected input shape:**
+```javascript
+{
+  debug: {
+    files: [{ id: 1, path: "main.c" }],
+    lineStarts: [{ addr: 0x4010, fileId: 1, line: 9, comment: "i = 1;" }]
+  }
+}
+```
+
+**Output format:**
+```text
+# files
+file_id,path
+1,main.c
+
+# lines
+addr,file_id,line,comment
+0x4010,1,9,i = 1;
+```
+
+**Formatting rules:**
+- `addr` uses `0x` prefix with uppercase hex digits
+- `path` and `comment` use CSV escaping for commas, quotes, and line breaks
+- Empty debug arrays still emit both section headers with no data rows
 
 ## Exported Objects
 
@@ -105,6 +154,7 @@ Combined export object containing all main functions and utilities:
 export const asm = {
   lst,              // Listing generator
   html,             // HTML listing generator  
+  lmap,             // Linked line-map sidecar export
   compile,          // Main compile function
   compileFromFile,  // File-based compile function
   link,             // Module linker
