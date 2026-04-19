@@ -58,6 +58,7 @@
     }
   ],
   "externs": [],
+  "externSegs": {},
   "exports": {
     "KEYIN": {
       "addr": 0,
@@ -69,8 +70,6 @@
   "name": "relocable1",
   "seglen": {
     "CSEG": 14,
-    "DSEG": 0,
-    "ESEG": 0,
     "BSSEG": 10
   }
 }

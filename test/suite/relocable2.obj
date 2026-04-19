@@ -129,6 +129,7 @@
   "externs": [
     "BIOS_PRINT"
   ],
+  "externSegs": {},
   "exports": {
     "PRINT": {
       "addr": 0,

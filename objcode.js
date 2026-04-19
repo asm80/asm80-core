@@ -315,6 +315,14 @@ const findInLibrary = (name, library) => {
 const addModule = (mod, st, out) => {
     const baseBySegment = st.segBase
     const addrBySegment = st.segAddr
+    const moduleBaseBySegment = {}
+    for (let seg in mod.seglen) {
+        const norm = normalizeSegment(seg)
+        if (typeof addrBySegment[norm] === "undefined") {
+            throw {msg:"Unknown segment "+norm}
+        }
+        moduleBaseBySegment[norm] = addrBySegment[norm]
+    }
     //resolve vars
     for (let k in mod.exports) {
         let v = {...mod.exports[k]}
@@ -323,11 +331,13 @@ const addModule = (mod, st, out) => {
         }
         if (v.seg) {
             const seg = normalizeSegment(v.seg)
-            if (typeof baseBySegment[seg] === "undefined") {
+            if (typeof moduleBaseBySegment[seg] === "undefined") {
                 throw {msg:"Unknown segment "+seg}
             }
             v.seg = seg
-            v.addr += baseBySegment[seg]
+            // Exported addresses are module-relative; convert to absolute by
+            // adding the module's actual placement start within the segment.
+            v.addr += moduleBaseBySegment[seg]
         }
         st.resolves[k] = v
         //remove K from notresolved
@@ -347,11 +357,13 @@ const addModule = (mod, st, out) => {
         //local relocs
         if (s.rel) {
             const relseg = normalizeSegment(s.relseg)
-            if (typeof baseBySegment[relseg] === "undefined") {
+            if (typeof moduleBaseBySegment[relseg] === "undefined") {
                 throw {msg:"Unknown relocation segment "+relseg}
             }
             s.relseg = relseg
-            s.base = baseBySegment[relseg]
+            // Internal relocations are module-relative and must use the module
+            // placement in the referenced segment (not only segment base).
+            s.base = moduleBaseBySegment[relseg]
         }
         // no unresolved at this point
         /*

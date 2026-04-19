@@ -65,6 +65,7 @@
     "PRINT",
     "KEYIN"
   ],
+  "externSegs": {},
   "exports": {
     "MAIN": {
       "addr": 0,
@@ -76,8 +77,6 @@
   "name": "relocable",
   "seglen": {
     "CSEG": 10,
-    "DSEG": 15,
-    "ESEG": 0,
-    "BSSEG": 0
+    "DSEG": 15
   }
 }

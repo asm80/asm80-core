@@ -63,11 +63,16 @@
     "bytes": 0,
     "label": "KEYIN",
     "_dp": 0,
-    "params": [],
+    "params": [
+      "KEYIN"
+    ],
     "opcode": ".EXTERN",
     "notparsed": "",
     "pass": 2,
-    "segment": "CSEG"
+    "segment": "CSEG",
+    "usage": [
+      "KEYIN"
+    ]
   },
   {
     "line": "\r",
