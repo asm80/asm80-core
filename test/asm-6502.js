@@ -40,6 +40,22 @@ QUnit.test( "Mode zpg *short", function() {
 	QUnit.assert.equal(p.bytes,2,"Length OK");
 });
 
+QUnit.test("Extern symbol without ZP segment hint does not force zpg", function() {
+	const extVars = {"EXT": null, "_PC": 0x100, "__PRAGMAS": ["MODULE"]};
+	s = {"opcode":"LDA", params:["EXT"], addr:0x100, lens:[], bytes:0};
+	p = C6502.parseOpcode(s, extVars, Parser);
+	QUnit.assert.equal(p.lens[0], 0xAD, "LDA absolute opcode for unresolved extern without hint");
+	QUnit.assert.equal(p.bytes, 3, "Absolute mode length");
+});
+
+QUnit.test("Extern symbol with ZPSEG hint forces zpg", function() {
+	const extVars = {"EXT": null, "EXT$$seg": "ZPSEG", "_PC": 0x100, "__PRAGMAS": ["MODULE"]};
+	s = {"opcode":"LDA", params:["EXT"], addr:0x100, lens:[], bytes:0};
+	p = C6502.parseOpcode(s, extVars, Parser);
+	QUnit.assert.equal(p.lens[0], 0xA5, "LDA zero-page opcode for ZPSEG extern");
+	QUnit.assert.equal(p.bytes, 2, "Zero-page mode length");
+});
+
 QUnit.test( "Mode bad", function() {
 	s = {"opcode":"LDA",params:[],addr:0x100,"lens":[],"bytes":0};
 	QUnit.assert.throws(function(){
@@ -2822,4 +2838,3 @@ QUnit.test( "TYA test, mode imp", function() {
 	QUnit.assert.equal(p.lens[0],0x98,"Opcode OK");
 	QUnit.assert.equal(p.bytes,1,"Length OK");
 });
-

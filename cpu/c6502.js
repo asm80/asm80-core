@@ -146,6 +146,15 @@ export const C6502 = {
   parseOpcode: function (s, vars, Parser, opts) {
     var ax = C6502.set[s.opcode];
     var addr, p1, p2, ins, lens, zptest;
+    const hasZpSegSymbol = (expr) => {
+      if (!vars || !expr) return false;
+      try {
+        const syms = Parser.usage(expr, vars) || [];
+        return syms.some((sym) => vars[sym + "$$seg"] === "ZPSEG");
+      } catch (e) {
+        return false;
+      }
+    };
     if (ax) {
       lens=[];
       //addr decision
@@ -167,6 +176,7 @@ export const C6502 = {
 
       else if (s.params.length == 1) {
         p1 = s.params[0];
+        const forceZpFromSeg = p1 && p1[0] !== "#" && p1[0] !== "*" && p1[0] !== "(" && hasZpSegSymbol(p1);
         addr = 3; //abs
         if (p1 === 'A') {addr = 1;}
         if (p1[0] === '#') {
@@ -187,7 +197,7 @@ export const C6502 = {
         if (vars) {
           try {
             zptest = Parser.evaluate(p1,vars);
-            if (zptest<0x100 && ax[6]>=0) {
+            if (typeof zptest === "number" && zptest >= 0 && zptest<0x100 && ax[6]>=0) {
               // Don't auto-select ZP mode if any referenced symbol is in a
               // non-ZP segment (CSEG/ESEG) — those get relocated to high addresses.
               const syms = Parser.usage(p1, vars);
@@ -204,6 +214,12 @@ export const C6502 = {
            // console.log("ZDECH",p1,vars)
             //;
           }
+        }
+
+        if (forceZpFromSeg && addr === 3) {
+          if (ax[6] < 0) throw "Bad addressing mode at line "+s.numline;
+          addr = 6;
+          lens[1] = function(vars){return Parser.evaluate(p1,vars);};
         }
 
 
@@ -237,6 +253,7 @@ export const C6502 = {
       }
       else if (s.params.length == 2) {
         p1 = s.params[0];
+        const forceZpFromSeg = p1 && p1[0] !== "*" && p1[0] !== "(" && hasZpSegSymbol(p1);
         zptest = null;
         if (vars) {
           try {
@@ -259,7 +276,7 @@ export const C6502 = {
           if (p2 === 'Y') {addr = 8;}
           lens[1] = function(vars){return Parser.evaluate(p1,vars);};
         }
-        else if (zptest!==null && zptest<0x100 && (ax[7]>=0 && p2 === 'X')  && p1[0] !== '(') {
+        else if (typeof zptest === "number" && zptest<0x100 && (ax[7]>=0 && p2 === 'X')  && p1[0] !== '(') {
           if (p2 === 'X' && p1[0] !== '(') {addr = 7;}
           lens[1] = function(vars){return Parser.evaluate(p1,vars);};
         }
@@ -305,6 +322,19 @@ export const C6502 = {
             lens[1] = function(vars){return Parser.evaluate(p1.substr(1),vars);};
             if (addr==14) lens[2] = null;
 
+          }
+        }
+
+        if (forceZpFromSeg) {
+          if (p2 === 'X' && p1[0] !== '(') {
+            if (ax[7] < 0) throw "Bad addressing mode at line "+s.numline;
+            addr = 7;
+            lens[1] = function(vars){return Parser.evaluate(p1,vars);};
+          }
+          if (p2 === 'Y' && p1[0] !== '(') {
+            if (ax[8] < 0) throw "Bad addressing mode at line "+s.numline;
+            addr = 8;
+            lens[1] = function(vars){return Parser.evaluate(p1,vars);};
           }
         }
 

@@ -158,3 +158,28 @@ myfunc:
     assert.strictEqual(ptrBytes[0], 0x05, "ptr_slot lo = $05");
     assert.strictEqual(ptrBytes[1], 0xE0, "ptr_slot hi = $E0");
 });
+
+QUnit.test("E2E: extern name@zpseg forces zpg and links with ZPSEG base", async assert => {
+    const zpMod = await assemble(`
+  .pragma module
+  .segment ZPSEG
+  .export last_key
+last_key:
+  .db 0
+`);
+    const mainMod = await assemble(`
+  .pragma module
+  .extern last_key@zpseg
+  .cseg
+  .export main
+main:
+  lda last_key
+  rts
+`);
+    const out = link([mainMod, zpMod], { CSEG: "0x8000", ZPSEG: "0x0000" });
+    const lda = bytesAt(out, 0x8000, 2);
+    const rts = bytesAt(out, 0x8002, 1);
+    assert.strictEqual(lda[0], 0xA5, "LDA zpg opcode");
+    assert.strictEqual(lda[1], 0x00, "ZP address 0x00");
+    assert.strictEqual(rts[0], 0x60, "RTS");
+});

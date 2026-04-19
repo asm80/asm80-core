@@ -148,15 +148,25 @@ export const M6809 = {
 
     parseOpcode: function (s, vars, Parser, opts) {
       if (!s._dp) s._dp = 0;
+      const hasZpSegSymbol = function (par, vars) {
+        if (!vars || !par) return false;
+        try {
+          const syms = Parser.usage(par, vars) || [];
+          return syms.some((sym) => vars[sym + "$$seg"] === "ZPSEG");
+        } catch (e) {
+          return false;
+        }
+      };
 
       var dptest = function (par, vars, s) {
         if (s._dp < 0 || s._dp > 255) return false;
+        if (hasZpSegSymbol(par, vars)) return true;
         // In relocatable modules, final load address is unknown — never auto-select direct mode
         if (vars.__PRAGMAS && vars.__PRAGMAS.indexOf('MODULE') >= 0) return false;
         try {
           zptest = Parser.evaluate(par, vars);
 
-          if (zptest !== null && zptest !== undefined) {
+          if (typeof zptest === "number" && Number.isFinite(zptest)) {
             var zpp = zptest >> 8;
             //console.log("ZPTEST",zptest,s,zpp)
             if (zpp === s._dp) return true;

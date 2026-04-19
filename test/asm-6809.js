@@ -257,6 +257,22 @@ QUnit.test("SETDP + undef", function () {
   //QUnit.assert.equal(p.lens[1](vars),0x21,"Value");
 });
 
+QUnit.test("Module extern without ZPSEG hint stays extended", function () {
+  const extVars = { EXT: null, _PC: 0x0100, __PRAGMAS: ["MODULE"] };
+  s = { opcode: "LDA", params: ["EXT"], addr: 0x100, lens: [], bytes: 0, _dp: 0 };
+  p = M6809.parseOpcode(s, extVars, Parser);
+  QUnit.assert.equal(p.lens[0], 0xb6, "LDA extended opcode without hint");
+  QUnit.assert.equal(p.bytes, 3, "extended mode length");
+});
+
+QUnit.test("Module extern with ZPSEG hint forces direct", function () {
+  const extVars = { EXT: null, "EXT$$seg": "ZPSEG", _PC: 0x0100, __PRAGMAS: ["MODULE"] };
+  s = { opcode: "LDA", params: ["EXT"], addr: 0x100, lens: [], bytes: 0, _dp: 0 };
+  p = M6809.parseOpcode(s, extVars, Parser);
+  QUnit.assert.equal(p.lens[0], 0x96, "LDA direct opcode for ZPSEG hint");
+  QUnit.assert.equal(p.bytes, 2, "direct mode length");
+});
+
 QUnit.test("CLR 127", function () {
   s = {
     opcode: "CLR",

@@ -108,6 +108,10 @@
     "function": "BSS Segment - switches to uninitialized data segment (reserved space, no emitted bytes)."
   },
   {
+    "name": ".ZPSEG",
+    "function": "Zero Page Segment - alias that switches to the ZPSEG segment."
+  },
+  {
     "name": ".HEAPSEG",
     "function": "Heap Segment - alias that switches to the HEAPSEG segment."
   },
@@ -137,7 +141,7 @@
   },
   {
     "name": ".EXTERN",
-    "function": "External Symbol - declares a symbol that is defined in another module."
+    "function": "External Symbol - declares a symbol that is defined in another module. Optional segment hint syntax: .EXTERN name@segment (or segment:name)."
   },
   {
     "name": "ALIGN",

@@ -36,9 +36,11 @@ Use `.extern` to declare a symbol that is defined in another module:
 ```asm
 .extern print       ; standard form
 keyin: .extern      ; alternative form — label on the same line
+.extern last_key@zpseg ; segment-hinted external symbol
 ```
 
 Both forms are equivalent. The assembler records these as unresolved references; the linker fills in the actual addresses.
+With segment hints, `.extern name@segment` (or `segment:name`) also stores symbol segment metadata for addressing decisions.
 
 ### Exporting Symbols
 
@@ -92,6 +94,7 @@ Modules can place data and code into named segments. Built-in aliases:
 | `DSEG`  | `.dseg` | Initialized data |
 | `ESEG`  | `.eseg` | Extra segment (e.g. ROM data) |
 | `BSSEG` | `.bsseg` | Uninitialized data (BSS) |
+| `ZPSEG` | `.zpseg` | Zero-page / direct-page style segment |
 | `HEAPSEG` | `.heapseg` | Heap-oriented data region (regular relocatable segment) |
 
 You can also switch to any custom segment name with:
@@ -235,7 +238,7 @@ Any segment name can be used (`CSEG`, `DSEG`, `HEAPSEG`, `FOO`, ...).
 ```
 
 Segments not listed are placed **automatically** immediately after the previous segment ends.
-Placement order is deterministic: known aliases (`CSEG`, `DSEG`, `ESEG`, `BSSEG`, `HEAPSEG`) first, then remaining custom segments in lexicographic order.
+Placement order is deterministic: known aliases (`CSEG`, `ZPSEG`, `DSEG`, `ESEG`, `BSSEG`, `HEAPSEG`) first, then remaining custom segments in lexicographic order.
 
 #### `vars`
 
@@ -294,8 +297,9 @@ Called automatically by `compile()` when `MODULE` pragma is active. The result i
 ```js
 {
     code:    [...],          // instructions with relocation metadata
-    exports: { NAME: ... },  // exported symbols with segment info
-    externs: [...],          // required external symbol names
+exports: { NAME: ... },  // exported symbols with segment info
+externs: [...],          // required external symbol names
+externSegs: { [name]: segmentName }, // optional segment hints for extern symbols
     cpu:     "8080",         // target CPU
     endian:  false,
     name:    "filename",

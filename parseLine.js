@@ -338,6 +338,7 @@ const parseLineCore = (s, macros, opts = {stopFlag:null, olds:null, assembler:nu
       s.opcode === ".DSEG" ||
       s.opcode === ".ESEG" ||
       s.opcode === ".BSSEG" ||
+      s.opcode === ".ZPSEG" ||
       s.opcode === ".HEAPSEG" ||
       s.opcode === ".SEGMENT" ||
       //modules

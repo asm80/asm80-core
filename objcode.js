@@ -44,8 +44,36 @@ const put16 = (s, v, endian=false) => {
     }
 }
 
-const SEGMENT_ORDER_PREFIX = ["CSEG", "DSEG", "ESEG", "BSSEG", "HEAPSEG"];
+const SEGMENT_ORDER_PREFIX = ["CSEG", "ZPSEG", "DSEG", "ESEG", "BSSEG", "HEAPSEG"];
 const normalizeSegment = (name) => String(name || "CSEG").toUpperCase();
+const parseExternDecl = (raw, fallbackLabel) => {
+    let token = String(raw || fallbackLabel || "").trim()
+    if (!token) return {name: "", segment: null}
+    let name = token
+    let extSegment = null
+
+    const at = token.lastIndexOf("@")
+    if (at > 0 && at < token.length - 1) {
+        name = token.substring(0, at).trim()
+        extSegment = token.substring(at + 1).trim()
+    } else {
+        const colon = token.indexOf(":")
+        if (colon > 0 && colon < token.length - 1) {
+            const left = token.substring(0, colon).trim()
+            const right = token.substring(colon + 1).trim()
+            if (left && right) {
+                extSegment = left
+                name = right
+            }
+        }
+    }
+
+    if (extSegment) {
+        extSegment = normalizeSegment(extSegment.replace(/^\./, ""))
+    }
+
+    return {name, segment: extSegment}
+}
 
 const sortedSegments = (names) => {
     const uniq = [...new Set(names.map(normalizeSegment))];
@@ -68,6 +96,7 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
     // Initialize output structures
     let out = []        // Generated object code instructions
     let externs = []    // External symbol declarations
+    let externSegs = {} // Optional segment hints for extern symbols
     let used = []       // External symbols actually used
     let exports = {}    // Symbols exported from this module
     let debugFiles = Object.entries(opts.debugFiles || {})
@@ -129,9 +158,16 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
         // Handle external symbol declarations
         if (opcode==".EXTERN") {
             // Declare external symbol that must be resolved by linker
-            let name = ln.params[0];
-            if (!name) name = ln.label
-            externs.push(name.toUpperCase())
+            let raw = ln.params[0];
+            if (!raw) raw = ln.label
+            const decl = parseExternDecl(raw, ln.label)
+            if (decl.name) {
+                const upperName = decl.name.toUpperCase()
+                externs.push(upperName)
+                if (decl.segment) {
+                    externSegs[upperName] = decl.segment
+                }
+            }
         }
         
         // Handle symbol exports
@@ -234,6 +270,7 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
     let result = {
         code:out,                      // Generated object code instructions
         externs:used,                  // External symbols referenced
+        externSegs:externSegs,         // Optional segment hints for external symbols
         exports:exports,               // Symbols exported by this module
         cpu:opts.assembler.cpu,        // Target CPU architecture
         endian:opts.assembler.endian,  // Byte order for multi-byte values
@@ -356,10 +393,26 @@ export const linkModules = (data, modules, library) => {
     //console.log("PASS1: Resolves init: ", resolves)
 
     //resolve references
+    const externSegmentHint = (mod, name) => {
+        if (!mod.externSegs) return null
+        const hint = mod.externSegs[name]
+        if (!hint) return null
+        return normalizeSegment(hint)
+    }
+    const validateExternHint = (mod, name) => {
+        const hinted = externSegmentHint(mod, name)
+        if (!hinted) return
+        const resolved = resolves[name]
+        if (!resolved || !resolved.seg) return
+        if (normalizeSegment(resolved.seg) !== hinted) {
+            throw {msg:`External ${name} expected in ${hinted}, but resolved in ${normalizeSegment(resolved.seg)}`}
+        }
+    }
     const resolveModule = (mod) => {
         //module needs to be resolved
         for (let k of mod.externs) {
             if (resolves[k]) {
+                validateExternHint(mod, k)
                 continue
             }
             if (notresolved.indexOf(k) < 0) {
@@ -392,6 +445,12 @@ export const linkModules = (data, modules, library) => {
             modules.push(mod)
         } else {
             throw {msg:"PASS1 Unresolved external "+name}
+        }
+    }
+
+    for (let mod of modules) {
+        for (let k of (mod.externs || [])) {
+            validateExternHint(mod, k)
         }
     }
 

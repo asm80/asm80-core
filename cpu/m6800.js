@@ -147,6 +147,15 @@ export const M6800 = {
 
   "parseOpcode": function(s,vars, Parser, opts) {
     let p1;
+    const hasZpSegSymbol = (expr) => {
+      if (!vars || !expr) return false;
+      try {
+        const syms = Parser.usage(expr, vars) || [];
+        return syms.some((sym) => vars[sym + "$$seg"] === "ZPSEG");
+      } catch (e) {
+        return false;
+      }
+    };
     let auxopcode = s.opcode;
     //fix param
     if (!s.opcode) return null;
@@ -230,6 +239,14 @@ export const M6800 = {
           return s;
         }
 
+        const forceDirectFromZpSeg = o1>-1 && p1[0] !== "#" && hasZpSegSymbol(p1);
+        if (forceDirectFromZpSeg) {
+          s.lens[0] = o1;
+          s.lens[1] = function(vars){return Parser.evaluate(p1,vars);};
+          s.bytes = 2;
+          return s;
+        }
+
         if (o1>-1 && vars) {
           //otestujeme, jestli se kvalifikuje na DIR
           let zptest = null;
@@ -237,7 +254,7 @@ export const M6800 = {
             zptest = Parser.evaluate(p1,vars);
           } catch(e) {;}
 
-          if (zptest<256 && zptest>=0) {
+          if (typeof zptest === "number" && zptest<256 && zptest>=0) {
             //je to DIR
             s.lens[0] = o1;
             s.lens[1] = function(vars){return Parser.evaluate(p1,vars);};

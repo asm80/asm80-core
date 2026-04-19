@@ -18,7 +18,36 @@ export const pass1 = async (V, vxs, opts) => {
       ".DSEG": "DSEG",
       ".ESEG": "ESEG",
       ".BSSEG": "BSSEG",
+      ".ZPSEG": "ZPSEG",
       ".HEAPSEG": "HEAPSEG",
+    };
+    const parseExternDecl = (raw, fallbackLabel) => {
+      let token = String(raw || fallbackLabel || "").trim();
+      if (!token) return { name: "", segment: null };
+      let name = token;
+      let extSegment = null;
+
+      const at = token.lastIndexOf("@");
+      if (at > 0 && at < token.length - 1) {
+        name = token.substring(0, at).trim();
+        extSegment = token.substring(at + 1).trim();
+      } else {
+        const colon = token.indexOf(":");
+        if (colon > 0 && colon < token.length - 1) {
+          const left = token.substring(0, colon).trim();
+          const right = token.substring(colon + 1).trim();
+          if (left && right) {
+            extSegment = left;
+            name = right;
+          }
+        }
+      }
+
+      if (extSegment) {
+        extSegment = normalizeSegmentName(extSegment.replace(/^\./, ""));
+      }
+
+      return { name, segment: extSegment };
     };
     let segallow = () => {
       if (segment === "BSSEG") throw {msg:op.opcode + " is not allowed in BSSEG"};
@@ -286,9 +315,19 @@ export const pass1 = async (V, vxs, opts) => {
           if (opts.PRAGMAS && opts.PRAGMAS. indexOf("MODULE") < 0){
             throw {msg:".EXTERN is not allowed out of modules"}
           }
-          let name = op.params[0];
-          if (!name) name = op.label
-          vars[name.toUpperCase()] = null;
+          let raw = op.params[0];
+          if (!raw) raw = op.label;
+          const decl = parseExternDecl(raw, op.label);
+          if (!decl.name) {
+            throw {msg: ".EXTERN needs a symbol name"};
+          }
+          const upperName = decl.name.toUpperCase();
+          vars[upperName] = null;
+          if (decl.segment) {
+            vars[upperName + "$$seg"] = decl.segment;
+          }
+          if (!op.params) op.params = [];
+          op.params[0] = decl.name;
           continue;
         }
 

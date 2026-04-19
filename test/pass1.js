@@ -145,6 +145,15 @@ QUnit.test('.EXTERN is valid inside a module', async assert => {
     assert.ok(vx, '.EXTERN accepted in module context');
 });
 
+QUnit.test('.EXTERN name@segment stores segment metadata', async assert => {
+    const [, vars] = await doPassOpts(
+        `.pragma module\n.extern last_key@zpseg\nnop`,
+        MODULE_OPTS
+    );
+    assert.strictEqual(vars["LAST_KEY"], null, 'extern symbol is unresolved placeholder');
+    assert.strictEqual(vars["LAST_KEY$$seg"], "ZPSEG", 'extern segment hint is tracked');
+});
+
 QUnit.test('.EXTERN throws outside a module', async assert => {
     asyncThrows(assert, () => doPassOpts(`.extern EXTFUNC`, { assembler: I8080, readFile, PRAGMAS: [] }),
         (err) => err.msg === '.EXTERN is not allowed out of modules');

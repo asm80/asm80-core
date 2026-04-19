@@ -149,6 +149,22 @@ QUnit.test( "Direct page evaluation", function() {
 	QUnit.assert.equal(p.bytes,2,"Should be 2 bytes for direct page addressing");
 });
 
+QUnit.test("Extern without ZPSEG hint does not force direct", function() {
+	var extVars = {"EXT": null, "_PC": 0x0100, "__PRAGMAS": ["MODULE"]};
+	s = {"opcode":"LDAA","params":["EXT"],"paramstring":"EXT",addr:"0x100",lens:[],"bytes":0};
+	p = M6800.parseOpcode(s,extVars,Parser);
+	QUnit.assert.equal(p.lens[0],0xB6,"Should use extended mode without ZPSEG hint");
+	QUnit.assert.equal(p.bytes,3,"Extended mode length");
+});
+
+QUnit.test("Extern with ZPSEG hint forces direct", function() {
+	var extVars = {"EXT": null, "EXT$$seg": "ZPSEG", "_PC": 0x0100, "__PRAGMAS": ["MODULE"]};
+	s = {"opcode":"LDAA","params":["EXT"],"paramstring":"EXT",addr:"0x100",lens:[],"bytes":0};
+	p = M6800.parseOpcode(s,extVars,Parser);
+	QUnit.assert.equal(p.lens[0],0x96,"Should use direct mode for ZPSEG extern");
+	QUnit.assert.equal(p.bytes,2,"Direct mode length");
+});
+
 // Test no parameters case with extended addressing
 QUnit.test( "No parameters provided", function() {
 	s = {"opcode":"LDAA","params":["",""],"paramstring":",",addr:"0x100",lens:[],"bytes":0};

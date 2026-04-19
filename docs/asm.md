@@ -239,7 +239,7 @@ const opts = {
 
 Assembler and linker support generic named segments.
 
-- Built-in aliases: `.CSEG`, `.DSEG`, `.ESEG`, `.BSSEG`, `.HEAPSEG`
+- Built-in aliases: `.CSEG`, `.DSEG`, `.ESEG`, `.BSSEG`, `.ZPSEG`, `.HEAPSEG`
 - Generic switch: `.SEGMENT <name>`
 - Segment names are case-insensitive (internally normalized to uppercase)
 - `BSSEG` is special: reserves address space but does not emit load bytes
