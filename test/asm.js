@@ -29,6 +29,8 @@ const test_async = async (ok) => {
 }
 */
 import { asyncThrows } from "./_asyncThrows.js";
+
+const normalizeEol = (text) => String(text).replace(/\r\n/g, "\n");
 /*
 QUnit.test('simple async OK', async assert => {
     //const done = assert.async();
@@ -189,7 +191,7 @@ QUnit.test('hex', async assert => {
     await fileSystem.writeFile("test.a80.hex", hex)
     //check
     let hexmaster = await fileSystem.readFile("test.a80.master.hex")
-    assert.equal(hex, hexmaster)
+    assert.equal(normalizeEol(hex), normalizeEol(hexmaster))
 
 });
 
@@ -203,7 +205,7 @@ QUnit.test('hex2', async assert => {
     await fileSystem.writeFile("tinybasic.a80.hex", hex)
     //check
     let hexmaster = await fileSystem.readFile("tinybasic.a80.master.hex")
-    assert.equal(hex, hexmaster)
+    assert.equal(normalizeEol(hex), normalizeEol(hexmaster))
 
 });
 
