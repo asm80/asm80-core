@@ -53,6 +53,127 @@ Use `.export` to make a symbol visible to other modules:
 
 Only exported symbols can be referenced via `.extern` in other modules.
 
+### Stack Frame Metadata (`.frame` / `.frame_indirect`)
+
+Use `.frame` to attach stack-frame metadata to a function symbol. This information is consumed by the ic80 static frame allocator — it does **not** affect generated code.
+
+```asm
+.frame <symbol>, size=<N>, reentrant=<0|1>
+.frame <symbol>, size=<N>, reentrant=<0|1>, calls=<sym1>|<sym2>|<sym3>
+.frame_indirect <symbol>, sig=<fingerprint>
+```
+
+#### Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `symbol` | Function name (label defined in this module) |
+| `size` | Bytes needed for parameters + local variables (integer ≥ 0) |
+| `reentrant` | `1` = always uses stack ABI, never gets a static frame; `0` = may receive a static frame |
+| `calls=` | Explicit callees that the assembler cannot detect from CALL instructions — RST vectors, `CALL 0005h` (CP/M BDOS), jump tables. Separator is `|`. |
+
+The directive may appear anywhere in the file; association is by symbol name, not by position.
+
+Symbols without `.frame` are treated as `reentrant = true` by ic80.
+
+#### `.frame_indirect`
+
+Declares that the function calls a callback via a function pointer of the given signature:
+
+```asm
+.frame_indirect <symbol>, sig=<fingerprint>
+```
+
+Multiple `.frame_indirect` directives for the same symbol are allowed (one per callback signature). The `sig=` value must follow the `__sig_<ret>_<params>` format (see below).
+
+#### Fingerprint format (`__sig_*`)
+
+`__sig_<ret>_<params>` — return type first, then parameter types, each separated by `_`. Use `v` for no parameters.
+
+| Type | Abbreviation |
+|------|-------------|
+| void | `v` |
+| signed char (1 B) | `c` |
+| unsigned char (1 B) | `uc` |
+| signed int (2 B) | `i` |
+| unsigned int (2 B) | `ui` |
+| signed long (4 B) | `l` |
+| unsigned long (4 B) | `ul` |
+| pointer (2 B) | `p` |
+| struct ≤ 2 B | `i` |
+| struct 3–4 B | `l` |
+| struct > 4 B | `p` |
+
+Examples: `__sig_v_ip` (void, int+ptr params), `__sig_i_pp` (int return, two ptr params), `__sig_v_v` (void, no params).
+
+#### Examples
+
+```asm
+.pragma module
+
+; Simple leaf function
+.frame putc, size=1, reentrant=0
+putc:   LD A, (HL)
+        RET
+.export putc
+
+; CP/M BDOS call — 0005h is not detectable as a named callee
+.frame bdos_write, size=5, reentrant=0, calls=__cpmbdos
+bdos_write:
+        LD C, 9
+        CALL 0005h
+        RET
+.export bdos_write
+
+; RST vector — assembler cannot see the target symbol
+.frame rst8_caller, size=2, reentrant=0, calls=RST_8_HANDLER
+rst8_caller:
+        RST 8
+        RET
+
+; Callback via function pointer
+.frame map_array, size=4, reentrant=0
+.frame_indirect map_array, sig=__sig_i_ip
+map_array:
+        RET
+.export map_array
+```
+
+#### Output
+
+The assembler stores frame metadata in the `.obj` export record for each symbol that has a `.frame` directive:
+
+```json
+"exports": {
+  "PUTS": {
+    "addr": 0, "seg": "CSEG",
+    "frame": {
+      "size": 3,
+      "reentrant": false,
+      "calls": ["PUTC", "__CPMBDOS"],
+      "indirect": []
+    }
+  }
+}
+```
+
+The same structure is present in library modules inside `.libz80`.
+
+#### Errors
+
+| Situation | Behaviour |
+|-----------|-----------|
+| Duplicate `.frame` for the same symbol | error |
+| `size` missing, negative, or non-integer | error |
+| `reentrant` not `0` or `1` | error |
+| Unknown key in `.frame` params | error |
+| `sig=` value not matching `__sig_*` pattern | error |
+| `.frame_indirect` with no corresponding `.frame` | error |
+| `.frame` or `.frame_indirect` used outside MODULE | error |
+| `.frame` for unknown or extern-only symbol | warning (`console.warn`) |
+
+---
+
 ### Source Line Debug Directives (`.file` / `.loc`)
 
 ASM80 supports lightweight C-source-to-ASM line mapping for debugger integrations.
@@ -297,7 +418,18 @@ Called automatically by `compile()` when `MODULE` pragma is active. The result i
 ```js
 {
     code:    [...],          // instructions with relocation metadata
-exports: { NAME: ... },  // exported symbols with segment info
+exports: {                // exported symbols with segment info
+  NAME: {
+    addr: number,
+    seg: string,
+    frame?: {             // present only when .frame was declared for this symbol
+      size: number,       // bytes for params + locals
+      reentrant: boolean,
+      calls: string[],    // uppercase callee names
+      indirect: string[], // __sig_* fingerprints from .frame_indirect
+    }
+  }
+},
 externs: [...],          // required external symbol names
 externSegs: { [name]: segmentName }, // optional segment hints for extern symbols
     cpu:     "8080",         // target CPU
