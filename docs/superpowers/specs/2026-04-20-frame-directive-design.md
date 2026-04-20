@@ -41,11 +41,13 @@ Add `.frame` and `.frame_indirect` directives to ASM80-core. These directives at
 
 No parameters → `v`. Examples: `__sig_v_ip`, `__sig_i_pp`, `__sig_v_v`.
 
+Syntactic validation: the value of `sig=` must match `/^__sig_[a-z][a-z0-9]*(_[a-z][a-z0-9]*)+$/i`. Any other value → error.
+
 ## Architecture
 
-### Storage: `opts.frames`
+### Storage: `opts.frames` and `opts.frameIndirectQueue`
 
-A map `SYMBOL_UPPERCASE → FrameRecord` populated in `pass1.js` and consumed in `objcode.js`.
+Two maps populated in `pass1.js` and consumed in `objcode.js`.
 
 ```ts
 type FrameRecord = {
@@ -54,7 +56,12 @@ type FrameRecord = {
   calls: string[],     // uppercase symbol names, deduplicated
   indirect: string[],  // fingerprint strings
 }
+
+opts.frames: Map<SYMBOL_UPPERCASE, FrameRecord>
+opts.frameIndirectQueue: Array<{ symbol: string, sig: string }>
 ```
+
+The `frameIndirectQueue` decouples `.frame_indirect` from source order — entries are collected during pass1 and merged into `opts.frames` after pass1 completes (in `objcode.js`), eliminating order-dependence between `.frame` and `.frame_indirect`.
 
 Symbols without a `.frame` directive have no `frame` key in their export record. ic80 interprets the absence as `reentrant = true`.
 
@@ -62,50 +69,68 @@ Symbols without a `.frame` directive have no `frame` key in their export record.
 
 Handle two new opcodes: `.FRAME` and `.FRAME_INDIRECT`. Both generate no bytes (`continue` after processing).
 
+**Initialization:** Reset both maps unconditionally at the start of each `pass1` run (not guarded), because `pass1` runs four times and the duplicate-frame check would otherwise fire on passes 2–4:
+
+```js
+opts.frames = {}
+opts.frameIndirectQueue = []
+```
+
 **`.FRAME` processing:**
-1. Use `op.params[0]` as symbol name; `op.params.slice(1)` as `key=value` pairs (the parser already splits on commas).
+1. Use `op.params[0]` as symbol name; `op.params.slice(1)` as `key=value` pairs (the parser already splits on commas and trims).
 2. Normalize symbol to UPPERCASE.
-3. Validate:
+3. Parse each param token as `key=value`. Unknown keys (anything other than `size`, `reentrant`, `calls`) → error. Tokens without `=` → error.
+4. Validate:
    - `size` missing or not an integer ≥ 0 → error
    - `reentrant` not `0` or `1` → error
    - `opts.frames[symbol]` already exists → error (duplicate `.frame`)
-4. Parse `calls=`: split on `|`, trim, filter empty strings, uppercase, deduplicate.
-5. Store: `opts.frames[symbol] = { size, reentrant: reentrant === 1, calls, indirect: [] }`
-6. No symbol existence check in pass1 — forward references are normal in a multi-pass assembler. The unknown-symbol check is deferred to `objcode.js` (see below).
+5. Parse `calls=`: split on `|`, trim, filter empty strings, uppercase, deduplicate.
+6. Store: `opts.frames[symbol] = { size, reentrant: reentrant === 1, calls, indirect: [] }`
+
+No symbol existence check in pass1 — symbol table is incomplete during pass runs.
 
 **`.FRAME_INDIRECT` processing:**
 1. Use `op.params[0]` as symbol name and find `sig=` in `op.params.slice(1)`.
 2. Normalize symbol to UPPERCASE.
-3. If `opts.frames[symbol]` does not exist → error (`.frame` must precede `.frame_indirect`).
-4. Push fingerprint string to `opts.frames[symbol].indirect`.
+3. Validate `sig=` value against `/^__sig_[a-z][a-z0-9]*(_[a-z][a-z0-9]*)+$/i` → error if invalid.
+4. Push `{ symbol, sig }` to `opts.frameIndirectQueue`. No immediate cross-check against `opts.frames` — order between `.frame` and `.frame_indirect` in source is unrestricted.
 
-**Initialization:** Reset `opts.frames = {}` unconditionally at the start of each `pass1` run (not guarded with `if (!opts.frames)`), because `pass1` runs four times and the duplicate-frame check would otherwise fire on passes 2–4.
-
-**MODULE pragma:** No restriction — `.frame` and `.frame_indirect` are valid both inside and outside MODULE context (they are metadata, not relocation directives).
+**MODULE pragma:** No restriction — both directives are valid inside and outside MODULE context.
 
 ### objcode.js Changes
 
-In the `.EXPORT` handler, after building the base export record:
+After `pass1` output is available (i.e., at the start of `objCode()`), perform the merge and validation:
+
+**Step 1 — merge `frameIndirectQueue` into `opts.frames`:**
+
+```js
+for (const { symbol, sig } of (opts.frameIndirectQueue || [])) {
+  if (!opts.frames?.[symbol]) {
+    throw { msg: `.frame_indirect for ${symbol} has no corresponding .frame` }
+  }
+  opts.frames[symbol].indirect.push(sig)
+}
+```
+
+**Step 2 — unknown symbol warning:** After building the `exports` map, check every key in `opts.frames` against the full symbol table `vars` (not `exports`), so that non-exported functions with `.frame` do not produce false positives:
+
+```js
+for (const sym of Object.keys(opts.frames || {})) {
+  if (!(sym in vars)) {
+    console.warn(`.frame declared for unknown symbol: ${sym}`)
+  }
+}
+```
+
+This is a **mandatory behavior** (not optional). `console.warn` is the mechanism for the initial implementation.
+
+**Step 3 — attach frame to exports:** In the `.EXPORT` handler:
 
 ```js
 if (opts.frames?.[name]) {
   exports[name].frame = opts.frames[name]
 }
 ```
-
-This applies to all exports. The `frame` key is only present when a `.frame` directive was declared for that symbol.
-
-**Unknown symbol warning:** After building `exports`, emit a warning for every key in `opts.frames` that is not present in `exports`. This is the correct place to check — the symbol table is complete at this point, unlike during `pass1` runs.
-
-```js
-for (const sym of Object.keys(opts.frames || {})) {
-  if (!exports[sym]) {
-    // warn: .frame declared for unknown symbol sym
-  }
-}
-```
-
-Note: ASM80-core currently has no warning infrastructure. A `console.warn` or a dedicated `opts.warnings` array may be introduced; alternatively this check can be omitted for the initial implementation and left as a future improvement.
 
 ## Output Format
 
@@ -133,10 +158,13 @@ The same structure applies inside `.libz80` (`modules[i].obj.exports[sym].frame`
 | Situation | Behavior |
 |-----------|----------|
 | Duplicate `.frame` for same symbol | error |
-| `size` negative or non-integer | error |
+| `size` missing, negative, or non-integer | error |
 | `reentrant` not `0` or `1` | error |
-| `.frame_indirect` without preceding `.frame` | error |
-| `.frame` for unknown symbol | warning (checked in `objcode.js`, not `pass1`) |
+| Unknown key in `.frame` params | error |
+| Param token without `=` in `.frame` | error |
+| `sig=` value not matching `__sig_*` pattern | error |
+| `.frame_indirect` with no corresponding `.frame` (checked after all passes) | error |
+| `.frame` for symbol not in symbol table | `console.warn` (mandatory) |
 | Symbol exported without `.frame` | no `frame` key in output (ic80 → `reentrant=true`) |
 
 ## Examples
@@ -163,16 +191,16 @@ rst8_caller:
 ; Multiple explicit callees
 .frame dispatch, size=4, reentrant=0, calls=handler_a|handler_b
 
-; Callback via function pointer
-.frame map_array, size=4, reentrant=0
+; .frame_indirect before .frame — valid, order is unrestricted
 .frame_indirect map_array, sig=__sig_i_ip
+.frame map_array, size=4, reentrant=0
 ```
 
 ## Files to Modify
 
-1. `pass1.js` — add `.FRAME` and `.FRAME_INDIRECT` handlers; initialize `opts.frames`
-2. `objcode.js` — attach `frame` to export record when present
+1. `pass1.js` — add `.FRAME` and `.FRAME_INDIRECT` handlers; reset `opts.frames` and `opts.frameIndirectQueue`
+2. `objcode.js` — merge queue, warn on unknown symbols, attach `frame` to export record
 
 ## Files to Create
 
-1. `test/asm-frame.js` — QUnit tests covering all directives, error cases, and output format
+1. `test/asm-frame.js` — QUnit tests covering all directives, error cases, order independence, and output format
