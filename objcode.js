@@ -269,7 +269,7 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
     // Return relocatable object module
     let result = {
         code:out,                      // Generated object code instructions
-        externs:used,                  // External symbols referenced
+        externs:[...new Set(used)],    // External symbols referenced (deduplicated)
         externSegs:externSegs,         // Optional segment hints for external symbols
         exports:exports,               // Symbols exported by this module
         cpu:opts.assembler.cpu,        // Target CPU architecture
