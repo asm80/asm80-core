@@ -112,12 +112,12 @@ for (const { symbol, sig } of (opts.frameIndirectQueue || [])) {
 }
 ```
 
-**Step 2 — unknown symbol warning:** After building the `exports` map, check every key in `opts.frames` against the full symbol table `vars` (not `exports`), so that non-exported functions with `.frame` do not produce false positives:
+**Step 2 — unknown symbol warning:** After building the `exports` map, check every key in `opts.frames` against the full symbol table `vars`. The symbol must be **locally defined** — `vars[sym]` must be a number (an address), not `null`. `null` indicates an `.EXTERN` declaration, which is not a local label and must not silently pass:
 
 ```js
 for (const sym of Object.keys(opts.frames || {})) {
-  if (!(sym in vars)) {
-    console.warn(`.frame declared for unknown symbol: ${sym}`)
+  if (typeof vars[sym] !== "number") {
+    console.warn(`.frame declared for unknown or extern symbol: ${sym}`)
   }
 }
 ```
