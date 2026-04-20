@@ -97,7 +97,6 @@ const doObjCode = async (src, showError = false) => {
     vx = await pass1(vx[0], vx[1], opts);
     vx = await pass1(vx[0], vx[1], opts);
     vx = await pass1(vx[0], vx[1], opts);
-    vx = await pass1(vx[0], vx[1], opts);
     vx = pass2(vx, opts);
     return objCode(vx[0], vx[1], opts, "test");
   } catch (e) {
