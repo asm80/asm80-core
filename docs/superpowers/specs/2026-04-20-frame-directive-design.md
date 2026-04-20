@@ -95,7 +95,7 @@ No symbol existence check in pass1 — symbol table is incomplete during pass ru
 3. Validate `sig=` value against `/^__sig_[a-z][a-z0-9]*(_[a-z][a-z0-9]*)+$/i` → error if invalid.
 4. Push `{ symbol, sig }` to `opts.frameIndirectQueue`. No immediate cross-check against `opts.frames` — order between `.frame` and `.frame_indirect` in source is unrestricted.
 
-**MODULE pragma:** No restriction — both directives are valid inside and outside MODULE context.
+**MODULE pragma:** Both directives are **only valid inside MODULE context** (i.e. `opts.PRAGMAS` contains `"MODULE"`). If used outside a module → error, same as `.EXPORT` and `.EXTERN`.
 
 ### objcode.js Changes
 
@@ -164,6 +164,7 @@ The same structure applies inside `.libz80` (`modules[i].obj.exports[sym].frame`
 | Param token without `=` in `.frame` | error |
 | `sig=` value not matching `__sig_*` pattern | error |
 | `.frame_indirect` with no corresponding `.frame` (checked after all passes) | error |
+| `.frame` or `.frame_indirect` used outside MODULE | error |
 | `.frame` for symbol not in symbol table | `console.warn` (mandatory) |
 | Symbol exported without `.frame` | no `frame` key in output (ic80 → `reentrant=true`) |
 
