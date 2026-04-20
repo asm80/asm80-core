@@ -125,6 +125,14 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
 
     let lastOne = null  // Track last instruction for concatenation optimization
 
+    // Merge .frame_indirect queue into opts.frames
+    for (const { symbol, sig } of (opts.frameIndirectQueue || [])) {
+        if (!opts.frames?.[symbol]) {
+            throw { msg: `.frame_indirect for ${symbol} has no corresponding .frame` }
+        }
+        opts.frames[symbol].indirect.push(sig)
+    }
+
     // Process each assembly line to generate object code
     for (let ln of V) {
         // Skip lines without opcodes (comments, labels only)
@@ -176,6 +184,9 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
             let name = ln.params[0];
             name = name.toUpperCase()
             exports[name] = {addr:vars[name],seg:varsSegs[name]}
+            if (opts.frames?.[name]) {
+                exports[name].frame = opts.frames[name]
+            }
         }
 
         // Handle BSS segment (uninitialized data - no bytes generated)
@@ -280,6 +291,13 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
     if (debugFiles.length) {
         result.debug = { files: debugFiles }
     }
+
+    for (const sym of Object.keys(opts.frames || {})) {
+        if (typeof vars[sym] !== "number") {
+            console.warn(`.frame declared for unknown or extern-only symbol: ${sym}`)
+        }
+    }
+
     return result
 }
 

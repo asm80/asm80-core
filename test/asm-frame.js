@@ -167,3 +167,66 @@ QUnit.test(".frame_indirect missing sig= throws error", async (assert) => {
   await asyncThrows(assert, () => pass1(o, null, opts),
     (e) => /sig/i.test(e.msg));
 });
+
+QUnit.test(".frame_indirect with no .frame throws error in objCode", async (assert) => {
+  await asyncThrows(assert,
+    () => doObjCode(`.pragma module\n.frame_indirect ghost, sig=__sig_v_v\nghost: RET\n.export ghost`),
+    (e) => /frame_indirect.*ghost|ghost.*frame_indirect/i.test(e.msg)
+  );
+});
+
+QUnit.test("frame metadata appears in export record", async (assert) => {
+  const obj = await doObjCode(
+    `.pragma module\n.frame putc, size=1, reentrant=0\nputc: RET\n.export putc`
+  );
+  const exp = obj.exports["PUTC"];
+  assert.ok(exp, "PUTC exported");
+  assert.ok(exp.frame, "frame key present");
+  assert.strictEqual(exp.frame.size, 1);
+  assert.strictEqual(exp.frame.reentrant, false);
+  assert.deepEqual(exp.frame.calls, []);
+  assert.deepEqual(exp.frame.indirect, []);
+});
+
+QUnit.test("reentrant=1 stored as boolean true in export", async (assert) => {
+  const obj = await doObjCode(
+    `.pragma module\n.frame fn, size=0, reentrant=1\nfn: RET\n.export fn`
+  );
+  assert.strictEqual(obj.exports["FN"].frame.reentrant, true);
+});
+
+QUnit.test("calls= present in export frame record", async (assert) => {
+  const obj = await doObjCode(
+    `.pragma module\n.frame puts, size=2, reentrant=0, calls=putc|bdos\nputs: RET\n.export puts`
+  );
+  assert.deepEqual(obj.exports["PUTS"].frame.calls, ["PUTC", "BDOS"]);
+});
+
+QUnit.test(".frame_indirect merged into export frame.indirect", async (assert) => {
+  const obj = await doObjCode([
+    ".pragma module",
+    ".frame map_fn, size=4, reentrant=0",
+    ".frame_indirect map_fn, sig=__sig_i_ip",
+    "map_fn: RET",
+    ".export map_fn",
+  ].join("\n"));
+  assert.deepEqual(obj.exports["MAP_FN"].frame.indirect, ["__sig_i_ip"]);
+});
+
+QUnit.test(".frame_indirect before .frame merged correctly (order independent)", async (assert) => {
+  const obj = await doObjCode([
+    ".pragma module",
+    ".frame_indirect fn, sig=__sig_v_v",
+    ".frame fn, size=0, reentrant=1",
+    "fn: RET",
+    ".export fn",
+  ].join("\n"));
+  assert.deepEqual(obj.exports["FN"].frame.indirect, ["__sig_v_v"]);
+});
+
+QUnit.test("symbol without .frame has no frame key in export", async (assert) => {
+  const obj = await doObjCode(
+    `.pragma module\nfoo: RET\n.export foo`
+  );
+  assert.strictEqual(obj.exports["FOO"].frame, undefined);
+});
