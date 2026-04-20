@@ -230,3 +230,62 @@ QUnit.test("symbol without .frame has no frame key in export", async (assert) =>
   );
   assert.strictEqual(obj.exports["FOO"].frame, undefined);
 });
+
+QUnit.test(".frame with calls= empty right-hand side produces empty array", async (assert) => {
+  const opts = { assembler: Z80, readFile, PRAGMAS: ["MODULE"], endian: Z80.endian };
+  const src = `.pragma module\n.frame fn, size=1, reentrant=0, calls=\nfn: RET`;
+  const o = await Parser.parse(src, opts);
+  await pass1(o, null, opts);
+  assert.deepEqual(opts.frames["FN"].calls, [], "empty calls= produces empty array");
+});
+
+QUnit.test(".frame size=0 is valid", async (assert) => {
+  const obj = await doObjCode(
+    `.pragma module\n.frame fn, size=0, reentrant=0\nfn: RET\n.export fn`
+  );
+  assert.strictEqual(obj.exports["FN"].frame.size, 0);
+});
+
+QUnit.test(".frame for .extern symbol triggers console.warn (not error)", async (assert) => {
+  const warnings = [];
+  const origWarn = console.warn;
+  console.warn = (...args) => warnings.push(args.join(" "));
+  try {
+    await doObjCode([
+      ".pragma module",
+      ".extern extfn",
+      ".frame extfn, size=2, reentrant=0",
+      "myfn: RET",
+      ".export myfn",
+    ].join("\n"));
+    assert.ok(warnings.some(w => /extfn/i.test(w)), "warning mentions the extern symbol");
+  } finally {
+    console.warn = origWarn;
+  }
+});
+
+QUnit.test("multiple .frame_indirect for same symbol all appear in indirect[]", async (assert) => {
+  const obj = await doObjCode([
+    ".pragma module",
+    ".frame fn, size=4, reentrant=0",
+    ".frame_indirect fn, sig=__sig_v_ip",
+    ".frame_indirect fn, sig=__sig_i_pp",
+    "fn: RET",
+    ".export fn",
+  ].join("\n"));
+  assert.deepEqual(obj.exports["FN"].frame.indirect, ["__sig_v_ip", "__sig_i_pp"]);
+});
+
+QUnit.test("full pipeline: two exported functions, one with frame, one without", async (assert) => {
+  const obj = await doObjCode([
+    ".pragma module",
+    ".frame puts, size=3, reentrant=0, calls=putc",
+    "puts: RET",
+    "bare: RET",
+    ".export puts",
+    ".export bare",
+  ].join("\n"));
+  assert.ok(obj.exports["PUTS"].frame, "puts has frame");
+  assert.strictEqual(obj.exports["BARE"].frame, undefined, "bare has no frame");
+  assert.deepEqual(obj.exports["PUTS"].frame.calls, ["PUTC"]);
+});
