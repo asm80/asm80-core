@@ -6,6 +6,9 @@ const notInModule = (opts, directive) => {
   }
 }
 
+const FRAME_ALLOWED_KEYS = new Set(["size", "reentrant", "calls"])
+const FRAME_SIG_REGEX = /^__sig_[a-z][a-z0-9]*(_[a-z][a-z0-9]*)+$/i
+
 
 export const pass1 = async (V, vxs, opts) => {
     if (!opts.xref) opts.xref = {};
@@ -340,14 +343,13 @@ export const pass1 = async (V, vxs, opts) => {
           const symbol = (op.params[0] || "").toUpperCase()
           if (!symbol) throw { msg: ".FRAME needs a symbol name" }
           const kvPairs = op.params.slice(1)
-          const ALLOWED_KEYS = new Set(["size", "reentrant", "calls"])
           let size, reentrant, calls = []
           for (const pair of kvPairs) {
             if (!pair.includes("=")) throw { msg: `.FRAME invalid param (missing =): ${pair}` }
             const eqIdx = pair.indexOf("=")
             const key = pair.substring(0, eqIdx).trim().toLowerCase()
             const val = pair.substring(eqIdx + 1).trim()
-            if (!ALLOWED_KEYS.has(key)) throw { msg: `.FRAME unknown key: ${key}` }
+            if (!FRAME_ALLOWED_KEYS.has(key)) throw { msg: `.FRAME unknown key: ${key}` }
             if (key === "size") size = val
             if (key === "reentrant") reentrant = val
             if (key === "calls") {
@@ -364,6 +366,7 @@ export const pass1 = async (V, vxs, opts) => {
           if (reentrant === undefined || (reentrantNum !== 0 && reentrantNum !== 1)) {
             throw { msg: ".FRAME reentrant must be 0 or 1" }
           }
+          // opts.frames is reset at the start of each pass1 run, so this only catches duplicates within the same pass
           if (opts.frames[symbol]) throw { msg: `.FRAME duplicate: ${symbol}` }
           opts.frames[symbol] = { size: sizeNum, reentrant: reentrantNum === 1, calls, indirect: [] }
           continue
@@ -384,7 +387,7 @@ export const pass1 = async (V, vxs, opts) => {
               sig = pair.substring(eqIdx + 1).trim()
             }
           }
-          if (!sig || !/^__sig_[a-z][a-z0-9]*(_[a-z][a-z0-9]*)+$/i.test(sig)) {
+          if (!sig || !FRAME_SIG_REGEX.test(sig)) {
             throw { msg: `.FRAME_INDIRECT invalid sig= value: ${sig}` }
           }
           opts.frameIndirectQueue.push({ symbol, sig })
