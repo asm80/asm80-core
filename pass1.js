@@ -10,6 +10,8 @@ const notInModule = (opts, directive) => {
 export const pass1 = async (V, vxs, opts) => {
     if (!opts.xref) opts.xref = {};
     if (!opts.debugFiles) opts.debugFiles = {};
+    opts.frames = {}
+    opts.frameIndirectQueue = []
     opts._pendingLoc = null;
     let segment = "CSEG";
     const normalizeSegmentName = (name) => String(name || "").trim().toUpperCase();
@@ -329,6 +331,64 @@ export const pass1 = async (V, vxs, opts) => {
           if (!op.params) op.params = [];
           op.params[0] = decl.name;
           continue;
+        }
+
+        if (op.opcode === ".FRAME") {
+          if (opts.PRAGMAS && opts.PRAGMAS.indexOf("MODULE") < 0) {
+            throw { msg: ".FRAME is not allowed out of modules" }
+          }
+          const symbol = (op.params[0] || "").toUpperCase()
+          if (!symbol) throw { msg: ".FRAME needs a symbol name" }
+          const kvPairs = op.params.slice(1)
+          const ALLOWED_KEYS = new Set(["size", "reentrant", "calls"])
+          let size, reentrant, calls = []
+          for (const pair of kvPairs) {
+            if (!pair.includes("=")) throw { msg: `.FRAME invalid param (missing =): ${pair}` }
+            const eqIdx = pair.indexOf("=")
+            const key = pair.substring(0, eqIdx).trim().toLowerCase()
+            const val = pair.substring(eqIdx + 1).trim()
+            if (!ALLOWED_KEYS.has(key)) throw { msg: `.FRAME unknown key: ${key}` }
+            if (key === "size") size = val
+            if (key === "reentrant") reentrant = val
+            if (key === "calls") {
+              calls = [...new Set(
+                val.split("|").map(s => s.trim()).filter(Boolean).map(s => s.toUpperCase())
+              )]
+            }
+          }
+          const sizeNum = parseInt(size, 10)
+          if (size === undefined || isNaN(sizeNum) || sizeNum < 0) {
+            throw { msg: ".FRAME size must be a non-negative integer" }
+          }
+          const reentrantNum = parseInt(reentrant, 10)
+          if (reentrant === undefined || (reentrantNum !== 0 && reentrantNum !== 1)) {
+            throw { msg: ".FRAME reentrant must be 0 or 1" }
+          }
+          if (opts.frames[symbol]) throw { msg: `.FRAME duplicate: ${symbol}` }
+          opts.frames[symbol] = { size: sizeNum, reentrant: reentrantNum === 1, calls, indirect: [] }
+          continue
+        }
+
+        if (op.opcode === ".FRAME_INDIRECT") {
+          if (opts.PRAGMAS && opts.PRAGMAS.indexOf("MODULE") < 0) {
+            throw { msg: ".FRAME_INDIRECT is not allowed out of modules" }
+          }
+          const symbol = (op.params[0] || "").toUpperCase()
+          if (!symbol) throw { msg: ".FRAME_INDIRECT needs a symbol name" }
+          const kvPairs = op.params.slice(1)
+          let sig
+          for (const pair of kvPairs) {
+            if (!pair.includes("=")) continue
+            const eqIdx = pair.indexOf("=")
+            if (pair.substring(0, eqIdx).trim().toLowerCase() === "sig") {
+              sig = pair.substring(eqIdx + 1).trim()
+            }
+          }
+          if (!sig || !/^__sig_[a-z][a-z0-9]*(_[a-z][a-z0-9]*)+$/i.test(sig)) {
+            throw { msg: `.FRAME_INDIRECT invalid sig= value: ${sig}` }
+          }
+          opts.frameIndirectQueue.push({ symbol, sig })
+          continue
         }
 
         if (op.opcode === ".FILE") {

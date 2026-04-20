@@ -344,6 +344,8 @@ const parseLineCore = (s, macros, opts = {stopFlag:null, olds:null, assembler:nu
       //modules
       s.opcode === ".EXPORT" ||
       s.opcode === ".EXTERN" ||
+      s.opcode === ".FRAME" ||
+      s.opcode === ".FRAME_INDIRECT" ||
       s.opcode === "DB" ||
       s.opcode === "DW" ||
       s.opcode === "DD" ||
