@@ -378,7 +378,7 @@ export const pass1 = async (V, vxs, opts) => {
           const kvPairs = op.params.slice(1)
           let sig
           for (const pair of kvPairs) {
-            if (!pair.includes("=")) continue
+            if (!pair.includes("=")) throw { msg: `.FRAME_INDIRECT invalid param (missing =): ${pair}` }
             const eqIdx = pair.indexOf("=")
             if (pair.substring(0, eqIdx).trim().toLowerCase() === "sig") {
               sig = pair.substring(eqIdx + 1).trim()

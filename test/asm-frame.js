@@ -151,3 +151,19 @@ QUnit.test(".frame_indirect invalid sig= throws error", async (assert) => {
   await asyncThrows(assert, () => pass1(o, null, opts),
     (e) => /sig/i.test(e.msg));
 });
+
+QUnit.test(".frame missing size= key throws error", async (assert) => {
+  const opts = { assembler: Z80, readFile, PRAGMAS: ["MODULE"], endian: Z80.endian };
+  const src = `.pragma module\n.frame fn, reentrant=0\nfn: RET`;
+  const o = await Parser.parse(src, opts);
+  await asyncThrows(assert, () => pass1(o, null, opts),
+    (e) => /size/i.test(e.msg));
+});
+
+QUnit.test(".frame_indirect missing sig= throws error", async (assert) => {
+  const opts = { assembler: Z80, readFile, PRAGMAS: ["MODULE"], endian: Z80.endian };
+  const src = `.pragma module\n.frame fn, size=1, reentrant=0\n.frame_indirect fn\nfn: RET`;
+  const o = await Parser.parse(src, opts);
+  await asyncThrows(assert, () => pass1(o, null, opts),
+    (e) => /sig/i.test(e.msg));
+});
