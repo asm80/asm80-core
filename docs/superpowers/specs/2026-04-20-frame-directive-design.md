@@ -63,23 +63,23 @@ Symbols without a `.frame` directive have no `frame` key in their export record.
 Handle two new opcodes: `.FRAME` and `.FRAME_INDIRECT`. Both generate no bytes (`continue` after processing).
 
 **`.FRAME` processing:**
-1. Parse `op.paramstring`: first comma-delimited token = symbol name; remaining tokens are `key=value` pairs.
+1. Use `op.params[0]` as symbol name; `op.params.slice(1)` as `key=value` pairs (the parser already splits on commas).
 2. Normalize symbol to UPPERCASE.
 3. Validate:
    - `size` missing or not an integer ≥ 0 → error
    - `reentrant` not `0` or `1` → error
    - `opts.frames[symbol]` already exists → error (duplicate `.frame`)
-4. Parse `calls=`: split on `|`, trim, uppercase, deduplicate.
-5. Store: `opts.frames[symbol] = { size, reentrant: reentrant === 0 ? false : false, calls, indirect: [] }`
-6. Unknown symbol (label not yet seen): warning only — label may be defined after the directive.
+4. Parse `calls=`: split on `|`, trim, filter empty strings, uppercase, deduplicate.
+5. Store: `opts.frames[symbol] = { size, reentrant: reentrant === 1, calls, indirect: [] }`
+6. No symbol existence check in pass1 — forward references are normal in a multi-pass assembler. The unknown-symbol check is deferred to `objcode.js` (see below).
 
 **`.FRAME_INDIRECT` processing:**
-1. Parse symbol (first token) and `sig=` value.
+1. Use `op.params[0]` as symbol name and find `sig=` in `op.params.slice(1)`.
 2. Normalize symbol to UPPERCASE.
 3. If `opts.frames[symbol]` does not exist → error (`.frame` must precede `.frame_indirect`).
 4. Push fingerprint string to `opts.frames[symbol].indirect`.
 
-**Initialization:** Add `if (!opts.frames) opts.frames = {}` at the top of `pass1`.
+**Initialization:** Reset `opts.frames = {}` unconditionally at the start of each `pass1` run (not guarded with `if (!opts.frames)`), because `pass1` runs four times and the duplicate-frame check would otherwise fire on passes 2–4.
 
 **MODULE pragma:** No restriction — `.frame` and `.frame_indirect` are valid both inside and outside MODULE context (they are metadata, not relocation directives).
 
@@ -94,6 +94,18 @@ if (opts.frames?.[name]) {
 ```
 
 This applies to all exports. The `frame` key is only present when a `.frame` directive was declared for that symbol.
+
+**Unknown symbol warning:** After building `exports`, emit a warning for every key in `opts.frames` that is not present in `exports`. This is the correct place to check — the symbol table is complete at this point, unlike during `pass1` runs.
+
+```js
+for (const sym of Object.keys(opts.frames || {})) {
+  if (!exports[sym]) {
+    // warn: .frame declared for unknown symbol sym
+  }
+}
+```
+
+Note: ASM80-core currently has no warning infrastructure. A `console.warn` or a dedicated `opts.warnings` array may be introduced; alternatively this check can be omitted for the initial implementation and left as a future improvement.
 
 ## Output Format
 
@@ -124,7 +136,7 @@ The same structure applies inside `.libz80` (`modules[i].obj.exports[sym].frame`
 | `size` negative or non-integer | error |
 | `reentrant` not `0` or `1` | error |
 | `.frame_indirect` without preceding `.frame` | error |
-| `.frame` for unknown symbol | warning |
+| `.frame` for unknown symbol | warning (checked in `objcode.js`, not `pass1`) |
 | Symbol exported without `.frame` | no `frame` key in output (ic80 → `reentrant=true`) |
 
 ## Examples
