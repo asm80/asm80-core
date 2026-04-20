@@ -165,7 +165,7 @@ The same structure applies inside `.libz80` (`modules[i].obj.exports[sym].frame`
 | `sig=` value not matching `__sig_*` pattern | error |
 | `.frame_indirect` with no corresponding `.frame` (checked after all passes) | error |
 | `.frame` or `.frame_indirect` used outside MODULE | error |
-| `.frame` for symbol not in symbol table | `console.warn` (mandatory) |
+| `.frame` for unknown or extern-only symbol (not a locally defined label) | `console.warn` (mandatory) |
 | Symbol exported without `.frame` | no `frame` key in output (ic80 → `reentrant=true`) |
 
 ## Examples
