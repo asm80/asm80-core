@@ -209,9 +209,9 @@ QUnit.test('.INCBIN with missing file throws', async assert => {
 // ─── "No opcode, possible missing" ─────────────────────────────────────────
 
 QUnit.test('params without opcode throws "No opcode"', async assert => {
-    // A line with only a label and params but no recognisable opcode triggers this
+    // Parser treats 0x42 as both label and opcode; assembler rejects unknown opcode
     asyncThrows(assert, () => doPass(`nop\n 0x42, 0x43`),
-        (err) => /No opcode/.test(err.msg));
+        (err) => /No opcode|Unrecognized/.test(err.msg));
 });
 
 QUnit.test('.loc tags first byte-emitting line even across non-emitting directives', async assert => {

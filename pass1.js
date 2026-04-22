@@ -105,7 +105,7 @@ export const pass1 = async (V, vxs, opts) => {
 
     //main loop - for each line
     //for (let i = 0, j = V.length; i < j; i++) {
-    for (let op of V) {
+    for (op of V) {
       try {
 
       const origin = {...op.origin, numline: op.numline, includedFile: op.includedFile, includedFileAtLine: op.includedFileAtLine}; //original line clone
