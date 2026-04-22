@@ -1,0 +1,184 @@
+{
+  "code": [
+    {
+      "lens": [
+        221,
+        229,
+        221,
+        33,
+        0,
+        0,
+        221,
+        57,
+        33,
+        254,
+        -1,
+        57,
+        249,
+        221,
+        54,
+        255,
+        65,
+        221,
+        54,
+        254,
+        0,
+        221,
+        126,
+        254,
+        254,
+        3,
+        48,
+        15,
+        33,
+        65,
+        0,
+        125,
+        221,
+        134,
+        254
+      ],
+      "segment": "CSEG",
+      "dbg": [
+        {
+          "off": 13,
+          "fileId": 1,
+          "line": 6,
+          "comment": "unsigned char a=65;"
+        },
+        {
+          "off": 17,
+          "fileId": 1,
+          "line": 7,
+          "comment": "for (i = 0; i < 3; i++)"
+        },
+        {
+          "off": 28,
+          "fileId": 1,
+          "line": 8,
+          "comment": "putc(\"A\" + i);"
+        }
+      ]
+    },
+    {
+      "lens": [
+        205,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "ext": "PUTC",
+      "wia": 1,
+      "add": 0
+    },
+    {
+      "lens": [
+        221,
+        52,
+        254,
+        24,
+        234,
+        221,
+        54,
+        254,
+        0,
+        221,
+        126,
+        254,
+        254,
+        3,
+        48,
+        14,
+        221,
+        126,
+        255,
+        221,
+        134,
+        254
+      ],
+      "segment": "CSEG",
+      "dbg": [
+        {
+          "off": 0,
+          "fileId": 1,
+          "line": 7,
+          "comment": "for (i = 0; i < 3; i++)"
+        },
+        {
+          "off": 5,
+          "fileId": 1,
+          "line": 9,
+          "comment": "for (i = 0; i < 3; i++)"
+        },
+        {
+          "off": 16,
+          "fileId": 1,
+          "line": 10,
+          "comment": "putc(a + i);"
+        }
+      ]
+    },
+    {
+      "lens": [
+        205,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "ext": "PUTC",
+      "wia": 1,
+      "add": 0
+    },
+    {
+      "lens": [
+        221,
+        52,
+        254,
+        24,
+        235,
+        33,
+        0,
+        0,
+        221,
+        249,
+        221,
+        225,
+        201
+      ],
+      "segment": "CSEG",
+      "dbg": [
+        {
+          "off": 0,
+          "fileId": 1,
+          "line": 9,
+          "comment": "for (i = 0; i < 3; i++)"
+        }
+      ]
+    }
+  ],
+  "externs": [
+    "PUTC",
+    "PUTC"
+  ],
+  "externSegs": {},
+  "exports": {
+    "MAIN": {
+      "addr": 0,
+      "seg": "CSEG"
+    }
+  },
+  "cpu": "z80",
+  "endian": false,
+  "name": "D:\\servers\\weby\\ASM80\\asm80-core\\test-adhoc\\opt-unroll.z80",
+  "seglen": {
+    "CSEG": 76
+  },
+  "debug": {
+    "files": [
+      {
+        "id": 1,
+        "path": "D:\\servers\\weby\\ASM80\\ic80\\test3\\opt-unroll.c"
+      }
+    ]
+  }
+}

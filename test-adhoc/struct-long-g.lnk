@@ -1,0 +1,14 @@
+segments:
+  CSEG: '0x0000'
+  DSEG: '0x8000'
+vars:
+
+modules:
+  - crt0.objz80
+  - struct-long-g.objz80
+library:
+  - libc.libz80
+  - runtime.libz80
+entrypoint: __start
+output: hex
+engine: zeta

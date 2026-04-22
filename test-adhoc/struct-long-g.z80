@@ -1,0 +1,127 @@
+  .pragma module
+  .pragma JPOPT
+  .file 1 "D:\servers\weby\ASM80\ic80\test3\struct-long-g.c"
+  .extern putc
+  .cseg
+  .export s
+  .bsseg
+s: .ds 8
+  .export main
+  .cseg
+  ; ictype main, @function
+main:
+  .loc 1 14 ; s.a = 1;
+  LD HL, s
+  PUSH HL
+  LD HL, 1
+  POP DE
+  EX DE, HL
+  LD (HL), E
+  INC HL
+  LD (HL), D
+  EX DE, HL
+  .loc 1 15 ; s.b = 100000L;
+  LD HL, s
+  LD DE, 2
+  ADD HL, DE
+  PUSH HL
+  LD HL, 34464
+  LD DE, 1
+  POP BC
+  LD A, L
+  LD (BC), A
+  INC BC
+  LD A, H
+  LD (BC), A
+  INC BC
+  LD A, E
+  LD (BC), A
+  INC BC
+  LD A, D
+  LD (BC), A
+  .loc 1 16 ; s.c = 2;
+  LD HL, s
+  LD DE, 6
+  ADD HL, DE
+  PUSH HL
+  LD HL, 2
+  POP DE
+  EX DE, HL
+  LD (HL), E
+  INC HL
+  LD (HL), D
+  EX DE, HL
+  .loc 1 18 ; putc(sizeof(s) == 8 ? 'Y' : 'N');      /* int=2 + long=4 + int=2 = 8 */
+  LD HL, 89
+  LD A, L
+  CALL putc
+  .loc 1 19 ; putc(s.b > 65535L ? 'Y' : 'N');        /* long member > 65535 */
+  LD HL, s
+  LD DE, 2
+  ADD HL, DE
+  LD E, (HL)
+  INC HL
+  LD D, (HL)
+  INC HL
+  LD C, (HL)
+  INC HL
+  LD B, (HL)
+  LD H, D
+  LD L, E
+  LD D, B
+  LD E, C
+  PUSH DE
+  PUSH HL
+  LD HL, 65535
+  LD DE, 0
+  POP BC
+  AND A
+  SBC HL, BC
+  PUSH AF
+  EX DE, HL
+  POP AF
+  POP BC
+  SBC HL, BC
+  JP PO, _Lcs32ov3
+  JP M, _L_else_1
+  JP _Lcs32s3
+_Lcs32ov3:
+  JP P, _L_else_1
+_Lcs32s3:
+  LD A, 89
+  JP _L_end_1
+_L_else_1:
+  LD A, 78
+_L_end_1:
+  CALL putc
+  .loc 1 20 ; putc(s.a + s.c == 3 ? 'Y' : 'N');      /* int members neposkozen */
+  LD HL, 3
+  PUSH HL
+  LD HL, s
+  LD DE, 6
+  ADD HL, DE
+  LD A, (HL)
+  INC HL
+  LD H, (HL)
+  LD L, A
+  PUSH HL
+  LD HL, s
+  LD A, (HL)
+  INC HL
+  LD H, (HL)
+  LD L, A
+  POP DE
+  ADD HL, DE
+  POP DE
+  AND A
+  SBC HL, DE
+  JP NZ, _L_else_4
+  LD A, 89
+  JP _L_end_4
+_L_else_4:
+  LD A, 78
+_L_end_4:
+  CALL putc
+  LD HL, 0
+_L_return_main:
+  RET

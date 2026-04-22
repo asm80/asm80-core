@@ -1,0 +1,53 @@
+  .pragma module
+  .pragma JPOPT
+  .file 1 "D:\servers\weby\ASM80\ic80\test3\opt-unroll.c"
+  .extern putc
+  .cseg
+  .export main
+  ; ictype main, @function
+main:
+  PUSH IX
+  LD IX, 0
+  ADD IX, SP
+  LD HL, -2
+  ADD HL, SP
+  LD SP, HL
+  .loc 1 5 ; unsigned char i;
+  .loc 1 6 ; unsigned char a=65;
+  LD (IX-1), 65 ; local a
+  .loc 1 7 ; for (i = 0; i < 3; i++)
+  LD (IX-2), 0 ; local i
+_L_begin_1:
+  LD A, (IX-2) ; local i
+  CP 3
+  JP NC, _Lv_2
+  .loc 1 8 ; putc('A' + i);
+  LD HL, 65
+  LD A, L
+  ADD A, (IX-2)
+  CALL putc
+_Lv_3:
+  .loc 1 7 ; for (i = 0; i < 3; i++)
+  INC (IX-2) ; local i
+  JP _L_begin_1
+_Lv_2:
+  .loc 1 9 ; for (i = 0; i < 3; i++)
+  LD (IX-2), 0 ; local i
+_L_begin_4:
+  LD A, (IX-2) ; local i
+  CP 3
+  JP NC, _Lv_4
+  .loc 1 10 ; putc(a + i);
+  LD A, (IX-1) ; local a
+  ADD A, (IX-2)
+  CALL putc
+_Lv_5:
+  .loc 1 9 ; for (i = 0; i < 3; i++)
+  INC (IX-2) ; local i
+  JP _L_begin_4
+_Lv_4:
+  LD HL, 0
+_L_return_main:
+  LD SP, IX
+  POP IX
+  RET

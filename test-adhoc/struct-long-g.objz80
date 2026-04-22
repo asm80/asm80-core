@@ -1,0 +1,403 @@
+{
+  "code": [
+    {
+      "lens": [
+        33,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "dbg": [
+        {
+          "off": 0,
+          "fileId": 1,
+          "line": 14,
+          "comment": "s.a = 1;"
+        }
+      ],
+      "rel": true,
+      "relseg": "BSSEG",
+      "wia": 1,
+      "add": 0
+    },
+    {
+      "lens": [
+        229,
+        33,
+        1,
+        0,
+        209,
+        235,
+        115,
+        35,
+        114,
+        235
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        33,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "dbg": [
+        {
+          "off": 0,
+          "fileId": 1,
+          "line": 15,
+          "comment": "s.b = 100000L;"
+        }
+      ],
+      "rel": true,
+      "relseg": "BSSEG",
+      "wia": 1,
+      "add": 0
+    },
+    {
+      "lens": [
+        17,
+        2,
+        0,
+        25,
+        229,
+        33,
+        160,
+        134,
+        17,
+        1,
+        0,
+        193,
+        125,
+        2,
+        3,
+        124,
+        2,
+        3,
+        123,
+        2,
+        3,
+        122,
+        2
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        33,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "dbg": [
+        {
+          "off": 0,
+          "fileId": 1,
+          "line": 16,
+          "comment": "s.c = 2;"
+        }
+      ],
+      "rel": true,
+      "relseg": "BSSEG",
+      "wia": 1,
+      "add": 0
+    },
+    {
+      "lens": [
+        17,
+        6,
+        0,
+        25,
+        229,
+        33,
+        2,
+        0,
+        209,
+        235,
+        115,
+        35,
+        114,
+        235,
+        33,
+        89,
+        0,
+        125
+      ],
+      "segment": "CSEG",
+      "dbg": [
+        {
+          "off": 14,
+          "fileId": 1,
+          "line": 18,
+          "comment": "putc(sizeof(s) == 8 ? \"Y\" : \"N\");      /* int=2 + long=4 + int=2 = 8 */"
+        }
+      ]
+    },
+    {
+      "lens": [
+        205,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "ext": "PUTC",
+      "wia": 1,
+      "add": 0
+    },
+    {
+      "lens": [
+        33,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "dbg": [
+        {
+          "off": 0,
+          "fileId": 1,
+          "line": 19,
+          "comment": "putc(s.b > 65535L ? \"Y\" : \"N\");        /* long member > 65535 */"
+        }
+      ],
+      "rel": true,
+      "relseg": "BSSEG",
+      "wia": 1,
+      "add": 0
+    },
+    {
+      "lens": [
+        17,
+        2,
+        0,
+        25,
+        94,
+        35,
+        86,
+        35,
+        78,
+        35,
+        70,
+        98,
+        107,
+        80,
+        89,
+        213,
+        229,
+        33,
+        255,
+        255,
+        17,
+        0,
+        0,
+        193,
+        167,
+        237,
+        66,
+        245,
+        235,
+        241,
+        193,
+        237,
+        66
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        226,
+        107,
+        0
+      ],
+      "segment": "CSEG",
+      "rel": true,
+      "relseg": "CSEG",
+      "wia": 1,
+      "add": 107
+    },
+    {
+      "lens": [
+        250,
+        114,
+        0
+      ],
+      "segment": "CSEG",
+      "rel": true,
+      "relseg": "CSEG",
+      "wia": 1,
+      "add": 114
+    },
+    {
+      "lens": [
+        24,
+        3
+      ],
+      "segment": "CSEG",
+      "wia": 1,
+      "isRelJump": true
+    },
+    {
+      "lens": [
+        242,
+        114,
+        0
+      ],
+      "segment": "CSEG",
+      "rel": true,
+      "relseg": "CSEG",
+      "wia": 1,
+      "add": 114
+    },
+    {
+      "lens": [
+        62,
+        89,
+        24,
+        2,
+        62,
+        78
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        205,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "ext": "PUTC",
+      "wia": 1,
+      "add": 0
+    },
+    {
+      "lens": [
+        33,
+        3,
+        0,
+        229
+      ],
+      "segment": "CSEG",
+      "dbg": [
+        {
+          "off": 0,
+          "fileId": 1,
+          "line": 20,
+          "comment": "putc(s.a + s.c == 3 ? \"Y\" : \"N\");      /* int members neposkozen */"
+        }
+      ]
+    },
+    {
+      "lens": [
+        33,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "rel": true,
+      "relseg": "BSSEG",
+      "wia": 1,
+      "add": 0
+    },
+    {
+      "lens": [
+        17,
+        6,
+        0,
+        25,
+        126,
+        35,
+        102,
+        111,
+        229
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        33,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "rel": true,
+      "relseg": "BSSEG",
+      "wia": 1,
+      "add": 0
+    },
+    {
+      "lens": [
+        126,
+        35,
+        102,
+        111,
+        209,
+        25,
+        209,
+        167,
+        237,
+        82,
+        32,
+        4,
+        62,
+        89,
+        24,
+        2,
+        62,
+        78
+      ],
+      "segment": "CSEG"
+    },
+    {
+      "lens": [
+        205,
+        0,
+        0
+      ],
+      "segment": "CSEG",
+      "ext": "PUTC",
+      "wia": 1,
+      "add": 0
+    },
+    {
+      "lens": [
+        33,
+        0,
+        0,
+        201
+      ],
+      "segment": "CSEG"
+    }
+  ],
+  "externs": [
+    "PUTC",
+    "PUTC",
+    "PUTC"
+  ],
+  "externSegs": {},
+  "exports": {
+    "S": {
+      "addr": 0,
+      "seg": "BSSEG"
+    },
+    "MAIN": {
+      "addr": 0,
+      "seg": "CSEG"
+    }
+  },
+  "cpu": "z80",
+  "endian": false,
+  "name": "D:\\servers\\weby\\ASM80\\asm80-core\\test-adhoc\\struct-long-g.z80",
+  "seglen": {
+    "CSEG": 163,
+    "BSSEG": 8
+  },
+  "debug": {
+    "files": [
+      {
+        "id": 1,
+        "path": "D:\\servers\\weby\\ASM80\\ic80\\test3\\struct-long-g.c"
+      }
+    ]
+  }
+}
