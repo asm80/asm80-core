@@ -733,6 +733,7 @@ set2: {
           if (prefix) {
             lens.unshift(prefix);
             s.bytes++;
+            s.wia++;
           }
           if (disp) {
             if (s.bytes==3) {

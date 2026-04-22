@@ -5505,3 +5505,48 @@ QUnit.test("JR isRelJump flag set by Z80 parseOpcode", function(assert) {
   const p = Z80.parseOpcode(s, { _PC: 0x100 }, Parser);
   assert.equal(p.isRelJump, true, "isRelJump flag set for JR");
 });
+
+QUnit.test("link: LD IX/IY,nn with DSEG relocation and offset", async function(assert) {
+  // __sf in DSEG at offset 0; LD IY,__sf+128 should resolve to 0x8080 (DSEG=0x8000 + 128)
+  const src = [
+    ".pragma module",
+    "  .dseg",
+    "__sf: .ds 2",
+    "  .cseg",
+    "main:",
+    "  LD IY, __sf+128",
+    "  LD IX, __sf+128",
+    "  LD IY, __sf",
+    "  LD IX, __sf",
+    "  LD HL, __sf",
+    ".export main",
+  ].join("\n");
+  const { obj } = await compile(src, modulefs, { assembler: "Z80" });
+  const data = { segments: { CSEG: "0x0000", DSEG: "0x8000", BSSEG: "0xbf00" }, vars: {}, endian: false };
+  const linked = linkModules(data, [obj], []);
+  const bytes = linked.dump.flatMap(d => d.lens);
+  // LD IY, __sf+128 = FD 21 80 80
+  assert.equal(bytes[0], 0xFD, "LD IY,__sf+128 prefix FD");
+  assert.equal(bytes[1], 0x21, "LD IY,__sf+128 opcode 21");
+  assert.equal(bytes[2], 0x80, "LD IY,__sf+128 lo = 0x80");
+  assert.equal(bytes[3], 0x80, "LD IY,__sf+128 hi = 0x80");
+  // LD IX, __sf+128 = DD 21 80 80
+  assert.equal(bytes[4], 0xDD, "LD IX,__sf+128 prefix DD");
+  assert.equal(bytes[5], 0x21, "LD IX,__sf+128 opcode 21");
+  assert.equal(bytes[6], 0x80, "LD IX,__sf+128 lo = 0x80");
+  assert.equal(bytes[7], 0x80, "LD IX,__sf+128 hi = 0x80");
+  // LD IY, __sf = FD 21 00 80
+  assert.equal(bytes[8],  0xFD, "LD IY,__sf prefix FD");
+  assert.equal(bytes[9],  0x21, "LD IY,__sf opcode 21");
+  assert.equal(bytes[10], 0x00, "LD IY,__sf lo = 0x00");
+  assert.equal(bytes[11], 0x80, "LD IY,__sf hi = 0x80");
+  // LD IX, __sf = DD 21 00 80
+  assert.equal(bytes[12], 0xDD, "LD IX,__sf prefix DD");
+  assert.equal(bytes[13], 0x21, "LD IX,__sf opcode 21");
+  assert.equal(bytes[14], 0x00, "LD IX,__sf lo = 0x00");
+  assert.equal(bytes[15], 0x80, "LD IX,__sf hi = 0x80");
+  // LD HL, __sf = 21 00 80
+  assert.equal(bytes[16], 0x21, "LD HL,__sf opcode 21");
+  assert.equal(bytes[17], 0x00, "LD HL,__sf lo = 0x00");
+  assert.equal(bytes[18], 0x80, "LD HL,__sf hi = 0x80");
+});
