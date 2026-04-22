@@ -12,6 +12,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm test                    # Run tests with code coverage
 ```
 
+Run once and save output; don't re-run for each grep:
+```bash
+npm test 2>&1 > /tmp/test-out.txt && grep "not ok" /tmp/test-out.txt
+```
+
 Tests are in `test/` directory using QUnit framework. Coverage reports are generated to `coverage/` folder.
 
 ### Development and debugging
@@ -61,6 +66,12 @@ Variables object contains symbols → addresses, special variables (`_PC`, `__PR
 - **CPU abstraction**: Each CPU has `parseOpcode()` function
 - **Segment management**: CSEG/DSEG/ESEG/BSSEG support
 - **Modular support**: Import/export functionality for linking
+
+### Module mode quirks
+- `.pragma module` in source is required to enable module mode — `asm.js` resets `opts.PRAGMAS` to `[]`; passing it via opts has no effect
+- `linkModules()` return value has no `vars` field — resolved symbol addresses are not exposed; verify via `dump` bytes instead
+- `vars[label + "$$seg"]` stores a label's relocatable segment (e.g. `"BSSEG"`); EQU labels had no `$$seg` by default (fixed in equ-segment feature)
+- `expression-parser.js` token types (not exported): `TNUMBER=0, TOP1=1, TOP2=2, TVAR=3, TFUNCALL=4`; TOP2 `item.index_` is the operator string (`"+"`, `"-"`, etc.)
 
 ### Error handling
 Errors are objects with `msg` and `s` properties. Async functions use try/catch pattern.

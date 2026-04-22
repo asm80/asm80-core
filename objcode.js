@@ -112,6 +112,10 @@ export const objCode = (V, vars, opts, moduleName="noname") => {
         if (ln.label && ln.opcode !== "EQU" && ln.opcode !== "SET" && ln.opcode !== "=") {
             // Map each label to its segment for relocation calculations
             varsSegs[ln.label.toUpperCase()] = normalizeSegment(ln.segment)
+        } else if (ln.label && (ln.opcode === "EQU" || ln.opcode === "SET" || ln.opcode === "=")) {
+            // EQU/SET may have a propagated segment if they alias a relocatable symbol
+            const propagated = vars[ln.label.toUpperCase() + "$$seg"]
+            if (propagated) varsSegs[ln.label.toUpperCase()] = normalizeSegment(propagated)
         }
     }
 

@@ -1,6 +1,72 @@
 import { Parser } from "./expression-parser.js";
 import { fptozx } from "./utils/fp.js";
 
+// Token type constants mirrored from expression-parser.js
+const TNUMBER = 0, TOP1 = 1, TOP2 = 2, TVAR = 3;
+
+/**
+ * Determine the relocatable segment produced by an .equ expression.
+ * Returns segment string (e.g. "BSSEG") or null for absolute results.
+ * Throws {msg} when the expression violates address arithmetic rules
+ * (sum of two relocatable symbols, or difference of different-segment symbols).
+ */
+const resolveEquSegment = (exprStr, vars) => {
+    const parsed = Parser.parse(exprStr);
+    const stack = [];
+    for (const item of parsed.tokens) {
+        if (item.type_ === TNUMBER) {
+            stack.push(null);
+        } else if (item.type_ === TVAR) {
+            const name = item.index_.toUpperCase();
+            // Strip < / > byte-extraction prefix — result is always absolute
+            if (name[0] === "<" || name[0] === ">") {
+                stack.push(null);
+            } else {
+                stack.push(vars[name + "$$seg"] || null);
+            }
+        } else if (item.type_ === TOP2) {
+            const right = stack.pop();
+            const left = stack.pop();
+            const op = item.index_;
+            if (op === "+") {
+                if (left !== null && right !== null) {
+                    throw { msg: "Cannot add two relocatable symbols: segment arithmetic error" };
+                }
+                stack.push(left !== null ? left : right);
+            } else if (op === "-") {
+                if (left !== null && right !== null) {
+                    if (left !== right) {
+                        throw { msg: "Cannot subtract symbols from different segments: segment arithmetic error" };
+                    }
+                    stack.push(null); // same-segment difference → absolute
+                } else if (right !== null) {
+                    throw { msg: "Cannot negate a relocatable symbol: segment arithmetic error" };
+                } else {
+                    stack.push(left);
+                }
+            } else {
+                // *, /, &, | etc. — result is absolute regardless
+                if (left !== null || right !== null) {
+                    throw { msg: "Illegal operation on relocatable symbol: segment arithmetic error" };
+                }
+                stack.push(null);
+            }
+        } else if (item.type_ === TOP1) {
+            // unary operators — preserve segment for unary +, error for unary - on relocatable
+            const val = stack.pop();
+            if (val !== null && item.index_ === "-") {
+                throw { msg: "Cannot negate a relocatable symbol: segment arithmetic error" };
+            }
+            stack.push(val);
+        } else {
+            // TFUNCALL or unknown — treat as absolute
+            stack.pop();
+            stack.push(null);
+        }
+    }
+    return stack.length === 1 ? stack[0] : null;
+};
+
 /**
  * Druhý průchod assembleru: generuje výstupní bajty, vyhodnocuje hodnoty a sekce, řeší direktivy a instrukce
  * @param {[Array, Object]} vx - Výsledek z pass1: [pole řádků, symbolická tabulka]
@@ -225,6 +291,8 @@ export const pass2 = (vx, opts) => {
             s: op
           };
           vars[op.label] = Parser.evaluate(op.params[0], vars);
+          const equSeg = resolveEquSegment(op.params[0], vars);
+          if (equSeg !== null) vars[op.label + "$$seg"] = equSeg;
           continue;
         }
         if (op.opcode === ".SET" || op.opcode === ":=") {
