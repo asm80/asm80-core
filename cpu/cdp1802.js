@@ -129,6 +129,60 @@ export const CDP1802 = {
       return p.replace("#","$");
     };
 
+    var operandError = function(kind, p, asObject) {
+      var msg = "Unrecognized " + kind + ": " + p;
+      if (asObject) throw {msg: msg};
+      throw msg;
+    };
+
+    var validateOperand = function(kind, p, value, min, max, asObject) {
+      if (typeof value !== "number" || isNaN(value) || value > max || value < min) {
+        operandError(kind, p, asObject);
+      }
+      return value;
+    };
+
+    var deferredOperand = function(kind, p, base, min, max) {
+      return function(vars) {
+        var value = Parser.evaluate(p, vars);
+        return base + validateOperand(kind, p, value, min, max, true);
+      };
+    };
+
+    var parseRegister = function(p, base) {
+      var regnum;
+      if (p.length == 1 && /^[0-9a-f]$/i.test(p)) {
+        regnum = parseInt(p, 16);
+        return base + validateOperand("register", p, regnum, 0, 15, false);
+      } else if (/^R[0-9]{1,2}$/i.test(p)) {
+        regnum = parseInt(p.substr(1), 10);
+        return base + validateOperand("register", p, regnum, 0, 15, false);
+      } else {
+        try {
+          regnum = Parser.evaluate(p, vars);
+        } catch (e) {
+          if (opts) return deferredOperand("register", p, base, 0, 15);
+          regnum = NaN;
+        }
+      }
+      return base + validateOperand("register", p, regnum, 0, 15, !!opts);
+    };
+
+    var parsePort = function(p, base) {
+      var portnum;
+      if (p.length == 1 && /^[0-9]$/.test(p)) {
+        portnum = parseInt(p, 10);
+        return base + validateOperand("port", p, portnum, 1, 7, false);
+      } else {
+        try {
+          portnum = Parser.evaluate(p, vars);
+        } catch (e) {
+          if (opts) return deferredOperand("port", p, base, 1, 7);
+          portnum = NaN;
+        }
+      }
+      return base + validateOperand("port", p, portnum, 1, 7, !!opts);
+    };
 
     if (ax) {
       switch(ax[1]) {
@@ -163,37 +217,12 @@ export const CDP1802 = {
 
         case 2: //REGNUM
           p1 = s.params[0]+'';
-          var regnum;
-          if(p1.length==1) {regnum = parseInt(p1,16);} else
-          if((p1.length==2 || p1.length==3) && p1[0].toUpperCase()=='R') {regnum = parseInt(p1.substr(1),10);} else
-          {
-            try {
-              regnum = Parser.evaluate(p1,vars);
-            } catch (e){
-              regnum = NaN;
-            }
-          }
-          if (isNaN(regnum) || regnum>15 || regnum<0) {
-            throw "Unrecognized register: "+p1;
-          }
-          s.lens = [ax[0]+regnum];
+          s.lens = [parseRegister(p1, ax[0])];
           s.bytes = 1;
           return s;
         case 5: //PORT
           p1 = s.params[0]+'';
-          var portnum;
-          if(p1.length==1) {portnum = parseInt(p1,10);} else
-          {
-            try {
-              portnum = Parser.evaluate(p1,vars);
-            } catch (e){
-              portnum = NaN;
-            }
-          }
-          if (isNaN(portnum) || portnum>7 || portnum<1) {
-            throw "Unrecognized port: "+p1;
-          }
-          s.lens = [ax[0]+portnum];
+          s.lens = [parsePort(p1, ax[0])];
           s.bytes = 1;
           return s;
       }

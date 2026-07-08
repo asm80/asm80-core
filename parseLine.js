@@ -371,7 +371,7 @@ const parseLineCore = (s, macros, opts = {stopFlag:null, olds:null, assembler:nu
     let ax = null
     const sOrigin = { opcode: s.opcode, params: s.params ? [...s.params] : [], paramstring: s.paramstring, notparsed: s.notparsed };
     try {
-      ax = opts.assembler.parseOpcode(s, {}, Parser);
+      ax = opts.assembler.parseOpcode(s, {}, Parser, opts);
     } catch (e) {
       throw {
         msg: e,

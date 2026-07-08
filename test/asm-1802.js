@@ -1,4 +1,5 @@
 import {CDP1802} from "../cpu/cdp1802.js";
+import { compile } from "../asm.js";
 import { Parser } from "../expression-parser.js";
 
 QUnit.config.hidepassed = true;
@@ -15,6 +16,8 @@ QUnit.test( "Namespace", function() {
 //QUnit.module("Simple OP tests");
 var vars = {"LOOP":0x1234,"SHORT":0x21,"_PC":0x0100};
 var s = [], p;
+const emptyFileSystem = { readFile: async () => "" };
+const compile1802 = async (source) => compile(source, emptyFileSystem, {assembler:"cdp1802"});
 
 	QUnit.test( "NOP test", function() {
 		s = {"opcode":"NOP","addr":0x100,"lens":[],"bytes":0};
@@ -224,6 +227,62 @@ var s = [], p;
 
 	QUnit.test( "Endian property", function() {
 		QUnit.assert.equal(CDP1802.endian, true, "CDP1802 is big-endian");
+	});
+
+	QUnit.test( "compile: PLO accepts EQU register operand", async function(assert) {
+		const result = await compile1802("REG equ 3\nPLO REG");
+		const bytes = result.dump.flatMap((line) => line.lens);
+		assert.deepEqual(bytes, [0xa3], "PLO REG emits the same byte as PLO 3");
+	});
+
+	QUnit.test( "compile: all register operands accept EQU values", async function(assert) {
+		const cases = [
+			["DEC", 0x20],
+			["GHI", 0x90],
+			["GLO", 0x80],
+			["INC", 0x10],
+			["LDA", 0x40],
+			["LDN", 0x00],
+			["PHI", 0xb0],
+			["PLO", 0xa0],
+			["SEP", 0xd0],
+			["SEX", 0xe0],
+			["STR", 0x50],
+		];
+
+		for (const [opcode, base] of cases) {
+			const result = await compile1802(`REG equ 3\n${opcode} REG`);
+			const bytes = result.dump.flatMap((line) => line.lens);
+			assert.deepEqual(bytes, [base + 3], `${opcode} REG emits base + 3`);
+		}
+	});
+
+	QUnit.test( "compile: INP and OUT accept EQU port operands", async function(assert) {
+		const result = await compile1802("PORT equ 3\nINP PORT\nOUT PORT");
+		const bytes = result.dump.flatMap((line) => line.lens);
+		assert.deepEqual(bytes, [0x6b, 0x63], "INP/OUT symbolic ports emit expected bytes");
+	});
+
+	QUnit.test( "compile: forward EQU register operand is resolved", async function(assert) {
+		const result = await compile1802("PLO REG\nREG equ 3");
+		const bytes = result.dump.flatMap((line) => line.lens);
+		assert.deepEqual(bytes, [0xa3], "PLO REG resolves when REG is defined later");
+	});
+
+	QUnit.test( "compile: invalid symbolic register is rejected", async function(assert) {
+		await assert.rejects(
+			compile1802("REG equ 16\nPLO REG"),
+			(error) => error.error && error.error.msg === "Unrecognized register: REG",
+			"register values outside 0..15 are rejected"
+		);
+	});
+
+	QUnit.test( "compile: invalid symbolic port is rejected", async function(assert) {
+		await assert.rejects(
+			compile1802("PORT equ 8\nOUT PORT"),
+			(error) => error.error && error.error.msg === "Unrecognized port: PORT",
+			"port values outside 1..7 are rejected"
+		);
 	});
 
 

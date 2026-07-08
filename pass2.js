@@ -558,6 +558,10 @@ export const pass2 = (vx, opts) => {
           //console.log(vars);
         }
 
+        if (op.lens && typeof op.lens[0] === "function") {
+          op.lens[0] = charVar8(op.lens[0](vars));
+        }
+
         if (op.lens && op.lens[1] && typeof op.lens[1] === "function") {
           if (op.lens[2] === "addr24") {
             //3 bytes - 65816 modes

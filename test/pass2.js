@@ -150,6 +150,11 @@ QUnit.test('pass2: lens[1] is string → converted to charCode', assert => {
     assert.equal(V[0].lens[1], 65, 'string "A" converted to 65');
 });
 
+QUnit.test('pass2: lens[0] function is resolved', assert => {
+    const [V] = runP2([() => 0xa3]);
+    assert.equal(V[0].lens[0], 0xa3, 'lens[0] function resolved to opcode byte');
+});
+
 QUnit.test('pass2: lens[1] is NaN → throws "param out of bounds, NaN"', assert => {
     // lines 603-607
     assert.throws(
