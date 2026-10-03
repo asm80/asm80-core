@@ -4,6 +4,29 @@
   "description": "Core ASM80 compiler / assembler",
   "main": "asm.js",
   "type": "module",
+  "files": [
+    "asm.js",
+    "beautify.js",
+    "expression-parser.js",
+    "libcode.js",
+    "listing.js",
+    "objcode.js",
+    "parseLine.js",
+    "parseLnk.js",
+    "parser.js",
+    "pass1.js",
+    "pass2.js",
+    "preprocessor.js",
+    "semver-resolve.js",
+    "cpu/",
+    "utils/",
+    "docs/*.md",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "test": "c8 qunit && c8 report --reporter=html",
     "test:run": "c8 qunit",
