@@ -1,6 +1,8 @@
 import {M6800} from "../cpu/m6800.js";
 import { Parser } from "../expression-parser.js";
 import QUnit from "qunit"
+import { asm } from "../asm.js";
+import { fileSystem } from "./_asyncFilesystem.js";
 
 //QUnit.config.notrycatch = true
 
@@ -183,4 +185,24 @@ QUnit.test( "BEQ relative negative offset", function() {
 	// Test the relative calculation function
 	var relativeByte = p.lens[1](negativeVars);
 	QUnit.assert.equal(relativeByte,126,"Relative offset should be calculated correctly for negative jump"); // -126 + 256 = 130, but -128+2 = -126, 256-126=130... Actually: 0x80-0x100-2 = -130, 256+(-130)=126
+});
+
+
+QUnit.module("ASM 6800 - * as current PC");
+
+QUnit.test( "* is the current program counter (issue #1)", async function(assert) {
+	const src = "\tORG 100H\nLABEL1\tEQU\t*\n\tLDAA #1\nL2\tEQU\t*\n\tBRA *\n\tLDX #*\n\t.DW *+2, 2*3, -*\n\t.DB 3 * 4\n";
+	const {vars, dump} = await asm.compile(src, fileSystem, {assembler:"M6800"});
+	assert.equal(vars.LABEL1, 0x100, "LABEL1 EQU *");
+	assert.equal(vars.L2, 0x102, "L2 EQU * after a 2-byte instruction");
+	assert.deepEqual(dump[4].lens, [0x20, 0xfe], "BRA * branches to itself");
+	assert.deepEqual(dump[5].lens, [0xce, 0x01, 0x04], "LDX #* loads own address");
+	assert.deepEqual(dump[6].lens.slice(0, 4), [0x01, 0x09, 0x00, 0x06], "*+2 and 2*3 in DW");
+	assert.deepEqual(dump[7].lens, [12], "binary * is still multiplication");
+});
+
+QUnit.test( "* equals $ in 6800", async function(assert) {
+	const {vars} = await asm.compile("\tORG 200H\nA1\tEQU\t*\nA2\tEQU\t$\n", fileSystem, {assembler:"M6800"});
+	assert.equal(vars.A1, vars.A2);
+	assert.equal(vars.A1, 0x200);
 });
