@@ -840,3 +840,20 @@ QUnit.test("LDH B, ($40) throws (LDH only works with A)", function (assert) {
 QUnit.test("LDI B, C throws (LDI only for HL/A)", function (assert) {
   assert.throws(() => SM83.parseOpcode(insn("LDI", "B", "C"), vars0, Parser));
 });
+
+// ─── comment-only / empty lines ───────────────────────────────────────────────
+
+QUnit.module("SM83 - comment-only lines");
+
+QUnit.test("parseOpcode returns null when there is no opcode", function (assert) {
+  const s = { params: [], lens: [], bytes: 0, addr: 0, remark: " hello" };
+  assert.equal(SM83.parseOpcode(s, {}, Parser), null);
+});
+
+QUnit.test("compile accepts a comment-only line", async function (assert) {
+  const { compile } = await import("../asm.js");
+  const fs = { readFile: () => Promise.resolve("") };
+  const result = await compile("; header comment\n  nop\n", fs, { assembler: "sm83" });
+  const bytes = result.dump.reduce((n, op) => n + (op.lens?.length ?? 0), 0);
+  assert.equal(bytes, 1);
+});

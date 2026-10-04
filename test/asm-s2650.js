@@ -764,3 +764,20 @@ QUnit.test("unknown opcode → null", function (assert) {
   const p = S2650.parseOpcode(s, {}, Parser);
   assert.equal(p, null);
 });
+
+// ─── comment-only / empty lines ───────────────────────────────────────────────
+
+QUnit.module("S2650 - comment-only lines");
+
+QUnit.test("parseOpcode returns null when there is no opcode", function (assert) {
+  const s = { params: [], lens: [], bytes: 0, addr: 0, remark: " hello" };
+  assert.equal(S2650.parseOpcode(s, {}, Parser), null);
+});
+
+QUnit.test("compile accepts a comment-only line", async function (assert) {
+  const { compile } = await import("../asm.js");
+  const fs = { readFile: () => Promise.resolve("") };
+  const result = await compile("; header comment\n  nop\n", fs, { assembler: "s2650" });
+  const bytes = result.dump.reduce((n, op) => n + (op.lens?.length ?? 0), 0);
+  assert.equal(bytes, 1);
+});
