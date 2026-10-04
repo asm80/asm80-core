@@ -694,6 +694,16 @@ export function Token(type_, index_, prio_, number_) {
           tokenstack.push(token);
 
           expected = OPERATOR | RPAREN | COMMA;
+        } else if (
+          this.expression.charCodeAt(this.pos) === 42 &&
+          (expected & PRIMARY) !== 0 &&
+          (expected & OPERATOR) === 0
+        ) {
+          // "*" where an operand is expected = current program counter
+          // (same as "$"), e.g. "LABEL EQU *" in Motorola-style sources
+          tokenstack.push(new Token(TVAR, "_PC", 0, 0));
+          this.pos++;
+          expected = OPERATOR | RPAREN | COMMA | LPAREN | CALL;
         } else if (this.isOperator()) {
           if (this.isSign() && expected & SIGN) {
             if (this.isNegativeSign()) {
