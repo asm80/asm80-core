@@ -5550,3 +5550,10 @@ QUnit.test("link: LD IX/IY,nn with DSEG relocation and offset", async function(a
   assert.equal(bytes[17], 0x00, "LD HL,__sf lo = 0x00");
   assert.equal(bytes[18], 0x80, "LD HL,__sf hi = 0x80");
 });
+
+// Regression (#10): labels named like Object.prototype members
+QUnit.test("Object.prototype-named symbols: valueOf label + JP valueOf (Z80)", async function(assert) {
+  const src = "\tORG 0\nvalueOf:\tNOP\n\tJP valueOf\n";
+  const { dump } = await compile(src, compilefs, { assembler: "Z80" });
+  assert.deepEqual(dump.find(d => d.opcode === "JP").lens, [0xC3, 0x00, 0x00], "JP valueOf = C3 00 00");
+});

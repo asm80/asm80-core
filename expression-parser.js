@@ -120,7 +120,7 @@ export function Token(type_, index_, prio_, number_) {
         let type_ = item.type_;
         if (type_ === TNUMBER) {
           nstack.push(item);
-        } else if (type_ === Tlet && item.index_ in values) {
+        } else if (type_ === Tlet && Object.hasOwn(values, item.index_)) {
           item = new Token(TNUMBER, 0, 0, values[item.index_]);
           nstack.push(item);
         } else if (type_ === TOP2 && nstack.length > 1) {
@@ -213,16 +213,16 @@ export function Token(type_, index_, prio_, number_) {
         } else if (type_ === TVAR) {
           item.index_ = item.index_.toUpperCase();
           if (item.index_[0] === "<") {
-            if (item.index_.substr(1) in values) {
+            if (Object.hasOwn(values, item.index_.substr(1))) {
               nstack.push(values[item.index_.substr(1)] % 256);
             }
           } else if (item.index_[0] === ">") {
-            if (item.index_.substr(1) in values) {
+            if (Object.hasOwn(values, item.index_.substr(1))) {
               nstack.push(Math.floor(values[item.index_.substr(1)] / 256));
             }
-          } else if (item.index_ in values) {
+          } else if (Object.hasOwn(values, item.index_)) {
             nstack.push(values[item.index_]);
-          } else if (item.index_ in this.functions) {
+          } else if (Object.hasOwn(this.functions, item.index_)) {
             nstack.push(this.functions[item.index_]);
           } else {
             throw {msg: "undefined variable: " + item.index_};
@@ -286,19 +286,19 @@ export function Token(type_, index_, prio_, number_) {
         } else if (type_ === TVAR) {
           item.index_ = item.index_.toUpperCase();
           if (item.index_[0] === "<") {
-            if (item.index_.substr(1) in values) {
+            if (Object.hasOwn(values, item.index_.substr(1))) {
               nstack.push(values[item.index_.substr(1)] % 256);
               xref.push(item.index_.substr(1));
             }
           } else if (item.index_[0] === ">") {
-            if (item.index_.substr(1) in values) {
+            if (Object.hasOwn(values, item.index_.substr(1))) {
               nstack.push(Math.floor(values[item.index_.substr(1)] / 256));
               xref.push(item.index_.substr(1));
             }
-          } else if (item.index_ in values) {
+          } else if (Object.hasOwn(values, item.index_)) {
             nstack.push(values[item.index_]);
             xref.push(item.index_);
-          } else if (item.index_ in this.functions) {
+          } else if (Object.hasOwn(this.functions, item.index_)) {
             nstack.push(this.functions[item.index_]);
             xref.push(item.index_);
           } else {
@@ -1265,7 +1265,7 @@ export function Token(type_, index_, prio_, number_) {
         }
         str += c;
       }
-      if (str.length > 0 && str in this.ops1) {
+      if (str.length > 0 && Object.hasOwn(this.ops1, str)) {
         this.tokenindex = str;
         this.tokenprio = 5;
         this.pos += str.length;
@@ -1285,7 +1285,7 @@ export function Token(type_, index_, prio_, number_) {
         }
         str += c;
       }
-      if (str.length > 0 && str in this.ops2) {
+      if (str.length > 0 && Object.hasOwn(this.ops2, str)) {
         this.tokenindex = str;
         this.tokenprio = 5;
         this.pos += str.length;

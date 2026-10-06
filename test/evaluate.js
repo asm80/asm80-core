@@ -308,3 +308,31 @@ QUnit.test('HIGH and LOW functions', assert => {
     assert.equal(doParse(`HIGH(256*3 + 5)`), 3, "HIGH(256*3+5) = 3");
     assert.equal(doParse(`LOW(256*3 + 5)`),  5, "LOW(256*3+5) = 5");
 });
+
+// Regression (#10): symbol names that collide with Object.prototype members
+// must not be treated as operators/functions by the tokenizer or evaluator.
+QUnit.test('symbols named like Object.prototype members', assert => {
+  assert.equal(Parser.evaluate("toString+1", { TOSTRING: 5 }), 6, "toString+1");
+  assert.equal(Parser.evaluate("valueOf", { VALUEOF: 6 }), 6, "valueOf");
+  assert.equal(Parser.evaluate("constructor", { CONSTRUCTOR: 7 }), 7, "constructor");
+  assert.equal(Parser.evaluate("hasOwnProperty*2", { HASOWNPROPERTY: 4 }), 8, "hasOwnProperty*2");
+  assert.equal(Parser.evaluate("isPrototypeOf-1", { ISPROTOTYPEOF: 3 }), 2, "isPrototypeOf-1");
+  assert.equal(Parser.evaluate("propertyIsEnumerable", { PROPERTYISENUMERABLE: 9 }), 9, "propertyIsEnumerable");
+  assert.equal(Parser.evaluate("toLocaleString", { TOLOCALESTRING: 10 }), 10, "toLocaleString");
+  assert.equal(Parser.evaluate("<valueOf", { VALUEOF: 0x1234 }), 0x34, "<valueOf");
+  assert.equal(Parser.evaluate(">valueOf", { VALUEOF: 0x1234 }), 0x12, ">valueOf");
+  assert.deepEqual(Parser.usage("valueOf+toString", { VALUEOF: 1, TOSTRING: 2 }), ["VALUEOF", "TOSTRING"], "usage xref");
+});
+
+QUnit.test('undefined symbol named like Object.prototype member reports undefined variable', assert => {
+  assert.throws(
+    () => Parser.evaluate("valueOf", {}),
+    (e) => /undefined variable: VALUEOF/.test(e.msg),
+    "valueOf without definition"
+  );
+  assert.throws(
+    () => Parser.evaluate("toString+1", {}),
+    (e) => /undefined variable: TOSTRING/.test(e.msg),
+    "toString without definition"
+  );
+});
