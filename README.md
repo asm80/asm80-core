@@ -11,6 +11,8 @@ It works, but not documented yet and the API is not settled yet. [NPM is availab
 
 [Code Unit Tests Coverage](https://asm80.github.io/asm80-core/coverage/index.html)
 
+The coverage report is published from CI on every push to `main`. Locally: run `npm test` and open `coverage/index.html`.
+
 ## IDE (aka https://asm80.com)
 
 See live in action: [https://beta.asm80.com](https://beta.asm80.com)
