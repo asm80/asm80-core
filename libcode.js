@@ -158,7 +158,7 @@ export const buildLibrary = (recipe, files, dir) => {
   const symbolIndex = {};
   for (const { name, obj } of resolved) {
     for (const sym of Object.keys(obj.exports ?? {})) {
-      if (sym in symbolIndex) {
+      if (Object.hasOwn(symbolIndex, sym)) {
         throw {
           message: `Symbol '${sym}' exported by both '${symbolIndex[sym]}' and '${name}'`,
         };

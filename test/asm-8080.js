@@ -1,5 +1,6 @@
 import {I8080} from "../cpu/i8080.js";
 import { Parser } from "../expression-parser.js";
+import { compile } from "../asm.js";
 
 QUnit.config.hidepassed = true;
 
@@ -1517,3 +1518,28 @@ var s = [], p;
 		QUnit.assert.equal(typeof(p.lens[1]),"function","Opcode 1 OK");
 				QUnit.assert.equal(p.bytes,2,"Length OK");
 	});
+
+
+// Regression (#10): labels / EQU symbols named like Object.prototype members
+const protoFs = { readFile: async () => { throw new Error("no fs"); } };
+
+QUnit.test("Object.prototype-named symbols: valueOf label + JMP valueOf", async function(assert) {
+  const src = "\tORG 0\nvalueOf:\tNOP\n\tJMP valueOf\n";
+  const { dump } = await compile(src, protoFs, { assembler: "I8080" });
+  const jmp = dump.find(d => d.opcode === "JMP");
+  assert.deepEqual(jmp.lens, [0xC3, 0x00, 0x00], "JMP valueOf = C3 00 00");
+});
+
+QUnit.test("Object.prototype-named symbols: toString EQU 5 + MVI A,toString", async function(assert) {
+  const src = "toString EQU 5\n\tORG 0\n\tMVI A,toString\n";
+  const { dump } = await compile(src, protoFs, { assembler: "I8080" });
+  const mvi = dump.find(d => d.opcode === "MVI");
+  assert.deepEqual(mvi.lens, [0x3E, 0x05], "MVI A,toString = 3E 05");
+});
+
+QUnit.test("Object.prototype-named symbols: constructor / hasOwnProperty / isPrototypeOf", async function(assert) {
+  const src = "constructor EQU 1\nhasOwnProperty EQU 2\n\tORG 0\nisPrototypeOf:\tMVI A,constructor+hasOwnProperty\n\tJMP isPrototypeOf\n";
+  const { dump } = await compile(src, protoFs, { assembler: "I8080" });
+  assert.deepEqual(dump.find(d => d.opcode === "MVI").lens, [0x3E, 0x03], "MVI A,constructor+hasOwnProperty = 3E 03");
+  assert.deepEqual(dump.find(d => d.opcode === "JMP").lens, [0xC3, 0x00, 0x00], "JMP isPrototypeOf = C3 00 00");
+});
