@@ -1,6 +1,6 @@
 {
   "name": "@asm80/core",
-  "version": "1.2.6",
+  "version": "1.3.0",
   "description": "Core ASM80 compiler / assembler",
   "main": "asm.js",
   "type": "module",
@@ -35,7 +35,8 @@
     "test:fast": "qunit",
     "test:z180": "qunit test/asm-z180.js",
     "test:z80": "qunit test/asm-z80.js",
-    "pub": "npm version patch && git push --follow-tags && npm publish --access=public"
+    "release": "npm version minor -m \"Release %s\" && git push --follow-tags",
+    "release:patch": "npm version patch -m \"Release %s\" && git push --follow-tags"
   },
   "repository": {
     "type": "git",
