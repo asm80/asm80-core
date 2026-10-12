@@ -18,9 +18,9 @@ The coverage report is published from CI on every push to `main`. Locally: run `
 Releases are published to npm only from CI (`.github/workflows/release.yml`), never from a developer machine.
 
 1. On an up-to-date `main`, run `npm run release` (minor bump) or `npm run release:patch`. This bumps `package.json`, commits, creates the `vX.Y.Z` tag and pushes it.
-2. The tag push triggers the Release workflow: it runs the tests, checks that the tag matches `package.json`, publishes `@asm80/core` to npm with provenance and creates a GitHub Release with generated notes.
+2. The tag push triggers the Release workflow: it runs the tests, checks that the tag matches `package.json`, publishes `@asm80/core` to npm and creates a GitHub Release with generated notes.
 
-Publishing requires an `NPM_TOKEN` repository secret (npm automation token) or npm trusted publishing configured for this repository.
+Publishing uses [npm Trusted Publishing](https://docs.npmjs.com/trusted-publishers) (OIDC), so no npm token is stored in the repository and provenance is attached automatically. The trusted publisher on npmjs.com is configured as: GitHub Actions, organization `asm80`, repository `asm80-core`, workflow `release.yml`, no environment.
 
 ## IDE (aka https://asm80.com)
 
